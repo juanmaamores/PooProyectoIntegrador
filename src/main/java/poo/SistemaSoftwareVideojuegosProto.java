@@ -67,15 +67,15 @@ public class SistemaSoftwareVideojuegosProto extends Frame implements ActionList
 		checkBoxJ2.addItemListener(this);
 		checkBoxJ3.addItemListener(this);
 
-		portada1 = loadImage("img/portada4.jpg");
+		portada1 = loadImage("src//main//resources//img//portada4.jpg");
 		if (portada1.getWidth() == -1) {
 			System.err.println("La imagen no se cargó correctamente.");
 		}
-		portada2 = loadImage("img/portada5.jpg");
+		portada2 = loadImage("src//main//resources//img//portada5.jpg");
 		if (portada2.getWidth() == -1) {
 			System.err.println("La imagen no se cargó correctamente.");
 		}
-		portada3 = loadImage("img/portada6.jpg");
+		portada3 = loadImage("src//main//resources//img//portada6.jpg");
 		if (portada3.getWidth() == -1) {
 			System.err.println("La imagen no se cargó correctamente.");
 		}
