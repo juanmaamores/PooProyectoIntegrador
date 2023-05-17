@@ -1,4 +1,4 @@
-package poo;
+package poo.Sistema;
 
 //ventana principal
 public class Sistema {
