@@ -6,5 +6,5 @@ public class AvionRojo implements Movil{
     @Override
     public void moverse() {
 
-    };
+    }
 }
