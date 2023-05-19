@@ -1,10 +1,13 @@
 package poo;
 
+import poo.Interfaces.Disparable;
+import poo.Interfaces.Movil;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-public class P38 extends ObjetoGrafico implements Movil, Disparable{
+public class P38 extends ObjetoGrafico implements Movil, Disparable {
     //private int energia, velocidad, cantAtaqEsp;
 
     public void moverse(){};

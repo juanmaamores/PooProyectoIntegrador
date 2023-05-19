@@ -1,13 +1,11 @@
 package poo;
 
-import poo.Otros.Juego1943;
-import poo.Sistema.Lanzador;
-
 public class Main {
-    public static void main(String arg[]) {
-        System.out.println("¿Hola mundo?");
+    public static void main(String arg[]) {;
         //Lanzador sys = new Lanzador(); // Inicia el lanzador.
-        //Juego1943 juego = new Juego1943(); //Inicia el juego directamente.
+        Juego1943 game = new Juego1943();
+        game.run(1.0 / 60.0);
+        System.exit(0);
     }
 }
 
