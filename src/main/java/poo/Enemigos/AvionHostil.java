@@ -1,7 +1,7 @@
 package poo.Enemigos;
 
-import poo.Disparable;
-import poo.Movil;
+import poo.Interfaces.Disparable;
+import poo.Interfaces.Movil;
 import poo.Municion;
 
 public class AvionHostil implements Movil, Disparable {

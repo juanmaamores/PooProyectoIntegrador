@@ -1,6 +1,6 @@
 package poo.Enemigos;
 
-import poo.Movil;
+import poo.Interfaces.Movil;
 
 public class AvionRojo implements Movil{
     @Override
