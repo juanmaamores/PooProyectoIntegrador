@@ -1,12 +1,14 @@
 package poo.Sistema;
 
+import poo.Juego1943;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 import java.awt.image.*;
 
 @SuppressWarnings("serial")
-public class Lanzador extends Frame implements ActionListener, ItemListener {
+public class SistemaSoftwareVideojuegosProto extends Frame implements ActionListener, ItemListener {
 
 	private ConfiguracionVideoJuego configJuego1, configJuego2, configJuego3;
 	private Label titulo, tituloJuego1, tituloJuego2, tituloJuego3;
@@ -23,7 +25,7 @@ public class Lanzador extends Frame implements ActionListener, ItemListener {
 	private Canvas canvas2;
 	private Canvas canvas3;
 
-	public Lanzador() {
+	public SistemaSoftwareVideojuegosProto() {
 
 		configuraciones = new Vector<ConfiguracionVideoJuego>();
 		configJuego1 = new ConfiguracionVideoJuego(this, "1943: Battle of Midway");
@@ -191,10 +193,10 @@ public class Lanzador extends Frame implements ActionListener, ItemListener {
 		}
 	}
 
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 
-		Lanzador sys = new Lanzador();
-	}*/
+		SistemaSoftwareVideojuegosProto sys = new SistemaSoftwareVideojuegosProto();
+	}
 
 	private void ejecutar() {
 

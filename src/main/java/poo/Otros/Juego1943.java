@@ -33,7 +33,7 @@ public class Juego1943 extends JGame {
 
     BufferedImage img_fondo = null;
     
-    Personaje ovni=new Personaje();
+    P38 heroe = new P38();
 
     public static void main(String[] args) {
 
@@ -44,9 +44,9 @@ public class Juego1943 extends JGame {
 
     public Juego1943() {
 
-        super("Juego1943", 800, 600);
+        super("1943: The Battle of Midway", 800, 600);
 
-        System.out.println(appProperties.stringPropertyNames());
+        //System.out.println(appProperties.stringPropertyNames());
 
     }
 
@@ -54,16 +54,11 @@ public class Juego1943 extends JGame {
 		System.out.println("gameStartup");
         try{
 			
+			img_fondo= ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/fondojuego.jpg"));
 			
+            heroe.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
 			
-            //img_fondo= ImageIO.read(getClass().getResource("imagenes/fondo.jpg"));
-			//ovni.setImagen(ImageIO.read(getClass().getResource("imagenes/ufo.png")));
-			
-			img_fondo= ImageIO.read(getClass().getClassLoader().getResourceAsStream("imagenes/fondo.jpg"));
-			
-            ovni.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("imagenes/ufo.png")));
-			
-            ovni.setPosicion(getWidth() / 2,getHeight() / 2 );
+            heroe.setPosicion(getWidth() / 2,getHeight() / 2 );
         }
         catch(Exception e){
 			System.out.println(e);
@@ -76,23 +71,23 @@ public void gameUpdate(double delta) {
          
         // Procesar teclas de direccion
         if (keyboard.isKeyPressed(KeyEvent.VK_UP)){
-            ovni.setY( ovni.getY() - NAVE_DESPLAZAMIENTO * delta);
+            heroe.setY( heroe.getY() - NAVE_DESPLAZAMIENTO * delta);
             //shipY -= NAVE_DESPLAZAMIENTO * delta;
         }
 
         if (keyboard.isKeyPressed(KeyEvent.VK_DOWN)){
             //shipY += NAVE_DESPLAZAMIENTO * delta;
-            ovni.setY( ovni.getY() + NAVE_DESPLAZAMIENTO * delta);
+            heroe.setY( heroe.getY() + NAVE_DESPLAZAMIENTO * delta);
         }
 
         if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)){
             ///shipX -= NAVE_DESPLAZAMIENTO * delta;
-            ovni.setX( ovni.getX() - NAVE_DESPLAZAMIENTO * delta);
+            heroe.setX( heroe.getX() - NAVE_DESPLAZAMIENTO * delta);
         }
 
         if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)){
             //shipX += NAVE_DESPLAZAMIENTO * delta;
-            ovni.setX( ovni.getX() + NAVE_DESPLAZAMIENTO * delta);
+            heroe.setX( heroe.getX() + NAVE_DESPLAZAMIENTO * delta);
         }
          
 
@@ -108,7 +103,7 @@ public void gameUpdate(double delta) {
         }
 
 
-        ovni.update(delta);
+        heroe.update(delta);
 
     }
 
@@ -131,7 +126,7 @@ public void gameUpdate(double delta) {
 		g.drawString("Tecla ESC = Fin del Juego ",590,40);
 
         
-        ovni.draw(g);
+        heroe.draw(g);
 
 
 
@@ -144,47 +139,5 @@ public void gameUpdate(double delta) {
 
     public void gameShutdown() {
        Log.info(getClass().getSimpleName(), "Shutting down game");
-    }
-}
-
-
-class Personaje{
-
-    BufferedImage imagen=null;
-    private Point2D.Double posicion  = new Point2D.Double();
-
-    public Personaje(){
-
-    }
-
-    public void setImagen(BufferedImage img){
-        this.imagen=img;
-
-    }
-
-    public void setPosicion(double x, double y){
-        posicion.setLocation(x, y);
-    }
-
-    public void setX(double x){
-        posicion.x=x;
-    }
-
-    public void setY(double y){
-        posicion.y=y;
-    }
-    public double getX(){
-        return posicion.getX(); 
-    }
-
-    public double getY(){
-        return posicion.getY(); 
-    }
-    public void update(double delta){
-
-    }
-
-    public void draw(Graphics2D g){
-        g.drawImage(imagen,(int)posicion.getX(),(int)posicion.getY(),null);
     }
 }
