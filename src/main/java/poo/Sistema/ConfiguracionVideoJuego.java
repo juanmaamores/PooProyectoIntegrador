@@ -1,4 +1,4 @@
-package poo;
+package poo.Sistema;
 
 import java.awt.*;
 import java.awt.event.*;

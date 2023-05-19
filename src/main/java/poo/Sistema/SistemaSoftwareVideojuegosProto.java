@@ -1,7 +1,5 @@
 package poo.Sistema;
 
-import poo.ConfiguracionVideoJuego;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
