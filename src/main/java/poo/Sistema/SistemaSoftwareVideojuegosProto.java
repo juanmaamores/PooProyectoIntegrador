@@ -1,5 +1,7 @@
 package poo.Sistema;
 
+import poo.Juego1943;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
