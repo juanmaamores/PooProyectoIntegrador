@@ -4,10 +4,17 @@ import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
 import poo.Municion;
 
-public class AvionHostil implements Movil, Disparable {
+public class AvionHostil extends Enemigo{
+    public AvionHostil(){
+        this.velocidad=1;
+    }
+
+    public void update(double delta){
+        this.setY(this.getY()+delta);
+    }
+
     @Override
     public void moverse() {
-
     }
 
     @Override
