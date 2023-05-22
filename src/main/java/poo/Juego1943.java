@@ -34,13 +34,6 @@ public class Juego1943 extends JGame {
     
     P38 heroe = new P38();
 
-    /*public static void main(String[] args) {
-
-        Juego1943 game = new Juego1943();
-        game.run(1.0 / 60.0);
-        System.exit(0);
-    }*/
-
     public Juego1943() {
 
         super("1943: The Battle of Midway", 800, 600);
@@ -67,7 +60,7 @@ public class Juego1943 extends JGame {
 
 public void gameUpdate(double delta) {
         Keyboard keyboard = this.getKeyboard();
-         
+
         // Procesar teclas de direccion
         if (keyboard.isKeyPressed(KeyEvent.VK_UP)){
             heroe.setY( heroe.getY() - NAVE_DESPLAZAMIENTO * delta);
