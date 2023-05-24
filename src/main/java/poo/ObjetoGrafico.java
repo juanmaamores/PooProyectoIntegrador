@@ -5,9 +5,8 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 public abstract class ObjetoGrafico extends Rectangle {
-
     BufferedImage imagen= null;
-    private Point2D.Double posicion = new Point2D.Double();
+    protected Point2D.Double posicion = new Point2D.Double();
 
     public void setImagen(BufferedImage img){
         this.imagen=img;
@@ -33,9 +32,6 @@ public abstract class ObjetoGrafico extends Rectangle {
 
     public double getY(){
         return posicion.getY();
-    }
-
-    public void update(double delta){
     }
 
     public void draw(Graphics2D g){

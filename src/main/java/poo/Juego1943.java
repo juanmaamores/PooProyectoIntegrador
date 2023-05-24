@@ -7,6 +7,7 @@ package poo;
 import com.entropyinteractive.*;  //jgame
 import poo.Enemigos.AvionHostil;
 import poo.Enemigos.AvionRojo;
+import poo.Enemigos.GrupoAvionesRojos;
 
 import java.awt.*;
 import java.awt.event.*; //eventos
@@ -16,7 +17,6 @@ import javax.imageio.*; //imagenes
 
 import java.awt.Graphics2D;
 
-import java.io.IOException;
 import java.util.LinkedList;
 
 import java.util.*;
@@ -26,7 +26,6 @@ import java.text.*;
 
 
 public class Juego1943 extends JGame {
- 
 
 	Date dInit = new Date();
 	Date dAhora;
@@ -37,29 +36,21 @@ public class Juego1943 extends JGame {
     
     P38 heroe = new P38();
     AvionHostil avion = new AvionHostil();
-    AvionRojo avionrojo = new AvionRojo();
+    GrupoAvionesRojos avionesrojos = new GrupoAvionesRojos();
 
     public Juego1943() {
 
         super("1943: The Battle of Midway", 800, 600);
-
         //System.out.println(appProperties.stringPropertyNames());
-
     }
 
     public void gameStartup() {
 		System.out.println("gameStartup");
         try{
-			
 			img_fondo= ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/fondojuego.jpg"));
-			
-            heroe.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
-            avion.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
-            avionrojo.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojo.png")));
 
             heroe.setPosicion(getWidth() / 2,getHeight() / 2 );
-            avion.setPosicion(390,50);
-            avionrojo.setPosicion(760,getHeight()/2);
+            avion.setPosicion(getWidth() / 2,50);
         }
         catch(Exception e){
 			System.out.println(e);
@@ -67,74 +58,41 @@ public class Juego1943 extends JGame {
        
     }
 
-public void gameUpdate(double delta) {
+    public void gameUpdate(double delta) {
         Keyboard keyboard = this.getKeyboard();
 
         // Procesar teclas de direccion
-        if (keyboard.isKeyPressed(KeyEvent.VK_UP)){
-            heroe.setY( heroe.getY() - NAVE_DESPLAZAMIENTO * delta);
-            //shipY -= NAVE_DESPLAZAMIENTO * delta;
+        if (keyboard.isKeyPressed(KeyEvent.VK_UP)) {
+            heroe.setY(heroe.getY() - NAVE_DESPLAZAMIENTO * delta);
         }
 
-        if (keyboard.isKeyPressed(KeyEvent.VK_DOWN)){
-            //shipY += NAVE_DESPLAZAMIENTO * delta;
-            heroe.setY( heroe.getY() + NAVE_DESPLAZAMIENTO * delta);
+        if (keyboard.isKeyPressed(KeyEvent.VK_DOWN)) {
+            heroe.setY(heroe.getY() + NAVE_DESPLAZAMIENTO * delta);
         }
 
-        if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)){
-            ///shipX -= NAVE_DESPLAZAMIENTO * delta;
-            heroe.setX( heroe.getX() - NAVE_DESPLAZAMIENTO * delta);
+        if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)) {
+            heroe.setX(heroe.getX() - NAVE_DESPLAZAMIENTO * delta);
         }
 
-        if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)){
-            //shipX += NAVE_DESPLAZAMIENTO * delta;
-            heroe.setX( heroe.getX() + NAVE_DESPLAZAMIENTO * delta);
+        if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)) {
+            heroe.setX(heroe.getX() + NAVE_DESPLAZAMIENTO * delta);
         }
-
-        /*Chequear si el avion hostil llego al final de la pantalla e invertir su movimiento
-          Esto se debe adaptar posteriormente a un for con el Vector/Array de aviones
-         */
-        if(avion.getY()==(getHeight()-40)){
-          avion.setVelocidad(avion.getVelocidad()*(-1));
-            try {
-                avion.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil2.png")));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        if(avion.getY()==30){
-            avion.setVelocidad(avion.getVelocidad()*(-1));
-            try {
-                avion.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        /*Chequear si el avion rojo llego al final de la pantalla e invertir su movimiento
-          Esto se debe adaptar posteriormente a un for con el Vector/Array de aviones
-         */
-        if(avionrojo.getX()==0){
-            avionrojo.setVelocidad(0);
-        }
-
 
         // Esc fin del juego
-        LinkedList < KeyEvent > keyEvents = keyboard.getEvents();
-        for (KeyEvent event: keyEvents) {
+        LinkedList<KeyEvent> keyEvents = keyboard.getEvents();
+        for (KeyEvent event : keyEvents) {
             if ((event.getID() == KeyEvent.KEY_PRESSED) &&
-                (event.getKeyCode() == KeyEvent.VK_ESCAPE)) {
+                    (event.getKeyCode() == KeyEvent.VK_ESCAPE)) {
                 stop();
             }
         }
 
-
-        heroe.update(delta);
-        avion.update(avion.getVelocidad());
-        avionrojo.update(avionrojo.getVelocidad());
+        heroe.moverse();
+        avion.moverse();
+        for (AvionRojo avionrojo : avionesrojos.getAviones()) {
+            avionrojo.moverse();
+        }
     }
-
     public void gameDraw(Graphics2D g) {
 
     	dAhora= new Date( );
@@ -156,13 +114,8 @@ public void gameUpdate(double delta) {
         
         heroe.draw(g);
         avion.draw(g);
-        avionrojo.draw(g);
-
-
-        
-
-
-
+        for(AvionRojo avionrojo: avionesrojos.getAviones())
+            avionrojo.draw(g);
     }
 
     public void gameShutdown() {
