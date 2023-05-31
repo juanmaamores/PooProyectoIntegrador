@@ -37,4 +37,10 @@ public abstract class ObjetoGrafico extends Rectangle {
     public void draw(Graphics2D g){
         g.drawImage(imagen,(int)posicion.getX(),(int)posicion.getY(),null);
     }
+
+    public void destruir(){
+        //aca habria que generar una explosion
+        //podria variar por cada clase, o sea, que cada clase tenga su destruir
+        imagen = null;
+    }
 }

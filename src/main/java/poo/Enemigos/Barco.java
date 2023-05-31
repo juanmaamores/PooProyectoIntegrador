@@ -6,7 +6,7 @@ import poo.Municion;
 
 public class Barco extends Enemigo implements Movil, Disparable {
     @Override
-    public void moverse() {
+    public void moverse(int ancho, int alto) {
 
     }
 

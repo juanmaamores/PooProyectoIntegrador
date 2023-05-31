@@ -8,11 +8,9 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 
 public class AvionHostil extends Enemigo implements Movil, Disparable{
-    private double velocidad; //la velocidad es una sola, porque su movimiento es unicamente vertical
-
+    boolean disparar;
     public AvionHostil(){
-
-        velocidad=1;
+        disparar = true;
         try {
             setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
         } catch (IOException e) {
@@ -20,18 +18,28 @@ public class AvionHostil extends Enemigo implements Movil, Disparable{
         }
     }
 
-    public void setVelocidad(double velocidad){
-        this.velocidad=velocidad;
+    public void setVelocidadH(float velocidadH){
+        this.velocidadH= velocidadH;
     }
 
-    public double getVelocidad(){
-        return velocidad;
+    public float getVelocidadH(){
+        return velocidadH;
+    }
+
+    public void setVelocidadV(float velocidadV){
+        this.velocidadV=velocidadV;
+    }
+
+    public float getVelocidadV(){
+        return velocidadV;
     }
 
     @Override
-    public void moverse() {
-        if(posicion.y == 560){
-            velocidad = velocidad *(-1);
+    public void moverse(int ancho, int alto) {
+        if(posicion.y >= alto-50){
+            disparar = false;
+            velocidadV *= -1;
+            velocidadH *= -1;
             try {
                 setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil2.png")));
             } catch (IOException e) {
@@ -39,8 +47,10 @@ public class AvionHostil extends Enemigo implements Movil, Disparable{
             }
         }
 
-        if(posicion.y == 30) {
-            velocidad *= -1;
+        if(posicion.y <= alto-590 && velocidadV < 0) {
+            disparar = true;
+            velocidadV *= -1;
+            velocidadH *= -1;
             try {
                 setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
             } catch (IOException e) {
@@ -48,7 +58,8 @@ public class AvionHostil extends Enemigo implements Movil, Disparable{
             }
         }
 
-        posicion.y += velocidad;
+        posicion.x += velocidadH;
+        posicion.y += velocidadV;
     }
 
     @Override

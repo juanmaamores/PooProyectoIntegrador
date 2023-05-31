@@ -5,5 +5,5 @@ import poo.Interfaces.Movil;
 import poo.ObjetoGrafico;
 
 public abstract class Enemigo extends ObjetoGrafico {
-    protected double blindaje;
+    protected float velocidadH, velocidadV;
 }

@@ -8,10 +8,9 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 
 public class AvionRojo extends Enemigo implements Movil{
-    private double velocidadH, velocidadV;
 
     public AvionRojo(){
-        velocidadH = -1;
+        velocidadH = -1.5F;
         velocidadV = 0;
         try {
             setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojo.png")));
@@ -20,42 +19,46 @@ public class AvionRojo extends Enemigo implements Movil{
         }
     }
 
-    public void setVelocidadH(double velocidadH){
+    public void setVelocidadH(float velocidadH){
         this.velocidadH = velocidadH;
     }
 
-    public double getVelocidadH(){
+    public float getVelocidadH(){
         return velocidadH;
     }
 
-    public void setVelocidadV(double velocidadV){
+    public void setVelocidadV(float velocidadV){
         this.velocidadV = velocidadV;
     }
 
-    public double getVelocidadV(){
+    public float getVelocidadV(){
         return velocidadV;
     }
 
     @Override
-    public void moverse() {
+    public void moverse(int ancho, int alto) {
 
-        if(posicion.x == 350 && posicion.y == 200){
-           velocidadH = 0;
-           velocidadV = -1;
+        if(posicion.x <= 350 && posicion.y == alto-400){
+            posicion.x = 350;
+            velocidadH = 0;
+            velocidadV = -1.5F;
         }
 
-        if(posicion.x == 350 && posicion.y == 100){
-            velocidadH = 1;
+        if(posicion.x == 350 && posicion.y <= alto-500){
+            posicion.y = alto-500;
+            velocidadH = 1.5F;
             velocidadV = 0;
         }
 
-        if(posicion.x == 450 && posicion.y == 100){
+        if(posicion.x >= 450 && posicion.y == alto-500){
+            posicion.x = 450;
             velocidadH = 0;
-            velocidadV = 1;
+            velocidadV = 1.5F;
         }
 
-        if(posicion.x == 450 && posicion.y == 201){
-            velocidadH = -1;
+        if(posicion.x == 450 && posicion.y >= alto-399){
+            posicion.y = alto-399;
+            velocidadH = -1.5F;
             velocidadV = 0;
         }
 

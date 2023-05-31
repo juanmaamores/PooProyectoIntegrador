@@ -9,7 +9,7 @@ public abstract class Bonus extends ObjetoGrafico implements Movil {
 
     }
 
-    public void moverse(){
+    public void moverse(int ancho, int alto){
 
     }
 

@@ -4,8 +4,8 @@ import poo.Municion;
 
 import java.util.Vector;
 
-public class GrupoAvionesHostiles extends GrupoAviones{
-    private Vector<AvionHostil> aviones;
+public abstract class GrupoAvionesHostiles extends GrupoAviones{
+    protected Vector<AvionHostil> aviones;
 
-
+    public Vector<AvionHostil> getAviones(){return aviones;}
 }

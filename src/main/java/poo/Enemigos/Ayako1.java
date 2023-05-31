@@ -4,7 +4,7 @@ import poo.Municion;
 
 public class Ayako1 extends Jefe{
     @Override
-    public void moverse() {
+    public void moverse(int ancho, int alto) {
 
     }
 

@@ -13,7 +13,7 @@ public class AvionRefuerzo implements Disparable, Movil {
     }
 
     @Override
-    public void moverse() {
+    public void moverse(int ancho, int alto) {
 
     }
 
