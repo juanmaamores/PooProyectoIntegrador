@@ -3,6 +3,7 @@
  */
 package poo;
 import com.entropyinteractive.*;  //jgame
+import poo.Bonus.Bonus;
 import poo.Bonus.POW;
 import java.awt.*;
 import java.awt.event.*; //eventos
@@ -46,7 +47,7 @@ public class Juego1943 extends JGame {
        
     }
 
-public void gameUpdate(double delta) {
+    public void gameUpdate(double delta) {
 
         Keyboard keyboard = this.getKeyboard();
 
@@ -88,6 +89,8 @@ public void gameUpdate(double delta) {
             mo.update(delta);
         }
 
+        this.colision();
+
     }
 
     public void gameDraw(Graphics2D g) {
@@ -99,19 +102,39 @@ public void gameUpdate(double delta) {
 
         //interfaz
         g.drawImage(img_fondo,0,0,null);// imagen de fondo
-        g.setColor(Color.black);
-        g.drawString("Tiempo de Juego: "+diffMinutes+":"+diffSeconds,12,42);
-        g.drawString("Tecla ESC = Fin del Juego ",592,42);
-    	g.setColor(Color.white);
-    	g.drawString("Tiempo de Juego: "+diffMinutes+":"+diffSeconds,10,40);
-		g.drawString("Tecla ESC = Fin del Juego ",590,40);
+    	g.setColor(Color.black);
+    	g.drawString("Tiempo de Juego: "+diffMinutes+":"+diffSeconds,15,45);
+		g.drawString("Tecla ESC = Fin del Juego ",590,45);
+        g.drawString("Energia P38: "+heroe.getEnergia(), 15, 60);
 
         for(int i = 0; i < objetosGraficos.size(); i++)
             objetosGraficos.get(i).draw(g);
 
     }
+
     public static ArrayList<ObjetoGrafico> getObjetosGraficos() {
         return objetosGraficos;
+    }
+
+    private void colision(){
+
+        int i = 0;
+        while(i < (objetosGraficos.size()-1) ){
+            ObjetoGrafico a = objetosGraficos.get(i);
+            ObjetoGrafico b = objetosGraficos.get(i+1);
+            i++;
+            System.out.println(a);
+            System.out.println(b);
+
+            if (a.intersects(b)) {
+                if(a instanceof P38 && b instanceof Bonus){
+                    if(b instanceof POW){
+                        ((P38) a).setEnergia(30);
+                    }
+                    objetosGraficos.remove(b);
+                }
+            }
+        }
     }
 
     public void gameShutdown() {

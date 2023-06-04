@@ -48,7 +48,7 @@ public abstract class ObjetoGrafico extends Rectangle {
         /*if(this.getX() < 0 || this.getX() > Constants.WIDTH || this.getY() < 0 || this.getY() > Constants.HEIGHT){
             Destroy();
         }*/
-        colisionCon();
+        //colision();
     }
 
     public void draw(Graphics2D g){
@@ -59,24 +59,5 @@ public abstract class ObjetoGrafico extends Rectangle {
         return rectangulo.intersects(otroObjeto.getRectangulo());
     }*/
 
-    protected void colisionCon(){
 
-        ArrayList<ObjetoGrafico> objetosGraficos = Juego1943.getObjetosGraficos();
-
-        for(int i = 0; i < objetosGraficos.size(); i++) {
-            ObjetoGrafico o = objetosGraficos.get(i);
-
-            if (o.equals(this))
-                continue;
-
-            if (o.intersects(this)) {
-                if(o instanceof P38 && this instanceof Bonus){
-                    if(this instanceof POW){
-                        ((P38) o).setEnergia(100);
-                    }
-                    objetosGraficos.remove(this);
-                }
-            }
-        }
-    }
 }
