@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 
 public class P38 extends ObjetoGrafico implements Movil, Disparable {
     //private int energia, velocidad, cantAtaqEsp;
+    private int energia = 0;
 
     public void moverse(){
     };
@@ -18,5 +19,12 @@ public class P38 extends ObjetoGrafico implements Movil, Disparable {
     public Municion disparar(){return new Municion();}; //se puso este return para que no de error
 
     public P38(){
+
     }
+
+    public void setEnergia(int e){
+        energia = energia + e;
+        System.out.println("Energia P38: "+ energia);
+    }
+
 }

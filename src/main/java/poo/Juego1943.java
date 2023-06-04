@@ -20,7 +20,7 @@ public class Juego1943 extends JGame {
 	SimpleDateFormat ft = new SimpleDateFormat ("mm:ss");
 	final double NAVE_DESPLAZAMIENTO=150.0;
     BufferedImage img_fondo = null;
-    private ArrayList<ObjetoGrafico> objetosGraficos = new ArrayList<ObjetoGrafico>();
+    private static ArrayList<ObjetoGrafico> objetosGraficos = new ArrayList<ObjetoGrafico>();
     P38 heroe = new P38();
     POW testPow = new POW();
 
@@ -34,9 +34,9 @@ public class Juego1943 extends JGame {
         try{
 			img_fondo= ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/fondojuegoTest.jpg")));
             heroe.setImagen(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38.png"))));
-            heroe.setPosicion((double) getWidth() / 2, (double) getHeight() / 2 );
             testPow.setImagen(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/pow.png"))));
-            testPow.setPosicion((double) getWidth() / 2, (double) getHeight() / 2 - 100);
+            heroe.setPosicion((int) getWidth() / 2, (int) getHeight() / 2 );
+            testPow.setPosicion((int) getWidth() / 2, (int) getHeight() / 2 - 100);
             objetosGraficos.add(heroe);
             objetosGraficos.add(testPow);
         }
@@ -81,10 +81,9 @@ public void gameUpdate(double delta) {
             }
         }
 
-        testPow.setY(testPow.getY()+0.5);
+        testPow.moverse();
 
         for(int i = 0; i < objetosGraficos.size(); i++) {
-
             ObjetoGrafico mo = objetosGraficos.get(i);
             mo.update(delta);
         }
@@ -110,6 +109,9 @@ public void gameUpdate(double delta) {
         for(int i = 0; i < objetosGraficos.size(); i++)
             objetosGraficos.get(i).draw(g);
 
+    }
+    public static ArrayList<ObjetoGrafico> getObjetosGraficos() {
+        return objetosGraficos;
     }
 
     public void gameShutdown() {
