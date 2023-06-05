@@ -1,12 +1,10 @@
 package poo;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 public abstract class ObjetoGrafico extends Rectangle {
     BufferedImage imagen= null;
-    protected Point2D.Double posicion = new Point2D.Double();
 
     public void setImagen(BufferedImage img){
         this.imagen=img;
@@ -14,33 +12,26 @@ public abstract class ObjetoGrafico extends Rectangle {
         this.height=img.getHeight();
     }
 
-    public void setPosicion(double x, double y){
-        posicion.setLocation(x, y);
+    public void setPosicion(int x, int y){
+        this.x = x;
+        this.y = y;
     }
 
-    public void setX(double x){
-        posicion.x=x;
+    public void setX(int x){
+        this.x = x;
     }
 
-    public void setY(double y){
-        posicion.y=y;
-    }
+    public void setY(int y){this.y = y;}
 
-    public double getX(){
-        return posicion.getX();
-    }
+    public double getX(){return x;}
 
-    public double getY(){
-        return posicion.getY();
-    }
+    public double getY(){return y;}
 
     public void draw(Graphics2D g){
-        g.drawImage(imagen,(int)posicion.getX(),(int)posicion.getY(),null);
+        g.drawImage(imagen,x,y,null);
     }
 
     public void destruir(){
-        //aca habria que generar una explosion
-        //podria variar por cada clase, o sea, que cada clase tenga su destruir
         imagen = null;
     }
 }

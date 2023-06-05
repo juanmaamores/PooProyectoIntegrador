@@ -15,26 +15,22 @@ public class P38 extends ObjetoGrafico implements Movil, Disparable {
     //private double energia, cantAtaqEsp;
 
     public void moverse(int ancho, int alto){
-        if(posicion.x <= 5)
-            posicion.x = 5;
+        if(x <= 5)
+            x = 5;
 
-        if(posicion.x >= ancho-35)
-            posicion.x = ancho-35;
+        if(x >= ancho-35)
+            x = ancho-35;
 
-        if(posicion.y <= alto-585)
-            posicion.y = alto-585;
+        if(y <= alto-585)
+            y = alto-585;
 
-        if(posicion.y >= alto-30)
-            posicion.y = alto-30;
+        if(y >= alto-30)
+            y = alto-30;
     };
 
     public Municion disparar(){return new Municion();}; //se puso este return para que no de error
 
     public P38(){
-        try {
-            setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        setImagen(Utilidades.getImagen(1));
     }
 }

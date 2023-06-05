@@ -3,6 +3,7 @@ package poo.Enemigos;
 import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
 import poo.Municion;
+import poo.Utilidades;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -11,55 +12,27 @@ public class AvionHostil extends Enemigo implements Movil, Disparable{
     boolean disparar;
     public AvionHostil(){
         disparar = true;
-        try {
-            setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void setVelocidadH(float velocidadH){
-        this.velocidadH= velocidadH;
-    }
-
-    public float getVelocidadH(){
-        return velocidadH;
-    }
-
-    public void setVelocidadV(float velocidadV){
-        this.velocidadV=velocidadV;
-    }
-
-    public float getVelocidadV(){
-        return velocidadV;
+        setImagen(Utilidades.getImagen(2));
     }
 
     @Override
     public void moverse(int ancho, int alto) {
-        if(posicion.y >= alto-50){
+        if(y >= alto-50){
             disparar = false;
             velocidadV *= -1;
             velocidadH *= -1;
-            try {
-                setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil2.png")));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            setImagen(Utilidades.getImagen(3));
         }
 
-        if(posicion.y <= alto-590 && velocidadV < 0) {
+        if(y <= alto-590 && velocidadV < 0) {
             disparar = true;
             velocidadV *= -1;
             velocidadH *= -1;
-            try {
-                setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            setImagen(Utilidades.getImagen(2));
         }
 
-        posicion.x += velocidadH;
-        posicion.y += velocidadV;
+        x += velocidadH;
+        y += velocidadV;
     }
 
     @Override
