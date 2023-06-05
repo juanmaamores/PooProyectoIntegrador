@@ -1,25 +1,24 @@
 package poo;
 
-import com.entropyinteractive.Keyboard;
 import poo.Interfaces.Disparable;
-import poo.Interfaces.Movil;
+import poo.Sistema.Cronometro;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-public class P38 extends ObjetoGrafico implements Movil, Disparable {
-    private int energia, velocidad, cantAtaqEsp;
+public class P38 extends ObjetoGrafico implements Disparable{
+    private static int energia, cantAtaqEsp;
+    private int velocidadDeDisparoP38 = 300;
+    private Cronometro velocidadDeDisparo;
 
-    public P38(){
+    public P38(double v, double v1, BufferedImage imgHeroe) {
+        super(v,v1,imgHeroe);
         energia = 100;
-        velocidad = 1;
         cantAtaqEsp = 3;
         energia = energia - 20;
+        velocidadDeDisparo = new Cronometro();
     }
 
-    public void setEnergia(int e){
+    public static void setEnergia(int e){
         if(energia + e <= 100){
             energia = energia + e;
         } else if (energia + e > 100 ){
@@ -32,11 +31,21 @@ public class P38 extends ObjetoGrafico implements Movil, Disparable {
         return energia;
     }
 
-    public void moverse(){
+    public int getVelocidadDeDisparoP38(){
+        return velocidadDeDisparoP38;
     }
 
-    public Municion disparar(){
-        return new Municion();
+    @Override
+    public void disparar() {
+        velocidadDeDisparo.run(velocidadDeDisparoP38);
+    }
+
+    public boolean getVelocidadDeDisparo(){
+        return velocidadDeDisparo.isRunning();
+    }
+
+    public void actualizarVelocidadDeDisparo(){
+        velocidadDeDisparo.update();
     }
 
 }

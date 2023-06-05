@@ -1,17 +1,22 @@
 package poo;
-
-import poo.Bonus.Bonus;
-import poo.Bonus.POW;
-
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public abstract class ObjetoGrafico extends Rectangle {
 
     BufferedImage imagen= null;
     private Point2D.Double posicion = new Point2D.Double();
+    protected boolean muerto;
+
+    public ObjetoGrafico(double x, double y, BufferedImage img){
+        this.imagen = img;
+        posicion.setLocation(x, y);
+        this.x = (int) x;
+        this.y = (int) y;
+        this.width = imagen.getWidth();
+        this.height = imagen.getHeight();
+    }
 
     public void setImagen(BufferedImage img){
         this.imagen=img;
@@ -21,8 +26,8 @@ public abstract class ObjetoGrafico extends Rectangle {
         posicion.setLocation(x, y);
         this.x = (int) x;
         this.y = (int) y;
-        this.width = (int) imagen.getWidth();
-        this.height = (int) imagen.getHeight();
+        this.width = imagen.getWidth();
+        this.height = imagen.getHeight();
     }
 
     public void setX(double x){
@@ -44,20 +49,16 @@ public abstract class ObjetoGrafico extends Rectangle {
     }
 
     public void update(double delta){
-
-        /*if(this.getX() < 0 || this.getX() > Constants.WIDTH || this.getY() < 0 || this.getY() > Constants.HEIGHT){
-            Destroy();
-        }*/
-        //colision();
     }
-
     public void draw(Graphics2D g){
         g.drawImage(imagen,(int)posicion.getX(),(int)posicion.getY(),null);
     }
 
-    /*public boolean intersects(ObjetoGrafico otroObjeto) {
-        return rectangulo.intersects(otroObjeto.getRectangulo());
-    }*/
+    protected void destruir(){
+        muerto = true;
+    }
 
-
+    public boolean estaMuerto() {
+        return muerto;
+    }
 }

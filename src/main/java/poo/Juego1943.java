@@ -3,8 +3,8 @@
  */
 package poo;
 import com.entropyinteractive.*;  //jgame
-import poo.Bonus.Bonus;
-import poo.Bonus.POW;
+import poo.Bonus.*;
+
 import java.awt.*;
 import java.awt.event.*; //eventos
 import java.awt.image.*;  //imagenes
@@ -12,18 +12,18 @@ import javax.imageio.*; //imagenes
 import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.*;
-import java.text.*;
+//import java.text.*;
 
 public class Juego1943 extends JGame {
 
+    Random random = new Random();
 	Date dInit = new Date();
 	Date dAhora;
-	SimpleDateFormat ft = new SimpleDateFormat ("mm:ss");
-	final double NAVE_DESPLAZAMIENTO=150.0;
-    BufferedImage img_fondo = null;
-    private static ArrayList<ObjetoGrafico> objetosGraficos = new ArrayList<ObjetoGrafico>();
-    P38 heroe = new P38();
-    POW testPow = new POW();
+    final double NAVE_DESPLAZAMIENTO=150.0;
+    BufferedImage img_fondo, img_municion_base, img_heroe, img_ametralladora, img_auto, img_escopeta, img_estrellaNinja, img_laser, img_pow, img_refuerzos, img_superShell;
+    private static final ArrayList<ObjetoGrafico> objetosGraficos = new ArrayList<>();
+    P38 heroe;
+    POW testPow;
 
     public Juego1943() {
         super("1943: The Battle of Midway", 800, 600);
@@ -33,19 +33,32 @@ public class Juego1943 extends JGame {
     public void gameStartup() {
 		System.out.println("gameStartup");
         try{
-			img_fondo= ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/fondojuegoTest.jpg")));
-            heroe.setImagen(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38.png"))));
-            testPow.setImagen(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/pow.png"))));
-            heroe.setPosicion((int) getWidth() / 2, (int) getHeight() / 2 );
-            testPow.setPosicion((int) getWidth() / 2, (int) getHeight() / 2 - 100);
-            objetosGraficos.add(heroe);
-            objetosGraficos.add(testPow);
+           img_fondo = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/fondojuegoTest.jpg")));
+           img_municion_base = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png")));
+           img_heroe = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
+           img_ametralladora = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ametralladora.png")));
+           img_auto = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/auto.png")));
+           img_escopeta = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/escopeta.png")));
+           img_estrellaNinja = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/estrellaNinja.png")));
+           img_laser = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/laser.png")));
+           img_pow = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/pow.png")));
+           img_refuerzos = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/refuerzos.png")));
+           img_superShell = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/superShell.png")));
+
+           heroe = new P38((double) getWidth() / 2, (double) getHeight() / 2, img_heroe);
+           testPow = new POW((double) getWidth() / 2, (double) getHeight() / 2 - 100, img_pow);
+           objetosGraficos.add(heroe);
+           objetosGraficos.add(testPow);
         }
         catch(Exception e){
 			System.out.println(e);
         }
-       
+
+        objetosGraficos.add(heroe);
+        objetosGraficos.add(testPow);
     }
+
+
 
     public void gameUpdate(double delta) {
 
@@ -71,7 +84,11 @@ public class Juego1943 extends JGame {
             //shipX += NAVE_DESPLAZAMIENTO * delta;
             heroe.setX( heroe.getX() + NAVE_DESPLAZAMIENTO * delta);
         }
-         
+
+        if (keyboard.isKeyPressed(KeyEvent.VK_SPACE) && !heroe.getVelocidadDeDisparo()){
+            heroe.disparar();
+            objetosGraficos.add(new Municion(heroe.getX(), heroe.getY(), img_municion_base));
+        }
 
         // Esc fin del juego
         LinkedList < KeyEvent > keyEvents = keyboard.getEvents();
@@ -81,12 +98,17 @@ public class Juego1943 extends JGame {
                 stop();
             }
         }
+        heroe.actualizarVelocidadDeDisparo();
+        //testPow.moverse();
 
-        testPow.moverse();
-
-        for(int i = 0; i < objetosGraficos.size(); i++) {
+        for (int i = 0; i < objetosGraficos.size(); i++) {
             ObjetoGrafico mo = objetosGraficos.get(i);
             mo.update(delta);
+
+            if(mo.estaMuerto()) {
+                objetosGraficos.remove(i);
+                i--;
+            }
         }
 
         this.colision();
@@ -99,39 +121,64 @@ public class Juego1943 extends JGame {
     	long dateDiff = dAhora.getTime() - dInit.getTime();
     	long diffSeconds = dateDiff / 1000 % 60;
 		long diffMinutes = dateDiff / (60 * 1000) % 60;
+        int width = this.getWidth(); // Ancho de la ventana
+        int height = this.getHeight(); // Altura de la ventana
+        int x = (int) (0.02 * width); // Posición x relativa al 2% del ancho de la ventana
+        int y = (int) (0.07 * height); // Posición y relativa al 7% de la altura de la ventana
 
         //interfaz
         g.drawImage(img_fondo,0,0,null);// imagen de fondo
-    	g.setColor(Color.black);
-    	g.drawString("Tiempo de Juego: "+diffMinutes+":"+diffSeconds,15,45);
-		g.drawString("Tecla ESC = Fin del Juego ",590,45);
-        g.drawString("Energia P38: "+heroe.getEnergia(), 15, 60);
+        g.setColor(Color.black);
+        g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, x, y + (int) (0.01 * height));
+        g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.04 * height));
+        g.drawString("Puntaje: " + 0,  x + (int) (0.75 * width), y + (int) (0.01 * height));
+        g.drawString("Tecla ESC = Fin del Juego", x + (int) (0.75 * width), y + (int) (0.04 * height));
 
-        for(int i = 0; i < objetosGraficos.size(); i++)
-            objetosGraficos.get(i).draw(g);
+        for (ObjetoGrafico objetosGrafico : objetosGraficos) objetosGrafico.draw(g);
 
-    }
-
-    public static ArrayList<ObjetoGrafico> getObjetosGraficos() {
-        return objetosGraficos;
     }
 
     private void colision(){
-
         int i = 0;
         while(i < (objetosGraficos.size()-1) ){
             ObjetoGrafico a = objetosGraficos.get(i);
             ObjetoGrafico b = objetosGraficos.get(i+1);
             i++;
-            System.out.println(a);
-            System.out.println(b);
-
             if (a.intersects(b)) {
                 if(a instanceof P38 && b instanceof Bonus){
                     if(b instanceof POW){
-                        ((P38) a).setEnergia(30);
+                        ((POW) b).recargarEnergia();
                     }
                     objetosGraficos.remove(b);
+                }
+                if (a instanceof Municion && b instanceof Bonus || a instanceof Bonus && b instanceof Municion){
+                    int randomNumber = random.nextInt(8) + 1;
+
+                    Bonus bonusType = switch (randomNumber) {
+                        case 1 -> new Ametralladora(10, 10, img_ametralladora);
+                        case 2 -> new Auto(10, 10, img_auto);
+                        case 3 -> new Escopeta(10, 10, img_escopeta);
+                        case 4 -> new EstrellaNinja(10, 10, img_estrellaNinja);
+                        case 5 -> new Laser(10, 10, img_laser);
+                        case 6 -> new POW(10, 10, img_pow);
+                        case 7 -> new Refuerzos(10,10, img_refuerzos);
+                        case 8 -> new SuperShell(10, 10, img_superShell);
+                        default -> null; //Caso que jamás debería ocurrir.
+                    };
+
+                    if (a instanceof Municion){
+                        bonusType.setPosicion(b.getX(),b.getY());
+                        objetosGraficos.remove(a);
+                        objetosGraficos.remove(b);
+                        objetosGraficos.remove(testPow);
+                    }
+                    if (b instanceof Municion) {
+                        bonusType.setPosicion(a.getX(),a.getY());
+                        objetosGraficos.remove(b);
+                        objetosGraficos.remove(a);
+                        objetosGraficos.remove(testPow);
+                    }
+                    objetosGraficos.add(bonusType);
                 }
             }
         }

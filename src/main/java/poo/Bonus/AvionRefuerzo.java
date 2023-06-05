@@ -2,14 +2,18 @@ package poo.Bonus;
 
 import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
-import poo.Municion;
+import poo.ObjetoGrafico;
 
-import java.sql.Ref;
+import java.awt.image.BufferedImage;
 
-public class AvionRefuerzo implements Disparable, Movil {
+public class AvionRefuerzo extends ObjetoGrafico implements Disparable, Movil {
+    public AvionRefuerzo(double x, double y, BufferedImage img) {
+        super(x, y, img);
+    }
+
     @Override
-    public Municion disparar() {
-        return null;
+    public void disparar() {
+
     }
 
     @Override

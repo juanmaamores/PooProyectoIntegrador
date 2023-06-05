@@ -1,13 +1,13 @@
 package poo.Bonus;
 
+import java.awt.image.BufferedImage;
 import java.util.Vector;
 
-public abstract class Refuerzos {
-    private Vector<AvionRefuerzo> aviones;
+public class Refuerzos extends Bonus{
 
-    public Refuerzos(){
-        aviones.add(new AvionRefuerzo());
-        aviones.add(new AvionRefuerzo());
+    public Refuerzos(double x, double y, BufferedImage img){
+        super(x, y, img);
+
     }
 
 }
