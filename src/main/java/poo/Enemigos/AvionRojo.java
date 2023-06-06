@@ -22,24 +22,24 @@ public class AvionRojo extends Enemigo implements Movil{
         if(x <= 350 && y == alto-400){
             x = 350;
             velocidadH = 0;
-            velocidadV = -2F;
+            velocidadV = -2;
         }
 
         if(x == 350 && y <= alto-500){
             y = alto-500;
-            velocidadH = 2F;
+            velocidadH = 2;
             velocidadV = 0;
         }
 
         if(x >= 450 && y == alto-500){
             x = 450;
             velocidadH = 0;
-            velocidadV = 2F;
+            velocidadV = 2;
         }
 
         if(x == 450 && y >= alto-399){
             y = alto-399;
-            velocidadH = -1.5F;
+            velocidadH = -2;
             velocidadV = 0;
         }
 

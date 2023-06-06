@@ -10,14 +10,14 @@ public class Barco extends Enemigo implements Movil, Disparable {
         this.x = x;
         this.y = y;
         velocidadH = 0;
-        velocidadV = 1;
-        //setImagen(Utilidades.getImagen());
+        velocidadV = 2;
+        setImagen(Utilidades.getImagen(1));
     }
 
     @Override
     public void moverse(int ancho, int alto) {
-        if(y == alto/2)
-            velocidadV = 0;
+        if(y >= 200)
+            velocidadV = 1;
 
         x += velocidadH;
         y += velocidadV;

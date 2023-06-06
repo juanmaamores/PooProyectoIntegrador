@@ -12,7 +12,7 @@ public class GrupoAvionesHostilesFormacion3 extends GrupoAvionesHostiles{
             aviones.add(new AvionHostil());
             aviones.get(i).setVelocidadH(0);
             aviones.get(i).setVelocidadV(2);
-            aviones.get(i).setPosicion(402+pos,(alto-805)-(abs(pos)));
+            aviones.get(i).setPosicion(370+pos,(alto-805)-(abs(pos)));
             if((i%2)==0)
                 pos += 80;
             pos *= -1;

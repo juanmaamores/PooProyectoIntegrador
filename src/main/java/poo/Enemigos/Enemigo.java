@@ -5,7 +5,7 @@ import poo.Interfaces.Movil;
 import poo.ObjetoGrafico;
 
 public abstract class Enemigo extends ObjetoGrafico {
-    protected boolean muerto = false;
+    protected boolean muerto = false, escapo = false;
     protected double velocidadH, velocidadV;
 
     public void setVelocidadH(double velocidadH){
@@ -23,6 +23,10 @@ public abstract class Enemigo extends ObjetoGrafico {
     public double getVelocidadV(){
         return velocidadV;
     }
+
+    public boolean estaMuerto(){return muerto;}
+
+    public boolean escapo(){return escapo;}
 
     public void destruir(){
         super.destruir();

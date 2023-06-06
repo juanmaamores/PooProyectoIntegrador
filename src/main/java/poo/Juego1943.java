@@ -20,18 +20,19 @@ import java.util.LinkedList;
 import java.util.*;
 import java.text.*;
 
- 
+
 
 
 public class Juego1943 extends JGame {
 
-	Date dInit = new Date();
-	Date dAhora;
-	SimpleDateFormat ft = new SimpleDateFormat ("mm:ss");
-	final double NAVE_DESPLAZAMIENTO=150.0;
+    Date dInit = new Date();
+    Date dAhora;
+    SimpleDateFormat ft = new SimpleDateFormat("mm:ss");
+    final double NAVE_DESPLAZAMIENTO = 150.0;
 
-    BufferedImage img_fondo = null;
+    //BufferedImage img_fondo = null;
 
+    Fondo fondo;
     Vector<GrupoAvionesHostiles> avioneshostiles;
     Vector<GrupoAvionesRojos> avionesrojos;
     Vector<Barco> barcos;
@@ -44,20 +45,10 @@ public class Juego1943 extends JGame {
     }
 
     public void gameStartup() {
-		System.out.println("gameStartup");
-        System.out.println("Cargando imágenes...");
-        try{
-			Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/fondojuego.jpg")));
-            Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
-            Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
-            Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil2.png")));
-            Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojo.png")));
-        }
-        catch(Exception e){
-			System.out.println(e);
-        }
-        System.out.println("Imágenes cargadas");
-        img_fondo = Utilidades.getImagen(0);
+        System.out.println("Iniciando 1943: The Battle of Midway");
+        cargarImagenes();
+        fondo = new Fondo();
+        fondo.setPosicion(8,-(int)fondo.getHeight()+getHeight());
         avioneshostiles = new Vector<>();
         avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
         avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
@@ -67,27 +58,75 @@ public class Juego1943 extends JGame {
         barcos = new Vector<>();
         barcos.add(new Barco(70, -100));
         heroe = new P38();
-        heroe.setPosicion(getWidth() / 2,getHeight() / 2 );
+        heroe.setPosicion(getWidth() / 2, getHeight() / 2);
     }
 
     public void gameUpdate(double delta) {
+
+        chequearTeclas(delta);
+
+        actualizarObjetos();
+
+        chequearColisiones();
+
+        fondo.setY((int)fondo.getY()+1);
+    }
+
+    public void gameDraw(Graphics2D g) {
+
+        dAhora = new Date();
+        long dateDiff = dAhora.getTime() - dInit.getTime();
+        long diffSeconds = dateDiff / 1000 % 60;
+        long diffMinutes = dateDiff / (60 * 1000) % 60;
+
+        //g.drawImage(img_fondo, 0, 0, null);// imagen de fondo
+
+        g.setColor(Color.black);
+        g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, 12, 42);
+        g.drawString("Tecla ESC = Fin del Juego ", 592, 42);
+
+        g.setColor(Color.white);
+        g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, 10, 40);
+        g.drawString("Tecla ESC = Fin del Juego ", 590, 40);
+
+        fondo.draw(g);
+
+        for (Barco barco : barcos)
+            barco.draw(g);
+
+        for (GrupoAvionesHostiles grupo : avioneshostiles)
+            for (AvionHostil avion : grupo.getAviones())
+                avion.draw(g);
+
+        for (GrupoAvionesRojos grupo : avionesrojos)
+            for (AvionRojo avion : grupo.getAviones())
+                avion.draw(g);
+
+        heroe.draw(g);
+    }
+
+    public void gameShutdown() {
+        Log.info(getClass().getSimpleName(), "Shutting down game");
+    }
+
+    public void chequearTeclas(double delta) {
         Keyboard keyboard = this.getKeyboard();
 
         // Procesar teclas de direccion
         if (keyboard.isKeyPressed(KeyEvent.VK_UP)) {
-            heroe.setY((int)(heroe.getY() - NAVE_DESPLAZAMIENTO * delta));
+            heroe.setY((int) (heroe.getY() - NAVE_DESPLAZAMIENTO * delta));
         }
 
         if (keyboard.isKeyPressed(KeyEvent.VK_DOWN)) {
-            heroe.setY((int)(heroe.getY() + NAVE_DESPLAZAMIENTO * delta));
+            heroe.setY((int) (heroe.getY() + NAVE_DESPLAZAMIENTO * delta));
         }
 
         if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)) {
-            heroe.setX((int)(heroe.getX() - NAVE_DESPLAZAMIENTO * delta));
+            heroe.setX((int) (heroe.getX() - NAVE_DESPLAZAMIENTO * delta));
         }
 
         if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)) {
-            heroe.setX((int)(heroe.getX() + NAVE_DESPLAZAMIENTO * delta));
+            heroe.setX((int) (heroe.getX() + NAVE_DESPLAZAMIENTO * delta));
         }
 
         // Esc fin del juego
@@ -98,61 +137,60 @@ public class Juego1943 extends JGame {
                 stop();
             }
         }
+    }
+
+    public void cargarImagenes(){
+        System.out.println("Cargando imágenes...");
+        try {
+            Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/mapa1.jpg")));
+            Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
+            Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
+            Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil2.png")));
+            Utilidades.setImagen(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojo.png")));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        System.out.println("Imágenes cargadas");
+    }
+
+    public void actualizarObjetos(){
 
         heroe.moverse(getWidth(), getHeight());
 
         for (GrupoAvionesHostiles grupo : avioneshostiles)
-            for(AvionHostil avion: grupo.getAviones())
-                avion.moverse(getWidth(), getHeight());
+            if(grupo.getActualizar()) {
+                for (AvionHostil avion : grupo.getAviones())
+                    if (!avion.escapo() || !avion.estaMuerto())
+                        avion.moverse(getWidth(), getHeight());
+
+                grupo.setEstado();
+            }
 
         for(GrupoAvionesRojos grupo : avionesrojos)
-            for (AvionRojo avion : grupo.getAviones())
-                avion.moverse(getWidth(), getHeight());
+            if(grupo.getActualizar()) {
+                for (AvionRojo avion : grupo.getAviones())
+                    avion.moverse(getWidth(), getHeight());
+
+                if (grupo.todosDestruidos()) {
+                    //grupo.getUltimoDestruido();
+                    //generar bonus
+                }
+
+                grupo.setEstado();
+            }
 
         for(Barco barco : barcos)
-            barco.moverse(getWidth(), getHeight());
+            if(!barco.estaMuerto()||!barco.escapo())
+                barco.moverse(getWidth(), getHeight());
+    }
+
+    public void chequearColisiones(){
 
         for(GrupoAvionesRojos grupo : avionesrojos)
             for (AvionRojo avion : grupo.getAviones())
                 if(heroe.intersects(avion)) {
                     avion.destruir();
-                    avionesrojos.remove(avion);
                     //heroe.setEnergia(X);
                 }
-    }
-
-    public void gameDraw(Graphics2D g) {
-
-    	dAhora= new Date( );
-    	long dateDiff = dAhora.getTime() - dInit.getTime();
-    	long diffSeconds = dateDiff / 1000 % 60;
-		long diffMinutes = dateDiff / (60 * 1000) % 60;
-
-        g.drawImage(img_fondo,0,0,null);// imagen de fondo
-
-        g.setColor(Color.black);
-        g.drawString("Tiempo de Juego: "+diffMinutes+":"+diffSeconds,12,42);
-        g.drawString("Tecla ESC = Fin del Juego ",592,42);
-
-    	g.setColor(Color.white);
-    	g.drawString("Tiempo de Juego: "+diffMinutes+":"+diffSeconds,10,40);
-		g.drawString("Tecla ESC = Fin del Juego ",590,40);
-
-        heroe.draw(g);
-
-        for(GrupoAvionesHostiles grupo: avioneshostiles)
-            for(AvionHostil avion : grupo.getAviones())
-                avion.draw(g);
-
-        for(GrupoAvionesRojos grupo : avionesrojos)
-            for (AvionRojo avion : grupo.getAviones())
-                avion.draw(g);
-
-        for(Barco barco : barcos)
-            barco.draw(g);
-    }
-
-    public void gameShutdown() {
-       Log.info(getClass().getSimpleName(), "Shutting down game");
     }
 }

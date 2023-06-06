@@ -27,11 +27,13 @@ public abstract class ObjetoGrafico extends Rectangle {
 
     public double getY(){return y;}
 
+    public double getWidth(){return width;}
+
+    public double getHeight(){return height;}
+
     public void draw(Graphics2D g){
         g.drawImage(imagen,x,y,null);
     }
 
-    public void destruir(){
-        imagen = null;
-    }
+    public void destruir(){imagen = null;}
 }
