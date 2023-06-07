@@ -23,7 +23,8 @@ public class AvionHostil extends Enemigo implements Movil, Disparable{
 
         //Llega hasta abajo de la pantalla
 
-        if(y == alto-60 && abajo && !diovuelta){
+        if(y == alto-80 && abajo && !diovuelta){
+            disparar = false;
             setImagen(Utilidades.getImagenAvionHostil(1));
         }
 
@@ -33,7 +34,6 @@ public class AvionHostil extends Enemigo implements Movil, Disparable{
 
         if(y >= alto-40 && !diovuelta){
             abajo = false;
-            disparar = false;
             velocidadV *= -1;
             velocidadH *= -1;
             setImagen(Utilidades.getImagenAvionHostil(3));
