@@ -1,7 +1,7 @@
 package poo;
 
+import java.awt.image.BufferedImage;
+
 public class Fondo extends ObjetoGrafico{
-    public Fondo(){
-        setImagen(Utilidades.getImagen(0));
-    }
+    public Fondo(BufferedImage img){setImagen(img);}
 }

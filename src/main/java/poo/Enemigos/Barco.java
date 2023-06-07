@@ -11,7 +11,7 @@ public class Barco extends Enemigo implements Movil, Disparable {
         this.y = y;
         velocidadH = 0;
         velocidadV = 2;
-        setImagen(Utilidades.getImagen(1));
+        setImagen(Utilidades.getImagenP38(0));
     }
 
     @Override

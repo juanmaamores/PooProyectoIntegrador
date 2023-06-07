@@ -9,32 +9,44 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 
 public class AvionHostil extends Enemigo implements Movil, Disparable{
-    boolean disparar, diovuelta;
+    boolean disparar, diovuelta, abajo;
 
     public AvionHostil(){
         disparar = true;
         diovuelta = false;
-        setImagen(Utilidades.getImagen(2));
+        abajo = true;
+        setImagen(Utilidades.getImagenAvionHostil(0));
     }
 
     @Override
     public void moverse(int ancho, int alto) {
 
         //Llega hasta abajo de la pantalla
-        if(y >= alto-50 && !diovuelta){
+
+        if(y == alto-60 && abajo && !diovuelta){
+            setImagen(Utilidades.getImagenAvionHostil(1));
+        }
+
+        if(y == alto-45 && abajo && !diovuelta){
+            setImagen(Utilidades.getImagenAvionHostil(2));
+        }
+
+        if(y >= alto-40 && !diovuelta){
+            abajo = false;
             disparar = false;
             velocidadV *= -1;
             velocidadH *= -1;
-            setImagen(Utilidades.getImagen(3));
+            setImagen(Utilidades.getImagenAvionHostil(3));
         }
 
         //Llega hasta arriba de la pantalla luego de volver
-        if(y <= alto-590 && velocidadV < 0) {
+        if(y <= alto-590 && !abajo) {
             disparar = true;
             diovuelta = true;
+            abajo = true;
             velocidadV *= -1;
             velocidadH *= -1;
-            setImagen(Utilidades.getImagen(2));
+            setImagen(Utilidades.getImagenAvionHostil(0));
         }
 
         //El jugador no pudo matarlo, escapa

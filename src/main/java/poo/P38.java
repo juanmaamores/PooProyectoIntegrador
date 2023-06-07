@@ -14,6 +14,11 @@ import java.io.IOException;
 public class P38 extends ObjetoGrafico implements Movil, Disparable {
     //private double energia, cantAtaqEsp;
 
+
+    public P38(){
+        setImagen(Utilidades.getImagenP38(0));
+    }
+
     public void moverse(int ancho, int alto){
         if(x <= 5)
             x = 5;
@@ -29,8 +34,4 @@ public class P38 extends ObjetoGrafico implements Movil, Disparable {
     };
 
     public Municion disparar(){return new Municion();}; //se puso este return para que no de error
-
-    public P38(){
-        setImagen(Utilidades.getImagen(1));
-    }
 }

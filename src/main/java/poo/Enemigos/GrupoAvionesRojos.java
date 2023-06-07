@@ -7,7 +7,7 @@ import java.util.Vector;
 public class GrupoAvionesRojos extends GrupoAviones{
 
     Vector<AvionRojo> aviones;
-    AvionRojo ultimoDestruido;
+    double ultimoDestruidoX, ultimoDestruidoY;
 
     public GrupoAvionesRojos(int alto){
         aviones = new Vector<>();
@@ -43,6 +43,11 @@ public class GrupoAvionesRojos extends GrupoAviones{
         return true;
     }
 
-    public AvionRojo getUltimoDestruido(){return ultimoDestruido;}
+    public double getUltimoDestruidoX(){return ultimoDestruidoX;}
 
+    public void setUltimoDestruidoX(double ultimoDestruidoX){this.ultimoDestruidoX = ultimoDestruidoX;}
+
+    public double getUltimoDestruidoY(){return ultimoDestruidoY;}
+
+    public void setUltimoDestruidoY(double ultimoDestruidoY){this.ultimoDestruidoY = ultimoDestruidoY;}
 }
