@@ -50,12 +50,8 @@ public class Juego1943 extends JGame {
         heroe = new P38();
         heroe.setPosicion(getWidth() / 2, getHeight() / 2);
 
-        testPow = new POW((double) getWidth() / 2, (double) getHeight() / 2 - 100, img_pow);
-        objetosGraficos.add(heroe);
-        objetosGraficos.add(testPow);
-
-        objetosGraficos.add(heroe);
-        objetosGraficos.add(testPow);
+        //testPow = new POW((double) getWidth() / 2, (double) getHeight() / 2 - 100, img_pow);
+        //objetosGraficos.add(testPow);
     }
 
     public void gameUpdate(double delta) {
@@ -188,7 +184,7 @@ public class Juego1943 extends JGame {
                     //heroe.setEnergia(X);
                 }
 
-        int i = 0;
+        /*int i = 0;
         while(i < (objetosGraficos.size()-1) ){
             ObjetoGrafico a = objetosGraficos.get(i);
             ObjetoGrafico b = objetosGraficos.get(i+1);
@@ -231,6 +227,7 @@ public class Juego1943 extends JGame {
                 }
             }
         }
+         */
     }
 
     public void chequearTeclas(double delta) {
