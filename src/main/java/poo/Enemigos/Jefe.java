@@ -1,11 +1,10 @@
 package poo.Enemigos;
 
+import poo.Interfaces.Disparable;
+import poo.Interfaces.Movil;
+import poo.Municion;
+
 import java.awt.image.BufferedImage;
 
-public abstract class Jefe extends Enemigo{
-    protected short nroNivel;
-
-    public Jefe(double x, double y, BufferedImage img) {
-        super(x, y, img);
-    }
+public abstract class Jefe extends Enemigo implements Movil, Disparable {
 }

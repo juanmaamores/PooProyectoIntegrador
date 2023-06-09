@@ -1,5 +1,7 @@
 package poo.Interfaces;
 
+import poo.Municion;
+
 public interface Disparable {
-    public void disparar();
+    public Municion disparar();
 }

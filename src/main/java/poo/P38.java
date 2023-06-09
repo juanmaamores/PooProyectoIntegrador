@@ -39,7 +39,6 @@ public class P38 extends ObjetoGrafico implements Disparable, Movil {
         } else if (energia + e > 100 ){
             energia = 100;
         }
-        System.out.println("Energia P38: "+ energia);
     }
 
     public int getEnergia(){
@@ -51,11 +50,11 @@ public class P38 extends ObjetoGrafico implements Disparable, Movil {
     }
 
     @Override
-    public void disparar() {
+    public Municion disparar() {
         velocidadDeDisparo.run(velocidadDeDisparoP38);
+        return null;
     }
 
-    public Municion disparar(){return new Municion();}; //se puso este return para que no de error
 
     public boolean getVelocidadDeDisparo(){
         return velocidadDeDisparo.isRunning();

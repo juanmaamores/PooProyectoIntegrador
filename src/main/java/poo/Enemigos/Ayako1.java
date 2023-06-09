@@ -1,19 +1,22 @@
 package poo.Enemigos;
 
+import poo.Municion;
+
 import java.awt.image.BufferedImage;
 
 public class Ayako1 extends Jefe{
-    public Ayako1(double x, double y, BufferedImage img) {
-        super(x, y, img);
+    public Ayako1() {
+        //setImagen()
+        //setLocation (fija)
     }
 
     @Override
-    public void moverse() {
+    public void moverse(int ancho, int alto) {
 
     }
 
     @Override
-    public void disparar() {
-
+    public Municion disparar() {
+        return null;
     }
 }

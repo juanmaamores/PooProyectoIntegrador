@@ -18,7 +18,6 @@ import java.util.*;
 
 public class Juego1943 extends JGame {
 
-    Random random = new Random();
 	Date dInit = new Date();
 	Date dAhora;
     final double NAVE_DESPLAZAMIENTO=200.0;
@@ -26,6 +25,7 @@ public class Juego1943 extends JGame {
     Vector<GrupoAvionesHostiles> avioneshostiles;
     Vector<GrupoAvionesRojos> avionesrojos;
     Vector<Barco> barcos;
+    Vector<Bonus> bonus;
     P38 heroe;
     POW testPow;
 
@@ -47,6 +47,7 @@ public class Juego1943 extends JGame {
         avionesrojos.add(new GrupoAvionesRojos(getHeight()));
         barcos = new Vector<>();
         barcos.add(new Barco(70, -100));
+        bonus = new Vector<>();
         heroe = new P38();
         heroe.setPosicion(getWidth() / 2, getHeight() / 2);
 
@@ -80,14 +81,14 @@ public class Juego1943 extends JGame {
         int x = (int) (0.02 * width); // Posición x relativa al 2% del ancho de la ventana
         int y = (int) (0.07 * height); // Posición y relativa al 7% de la altura de la ventana
 
+        fondo.draw(g);
+
         //interfaz
         g.setColor(Color.black);
         g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, x, y + (int) (0.01 * height));
         g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.04 * height));
         g.drawString("Puntaje: " + 0,  x + (int) (0.75 * width), y + (int) (0.01 * height));
         g.drawString("Tecla ESC = Fin del Juego", x + (int) (0.75 * width), y + (int) (0.04 * height));
-
-        fondo.draw(g);
 
         for (Barco barco : barcos)
             barco.draw(g);
@@ -99,6 +100,9 @@ public class Juego1943 extends JGame {
         for (GrupoAvionesHostiles grupo : avioneshostiles)
             for (AvionHostil avion : grupo.getAviones())
                 avion.draw(g);
+
+        for(Bonus bonus : bonus)
+            bonus.draw(g);
 
         heroe.draw(g);
 
@@ -123,15 +127,13 @@ public class Juego1943 extends JGame {
             Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoarder.png")));
             Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoar.png")));
             Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoarizq.png")));
-            /*img_fondo = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/fondojuegoTest.jpg")));
-            img_municion_base = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png")));
-            img_heroe = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
+            Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/pow.png"))));
+            /*img_municion_base = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png")));
             img_ametralladora = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ametralladora.png")));
             img_auto = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/auto.png")));
             img_escopeta = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/escopeta.png")));
             img_estrellaNinja = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/estrellaNinja.png")));
             img_laser = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/laser.png")));
-            img_pow = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/pow.png")));
             img_refuerzos = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/refuerzos.png")));
             img_superShell = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/superShell.png")));
              */
@@ -162,7 +164,8 @@ public class Juego1943 extends JGame {
                 if(grupo.todosDestruidos()) {
                     //System.out.println("Bonus");
                     //System.out.println("Bonus en x:"+grupo.getUltimoDestruidoX()+" y: "+grupo.getUltimoDestruidoY());
-                    //generar bonus
+                    bonus.add(new POW());
+                    bonus.lastElement().setPosicion((int)grupo.getUltimoDestruidoX(),(int)grupo.getUltimoDestruidoY());
                 }
 
                 grupo.setEstado();
@@ -181,14 +184,10 @@ public class Juego1943 extends JGame {
                     grupo.setUltimoDestruidoX(avion.getX());
                     grupo.setUltimoDestruidoY(avion.getY());
                     avion.destruir();
-                    //heroe.setEnergia(X);
+                    heroe.setEnergia(-10);
                 }
 
-        /*int i = 0;
-        while(i < (objetosGraficos.size()-1) ){
-            ObjetoGrafico a = objetosGraficos.get(i);
-            ObjetoGrafico b = objetosGraficos.get(i+1);
-            i++;
+        /*
             if (a.intersects(b)) {
                 if(a instanceof P38 && b instanceof Bonus){
                     if(b instanceof POW){
@@ -197,20 +196,6 @@ public class Juego1943 extends JGame {
                     objetosGraficos.remove(b);
                 }
                 if (a instanceof Municion && b instanceof Bonus || a instanceof Bonus && b instanceof Municion){
-                    int randomNumber = random.nextInt(8) + 1;
-
-                    Bonus bonusType = switch (randomNumber) {
-                        case 1 -> new Ametralladora(10, 10, img_ametralladora);
-                        case 2 -> new Auto(10, 10, img_auto);
-                        case 3 -> new Escopeta(10, 10, img_escopeta);
-                        case 4 -> new EstrellaNinja(10, 10, img_estrellaNinja);
-                        case 5 -> new Laser(10, 10, img_laser);
-                        case 6 -> new POW(10, 10, img_pow);
-                        case 7 -> new Refuerzos(10,10, img_refuerzos);
-                        case 8 -> new SuperShell(10, 10, img_superShell);
-                        default -> null; //Caso que jamás debería ocurrir.
-                    };
-
                     if (a instanceof Municion){
                         bonusType.setPosicion(b.getX(),b.getY());
                         objetosGraficos.remove(a);

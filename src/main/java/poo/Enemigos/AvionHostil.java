@@ -65,6 +65,6 @@ public class AvionHostil extends Enemigo implements Movil, Disparable{
 
     @Override
     public Municion disparar() {
-        return null;
+        return new Municion();
     }
 }
