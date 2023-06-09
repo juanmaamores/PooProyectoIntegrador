@@ -4,12 +4,36 @@ import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
 import poo.ObjetoGrafico;
 
-import java.awt.image.BufferedImage;
+public abstract class Enemigo extends ObjetoGrafico {
+    protected boolean muerto = false, escapo = false;
+    protected double velocidadH, velocidadV;
 
-public abstract class Enemigo extends ObjetoGrafico implements Movil, Disparable {
-    protected int blindaje, velocidad;
+    public void setVelocidadH(double velocidadH){
+        this.velocidadH= velocidadH;
+    }
 
-    public Enemigo(double x, double y, BufferedImage img) {
-        super(x, y, img);
+    public double getVelocidadH(){
+        return velocidadH;
+    }
+
+    public void setVelocidadV(double velocidadV){
+        this.velocidadV=velocidadV;
+    }
+
+    public double getVelocidadV(){
+        return velocidadV;
+    }
+
+    public boolean estaMuerto(){return muerto;}
+
+    public boolean escapo(){return escapo;}
+
+    public void destruir(){
+        super.destruir();
+        muerto = true;
+        velocidadH = 0;
+        velocidadV = 0;
+        x = -5000;
+        y = 5000;
     }
 }
