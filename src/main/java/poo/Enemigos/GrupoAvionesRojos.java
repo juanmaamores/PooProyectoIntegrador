@@ -1,15 +1,53 @@
 package poo.Enemigos;
 
-import java.awt.image.BufferedImage;
+import poo.Municion;
+
+import java.util.Vector;
 
 public class GrupoAvionesRojos extends GrupoAviones{
-    public GrupoAvionesRojos(double x, double y, BufferedImage img) {
-        super(x, y, img);
+
+    Vector<AvionRojo> aviones;
+    double ultimoDestruidoX, ultimoDestruidoY;
+
+    public GrupoAvionesRojos(int alto){
+        aviones = new Vector<>();
+        int pos = 0;
+        for(int i=0; i <= 3; i++) {
+            aviones.add(new AvionRojo());
+            aviones.get(i).setPosicion(850+pos,alto-400);
+            pos += 100;
+        }
     }
 
-    public void moverse(){};
-    public void disparar(){
-
+    public Vector<AvionRojo> getAviones(){
+        return aviones;
     }
-    // Estos métodos deben quedar vacíos, ya que cada avión controla su propio comportamiento
+
+    public void setEstado(){
+        for (AvionRojo avion : aviones) {
+            if(!avion.escapo()&&!avion.estaMuerto())
+                return;
+        }
+
+        actualizar = false;
+    }
+
+    public boolean todosDestruidos(){
+
+        for (AvionRojo avion: aviones) {
+            if(!avion.estaMuerto())
+                return false;
+        }
+
+        actualizar = false;
+        return true;
+    }
+
+    public double getUltimoDestruidoX(){return ultimoDestruidoX;}
+
+    public void setUltimoDestruidoX(double ultimoDestruidoX){this.ultimoDestruidoX = ultimoDestruidoX;}
+
+    public double getUltimoDestruidoY(){return ultimoDestruidoY;}
+
+    public void setUltimoDestruidoY(double ultimoDestruidoY){this.ultimoDestruidoY = ultimoDestruidoY;}
 }
