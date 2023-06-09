@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 public class Ayako1 extends Jefe{
     public Ayako1() {
+        super();
         //setImagen()
         //setLocation (fija)
     }

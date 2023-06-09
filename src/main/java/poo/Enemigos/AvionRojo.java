@@ -11,6 +11,8 @@ import java.io.IOException;
 public class AvionRojo extends Enemigo implements Movil{
 
     public AvionRojo(){
+        super();
+        vida = 25;
         velocidadH = -2;
         velocidadV = 0;
         setImagen(Utilidades.getImagenAvionRojo(0));

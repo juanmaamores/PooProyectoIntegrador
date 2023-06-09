@@ -7,6 +7,7 @@ import poo.Utilidades;
 
 public class Barco extends Enemigo implements Movil, Disparable {
     public Barco(int x, int y){
+        super();
         this.x = x;
         this.y = y;
         velocidadH = 0;

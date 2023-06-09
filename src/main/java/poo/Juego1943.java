@@ -26,8 +26,8 @@ public class Juego1943 extends JGame {
     Vector<GrupoAvionesRojos> avionesrojos;
     Vector<Barco> barcos;
     Vector<Bonus> bonus;
+    Vector<Municion> municionesP38;
     P38 heroe;
-    POW testPow;
 
     public Juego1943() {
         super("1943: The Battle of Midway", 800, 600);
@@ -48,11 +48,9 @@ public class Juego1943 extends JGame {
         barcos = new Vector<>();
         barcos.add(new Barco(70, -100));
         bonus = new Vector<>();
+        municionesP38 = new Vector<>();
         heroe = new P38();
         heroe.setPosicion(getWidth() / 2, getHeight() / 2);
-
-        //testPow = new POW((double) getWidth() / 2, (double) getHeight() / 2 - 100, img_pow);
-        //objetosGraficos.add(testPow);
     }
 
     public void gameUpdate(double delta) {
@@ -64,10 +62,6 @@ public class Juego1943 extends JGame {
         chequearColisiones();
 
         fondo.setY((int)fondo.getY()+1);
-
-        heroe.actualizarVelocidadDeDisparo();
-        //testPow.moverse();
-
     }
 
     public void gameDraw(Graphics2D g) {
@@ -83,12 +77,8 @@ public class Juego1943 extends JGame {
 
         fondo.draw(g);
 
-        //interfaz
-        g.setColor(Color.black);
-        g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, x, y + (int) (0.01 * height));
-        g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.04 * height));
-        g.drawString("Puntaje: " + 0,  x + (int) (0.75 * width), y + (int) (0.01 * height));
-        g.drawString("Tecla ESC = Fin del Juego", x + (int) (0.75 * width), y + (int) (0.04 * height));
+        for(Bonus bonus : bonus)
+            bonus.draw(g);
 
         for (Barco barco : barcos)
             barco.draw(g);
@@ -101,42 +91,47 @@ public class Juego1943 extends JGame {
             for (AvionHostil avion : grupo.getAviones())
                 avion.draw(g);
 
-        for(Bonus bonus : bonus)
-            bonus.draw(g);
-
         heroe.draw(g);
 
+        for(Municion municion: municionesP38)
+            municion.draw(g);
+
+        //interfaz
+        g.setColor(Color.black);
+        g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, x, y + (int) (0.01 * height));
+        g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.04 * height));
+        g.drawString("Puntaje: " + 0,  x + (int) (0.75 * width), y + (int) (0.01 * height));
+        g.drawString("Tecla ESC = Fin del Juego", x + (int) (0.75 * width), y + (int) (0.04 * height));
     }
 
     public void cargarImagenes(){
         System.out.println("Cargando imágenes...");
         try {
-            Utilidades.setImagenNivel(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/mapa1.jpg")));
-            Utilidades.setImagenP38(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
-            Utilidades.setImagenP38(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38izq.png")));
-            Utilidades.setImagenP38(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38der.png")));
-            Utilidades.setImagenAvionHostil(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
-            Utilidades.setImagenAvionHostil(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil2.png")));
-            Utilidades.setImagenAvionHostil(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil3.png")));
-            Utilidades.setImagenAvionHostil(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil4.png")));
-            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoizq.png")));
-            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoabizq.png")));
-            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoab.png")));
-            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoabder.png")));
-            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoder.png")));
-            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoarder.png")));
-            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoar.png")));
-            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoarizq.png")));
+            Utilidades.setImagenNivel(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/mapa1.jpg"))));
+            Utilidades.setImagenP38(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38.png"))));
+            Utilidades.setImagenP38(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38izq.png"))));
+            Utilidades.setImagenP38(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38der.png"))));
+            Utilidades.setImagenAvionHostil(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png"))));
+            Utilidades.setImagenAvionHostil(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionhostil2.png"))));
+            Utilidades.setImagenAvionHostil(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionhostil3.png"))));
+            Utilidades.setImagenAvionHostil(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionhostil4.png"))));
+            Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoizq.png"))));
+            Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoabizq.png"))));
+            Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoab.png"))));
+            Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoabder.png"))));
+            Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoder.png"))));
+            Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoarder.png"))));
+            Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoar.png"))));
+            Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoarizq.png"))));
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/pow.png"))));
-            /*img_municion_base = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png")));
-            img_ametralladora = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ametralladora.png")));
-            img_auto = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/auto.png")));
-            img_escopeta = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/escopeta.png")));
-            img_estrellaNinja = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/estrellaNinja.png")));
-            img_laser = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/laser.png")));
-            img_refuerzos = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/refuerzos.png")));
-            img_superShell = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/superShell.png")));
-             */
+            Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ametralladora.png"))));
+            Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/auto.png"))));
+            Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/escopeta.png"))));
+            Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/estrellaNinja.png"))));
+            Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/laser.png"))));
+            Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/refuerzos.png"))));
+            Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/superShell.png"))));
+            Utilidades.setImagenMunicion(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png"))));
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -147,72 +142,82 @@ public class Juego1943 extends JGame {
 
         heroe.moverse(getWidth(), getHeight());
 
+        for(Municion municion : municionesP38)
+            municion.moverse(getWidth(), getHeight());
+
         for (GrupoAvionesHostiles grupo : avioneshostiles)
             if(grupo.getActualizar()) {
                 for (AvionHostil avion : grupo.getAviones())
-                    if (!avion.escapo() || !avion.estaMuerto())
+                    if (!avion.escapo() || !avion.estaMuerto()) {
                         avion.moverse(getWidth(), getHeight());
+                        if(avion.getVida() <= 0)
+                            avion.destruir();
+                    }
 
                 grupo.setEstado();
             }
 
         for(GrupoAvionesRojos grupo : avionesrojos)
             if(grupo.getActualizar()) {
-                for (AvionRojo avion : grupo.getAviones())
-                    avion.moverse(getWidth(), getHeight());
-
-                if(grupo.todosDestruidos()) {
-                    //System.out.println("Bonus");
-                    //System.out.println("Bonus en x:"+grupo.getUltimoDestruidoX()+" y: "+grupo.getUltimoDestruidoY());
-                    bonus.add(new POW());
-                    bonus.lastElement().setPosicion((int)grupo.getUltimoDestruidoX(),(int)grupo.getUltimoDestruidoY());
+                for (AvionRojo avion : grupo.getAviones()) {
+                    if(!avion.escapo() || !avion.estaMuerto()) {
+                        avion.moverse(getWidth(), getHeight());
+                        if (avion.getVida() <= 0) {
+                            grupo.setUltimoDestruidoX(avion.getX());
+                            grupo.setUltimoDestruidoY(avion.getY());
+                            avion.destruir();
+                        }
+                    }
                 }
 
                 grupo.setEstado();
+
+                if(grupo.todosDestruidos()) {
+                    bonus.add(Bonus.crearBonus((int)grupo.getUltimoDestruidoX(),(int)grupo.getUltimoDestruidoY()));
+                }
             }
 
         for(Barco barco : barcos)
             if(!barco.estaMuerto()||!barco.escapo())
                 barco.moverse(getWidth(), getHeight());
+
+        for(Bonus bonus : bonus)
+            bonus.moverse(getWidth(), getHeight());
     }
 
-    private void chequearColisiones(){
+    private void chequearColisiones() {
 
-        for(GrupoAvionesRojos grupo : avionesrojos)
-            for (AvionRojo avion : grupo.getAviones())
-                if(heroe.intersects(avion)) {
-                    grupo.setUltimoDestruidoX(avion.getX());
-                    grupo.setUltimoDestruidoY(avion.getY());
-                    avion.destruir();
-                    heroe.setEnergia(-10);
-                }
+        for (GrupoAvionesRojos grupo : avionesrojos)
+            for (AvionRojo avion : grupo.getAviones()) {
+                if (avion.getActualizar()) {
+                    if (heroe.intersects(avion)) {
+                        avion.setVida(0);
+                        heroe.setEnergia(-10);
+                    }
 
-        /*
-            if (a.intersects(b)) {
-                if(a instanceof P38 && b instanceof Bonus){
-                    if(b instanceof POW){
-                        ((POW) b).recargarEnergia();
-                    }
-                    objetosGraficos.remove(b);
-                }
-                if (a instanceof Municion && b instanceof Bonus || a instanceof Bonus && b instanceof Municion){
-                    if (a instanceof Municion){
-                        bonusType.setPosicion(b.getX(),b.getY());
-                        objetosGraficos.remove(a);
-                        objetosGraficos.remove(b);
-                        objetosGraficos.remove(testPow);
-                    }
-                    if (b instanceof Municion) {
-                        bonusType.setPosicion(a.getX(),a.getY());
-                        objetosGraficos.remove(b);
-                        objetosGraficos.remove(a);
-                        objetosGraficos.remove(testPow);
-                    }
-                    objetosGraficos.add(bonusType);
+                    for (Municion municion : municionesP38)
+                        if (municion.intersects(avion)) {
+                            avion.setVida(avion.getVida() - municion.getPoder());
+                            municion.destruir();
+                        }
                 }
             }
-        }
-         */
+
+        for (GrupoAvionesHostiles grupo : avioneshostiles)
+            for (AvionHostil avion : grupo.getAviones()) {
+                if (avion.getActualizar() && !avion.getVolviendo()) {
+                    if (heroe.intersects(avion)) {
+                        avion.setVida(0);
+                        heroe.setEnergia(-10);
+                    }
+
+                    for (Municion municion : municionesP38)
+                        if (municion.intersects(avion)) {
+                            municion.destruir();
+                            avion.setVida(avion.getVida() - municion.getPoder());
+                        }
+                }
+            }
     }
 
     public void chequearTeclas(double delta) {
@@ -242,7 +247,8 @@ public class Juego1943 extends JGame {
         }
 
         if (keyboard.isKeyPressed(KeyEvent.VK_X)) {
-            //disparar
+            if(heroe.puedeDisparar())
+                municionesP38.add(heroe.disparar());
         }
 
         // Esc fin del juego
@@ -256,6 +262,6 @@ public class Juego1943 extends JGame {
     }
 
     public void gameShutdown() {
-       Log.info(getClass().getSimpleName(), "Shutting down game");
+       Log.info(getClass().getSimpleName(), "Saliendo del juego");
     }
 }

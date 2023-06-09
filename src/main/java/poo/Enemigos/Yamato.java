@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 public class Yamato extends Jefe{
     public Yamato() {
+        super();
         //setImagen
         //setLocation (fija)
     }

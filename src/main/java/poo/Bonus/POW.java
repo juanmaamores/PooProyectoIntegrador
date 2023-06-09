@@ -11,8 +11,8 @@ public class POW extends PowerUp{
         setImagen(Utilidades.getImagenBonus(0));
     }
 
-    public void recargarEnergia(){
-        P38.setEnergia(30);
+    public void ejecutarAccion(P38 heroe){
+        heroe.setEnergia(30);
     }
 
 }

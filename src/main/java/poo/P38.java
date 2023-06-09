@@ -7,16 +7,18 @@ import poo.Sistema.Cronometro;
 import java.awt.image.BufferedImage;
 
 public class P38 extends ObjetoGrafico implements Disparable, Movil {
-    private static int energia, cantAtaqEsp;
-    private int velocidadDeDisparoP38 = 300;
-    private Cronometro velocidadDeDisparo;
+    private int energia, cantAtaqEsp;
+    private int velocidadDeDisparo = 500;
+    private Cronometro delayDisparo;
 
     public P38(){
+        super();
         setImagen(Utilidades.getImagenP38(0));
         energia = 100;
         cantAtaqEsp = 3;
         energia = energia - 20;
-        velocidadDeDisparo = new Cronometro();
+        delayDisparo = new Cronometro();
+        delayDisparo.run(velocidadDeDisparo);
     }
 
     public void moverse(int ancho, int alto){
@@ -31,9 +33,11 @@ public class P38 extends ObjetoGrafico implements Disparable, Movil {
 
         if(y >= alto-30)
             y = alto-30;
+
+        delayDisparo.update();
     };
 
-    public static void setEnergia(int e){
+    public void setEnergia(int e){
         if(energia + e <= 100){
             energia = energia + e;
         } else if (energia + e > 100 ){
@@ -45,24 +49,17 @@ public class P38 extends ObjetoGrafico implements Disparable, Movil {
         return energia;
     }
 
-    public int getVelocidadDeDisparoP38(){
-        return velocidadDeDisparoP38;
+    public int getVelocidadDeDisparo(){
+        return velocidadDeDisparo;
     }
 
     @Override
     public Municion disparar() {
-        velocidadDeDisparo.run(velocidadDeDisparoP38);
-        return null;
+        delayDisparo.run(velocidadDeDisparo);
+        return new Municion(x+width/2,y,-8);
     }
 
-
-    public boolean getVelocidadDeDisparo(){
-        return velocidadDeDisparo.isRunning();
-    }
-
-    public void actualizarVelocidadDeDisparo(){
-        velocidadDeDisparo.update();
-    }
+    public boolean puedeDisparar(){return delayDisparo.getDelta() >= velocidadDeDisparo;}
 
 }
 

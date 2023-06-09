@@ -4,7 +4,10 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 public abstract class ObjetoGrafico extends Rectangle {
-    BufferedImage imagen= null;
+    protected BufferedImage imagen= null;
+    protected boolean actualizar;
+
+    public ObjetoGrafico(){actualizar = true;}
 
     public void setImagen(BufferedImage img){
         this.imagen=img;
@@ -31,9 +34,16 @@ public abstract class ObjetoGrafico extends Rectangle {
 
     public double getHeight(){return height;}
 
+    public boolean getActualizar(){return actualizar;}
+
     public void draw(Graphics2D g){
         g.drawImage(imagen,x,y,null);
     }
 
-    public void destruir(){imagen = null;}
+    public void destruir(){
+        imagen = null;
+        actualizar = false;
+        x = -5000;
+        y = 5000;
+    }
 }

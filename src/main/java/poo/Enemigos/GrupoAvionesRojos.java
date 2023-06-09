@@ -10,6 +10,7 @@ public class GrupoAvionesRojos extends GrupoAviones{
     double ultimoDestruidoX, ultimoDestruidoY;
 
     public GrupoAvionesRojos(int alto){
+        super();
         aviones = new Vector<>();
         int pos = 0;
         for(int i=0; i <= 3; i++) {

@@ -12,6 +12,7 @@ public class Cronometro {
 
     public void run(long time){
         corriendo = true;
+        delta = 0;
         this.tiempo = time;
     }
 
@@ -20,10 +21,12 @@ public class Cronometro {
             delta += System.currentTimeMillis() - ultimoTiempo;
         if(delta >= tiempo){
             corriendo = false;
-            delta = 0;
+            delta = tiempo;
         }
         ultimoTiempo = System.currentTimeMillis();
     }
+
+    public long getDelta(){return delta;}
 
     public boolean isRunning(){
         return corriendo;
