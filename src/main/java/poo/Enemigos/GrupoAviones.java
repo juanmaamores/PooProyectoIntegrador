@@ -1,11 +1,8 @@
 package poo.Enemigos;
 
-import java.awt.image.BufferedImage;
-
 public abstract class GrupoAviones extends Enemigo{
-    protected short cantidadAviones;
+    //La función de este booleano es hacer de eliminado lógico del grupo una vez no está más en pantalla
+    protected boolean actualizar = true;
 
-    public GrupoAviones(double x, double y, BufferedImage img) {
-        super(x, y, img);
-    }
+    public boolean getActualizar(){return actualizar;}
 }
