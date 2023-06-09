@@ -1,19 +1,20 @@
 package poo.Enemigos;
 
-import java.awt.image.BufferedImage;
+import poo.Municion;
+
 import java.util.Vector;
 
-public class GrupoAvionesHostiles extends GrupoAviones{
-    private Vector<AvionHostil> aviones;
+public abstract class GrupoAvionesHostiles extends GrupoAviones{
+    protected Vector<AvionHostil> aviones;
 
-    public GrupoAvionesHostiles(double x, double y, BufferedImage img) {
-        super(x, y, img);
+    public Vector<AvionHostil> getAviones(){return aviones;}
+
+    public void setEstado(){
+        for (AvionHostil avion : aviones) {
+            if(!avion.escapo()&&!avion.estaMuerto())
+                return;
+        }
+
+        actualizar = false;
     }
-
-    public void moverse(){}
-
-    public void disparar(){
-
-    }
-    // Estos métodos deben quedar vacíos, ya que cada avión controla su propio comportamiento
 }
