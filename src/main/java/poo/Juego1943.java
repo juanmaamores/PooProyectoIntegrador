@@ -21,12 +21,13 @@ public class Juego1943 extends JGame {
 	Date dInit = new Date();
 	Date dAhora;
     final double NAVE_DESPLAZAMIENTO=200.0;
+    int puntaje;
     Fondo fondo;
     Vector<GrupoAvionesHostiles> avioneshostiles;
     Vector<GrupoAvionesRojos> avionesrojos;
     Vector<Barco> barcos;
     Vector<Bonus> bonus;
-    Vector<Municion> municionesP38;
+    Vector<Municion> municionesP38, municionesAvionHostil;
     P38 heroe;
 
     public Juego1943() {
@@ -37,18 +38,20 @@ public class Juego1943 extends JGame {
     public void gameStartup() {
         System.out.println("Iniciando 1943: The Battle of Midway");
         cargarImagenes();
+        puntaje = 0;
         fondo = new Fondo(Utilidades.getImagenNivel(0));
         fondo.setPosicion(8,-(int)fondo.getHeight()+getHeight());
         avioneshostiles = new Vector<>();
-        avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
-        avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
+        //avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
+        //avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
         avioneshostiles.add(new GrupoAvionesHostilesFormacion3(getHeight()));
         avionesrojos = new Vector<>();
         avionesrojos.add(new GrupoAvionesRojos(getHeight()));
         barcos = new Vector<>();
-        barcos.add(new Barco(70, -100));
+        //barcos.add(new Barco(70, -100));
         bonus = new Vector<>();
         municionesP38 = new Vector<>();
+        municionesAvionHostil = new Vector<>();
         heroe = new P38();
         heroe.setPosicion(getWidth() / 2, getHeight() / 2);
     }
@@ -93,15 +96,17 @@ public class Juego1943 extends JGame {
 
         heroe.draw(g);
 
+        for(Municion municion : municionesAvionHostil)
+            municion.draw(g);
+
         for(Municion municion: municionesP38)
             municion.draw(g);
 
         //interfaz
-        g.setColor(Color.black);
+        g.setColor(Color.white);
         g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, x, y + (int) (0.01 * height));
         g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.04 * height));
-        g.drawString("Puntaje: " + 0,  x + (int) (0.75 * width), y + (int) (0.01 * height));
-        g.drawString("Tecla ESC = Fin del Juego", x + (int) (0.75 * width), y + (int) (0.04 * height));
+        g.drawString("Puntaje: " + puntaje,  x + (int) (0.75 * width), y + (int) (0.01 * height));
     }
 
     public void cargarImagenes(){
@@ -141,31 +146,52 @@ public class Juego1943 extends JGame {
     public void actualizarObjetos(){
 
         heroe.moverse(getWidth(), getHeight());
+        heroe.getArma().getDelayDisparo().update();
+        heroe.getTiempoBonus().update();
+        heroe.chequearBonus();
 
         for(Municion municion : municionesP38)
+            municion.moverse(getWidth(), getHeight());
+
+        for(Municion municion : municionesAvionHostil)
             municion.moverse(getWidth(), getHeight());
 
         for (GrupoAvionesHostiles grupo : avioneshostiles)
             if(grupo.getActualizar()) {
                 for (AvionHostil avion : grupo.getAviones())
-                    if (!avion.escapo() || !avion.estaMuerto()) {
+                    if (avion.getActualizar()) {
+
                         avion.moverse(getWidth(), getHeight());
-                        if(avion.getVida() <= 0)
+
+                        avion.getArma().getDelayDisparo().update();
+
+                        if(!avion.getVolviendo() && avion.getArma().puedeDisparar())
+                            avion.getArma().disparar(municionesAvionHostil, (int)avion.getX(), (int)avion.getY());
+
+                        if(avion.getVida() <= 0) {
                             avion.destruir();
+                            puntaje += avion.getPuntaje();
+                        }
                     }
 
                 grupo.setEstado();
+
+                if(grupo.todosDestruidos())
+                    puntaje += grupo.getPuntaje();
             }
 
         for(GrupoAvionesRojos grupo : avionesrojos)
             if(grupo.getActualizar()) {
                 for (AvionRojo avion : grupo.getAviones()) {
-                    if(!avion.escapo() || !avion.estaMuerto()) {
+                    if(avion.getActualizar()) {
+
                         avion.moverse(getWidth(), getHeight());
+
                         if (avion.getVida() <= 0) {
                             grupo.setUltimoDestruidoX(avion.getX());
                             grupo.setUltimoDestruidoY(avion.getY());
                             avion.destruir();
+                            puntaje += avion.getPuntaje();
                         }
                     }
                 }
@@ -174,6 +200,7 @@ public class Juego1943 extends JGame {
 
                 if(grupo.todosDestruidos()) {
                     bonus.add(Bonus.crearBonus((int)grupo.getUltimoDestruidoX(),(int)grupo.getUltimoDestruidoY()));
+                    puntaje += grupo.getPuntaje();
                 }
             }
 
@@ -196,28 +223,66 @@ public class Juego1943 extends JGame {
                     }
 
                     for (Municion municion : municionesP38)
-                        if (municion.intersects(avion)) {
-                            avion.setVida(avion.getVida() - municion.getPoder());
-                            municion.destruir();
-                        }
+                        if(municion.getActualizar())
+                            if (municion.intersects(avion)) {
+                                avion.setVida(avion.getVida() - municion.getPoder());
+                                municion.destruir();
+                            }
                 }
             }
 
         for (GrupoAvionesHostiles grupo : avioneshostiles)
             for (AvionHostil avion : grupo.getAviones()) {
-                if (avion.getActualizar() && !avion.getVolviendo()) {
+                if (avion.getActualizar()) {
                     if (heroe.intersects(avion)) {
                         avion.setVida(0);
-                        heroe.setEnergia(-10);
+                        heroe.setEnergia(-20);
                     }
 
                     for (Municion municion : municionesP38)
-                        if (municion.intersects(avion)) {
-                            municion.destruir();
-                            avion.setVida(avion.getVida() - municion.getPoder());
-                        }
+                        if(municion.getActualizar())
+                            if (municion.intersects(avion)) {
+                                municion.destruir();
+                                avion.setVida(avion.getVida() - municion.getPoder());
+                            }
                 }
             }
+
+        for(Municion municion : municionesAvionHostil)
+            if(municion.getActualizar())
+                if(municion.intersects(heroe)) {
+                    heroe.setEnergia(-municion.getPoder());
+                    municion.destruir();
+                }
+
+        for(Municion municion : municionesP38) {
+            Bonus nuevo = null;
+            boolean cambio = false;
+
+            if (municion.getActualizar())
+                for (Bonus b : bonus)
+                    if (b.getActualizar()) {
+                        if (municion.intersects(b)) {
+                            b.setY((int) b.getY() - 5);
+                            b.setGolpesRecibidos((short) 1);
+                            municion.destruir();
+                        }
+
+                        if (b.cambiar()) {
+                            nuevo = Bonus.crearBonus((int)b.getX(), (int)b.getY());
+                            cambio = true;
+                            b.destruir();
+                        }
+                    }
+
+            if(cambio)
+                bonus.add(nuevo);
+        }
+
+        for(Bonus b : bonus)
+            if(b.getActualizar())
+                if(b.intersects(heroe))
+                    b.ejecutarAccion(heroe);
     }
 
     public void chequearTeclas(double delta) {
@@ -247,8 +312,8 @@ public class Juego1943 extends JGame {
         }
 
         if (keyboard.isKeyPressed(KeyEvent.VK_X)) {
-            if(heroe.puedeDisparar())
-                municionesP38.add(heroe.disparar());
+            if(heroe.getArma().puedeDisparar())
+                heroe.getArma().disparar(municionesP38,(int)heroe.getX(),(int)heroe.getY());
         }
 
         // Esc fin del juego
@@ -262,6 +327,6 @@ public class Juego1943 extends JGame {
     }
 
     public void gameShutdown() {
-       Log.info(getClass().getSimpleName(), "Saliendo del juego");
+       Log.info(getClass().getSimpleName(), "Cerrando el juego");
     }
 }

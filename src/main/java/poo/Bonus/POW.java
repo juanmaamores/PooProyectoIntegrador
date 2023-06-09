@@ -13,6 +13,7 @@ public class POW extends PowerUp{
 
     public void ejecutarAccion(P38 heroe){
         heroe.setEnergia(30);
+        destruir();
     }
 
 }

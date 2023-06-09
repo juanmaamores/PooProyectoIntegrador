@@ -13,6 +13,7 @@ public class AvionRojo extends Enemigo implements Movil{
     public AvionRojo(){
         super();
         vida = 25;
+        puntaje = 50;
         velocidadH = -2;
         velocidadV = 0;
         setImagen(Utilidades.getImagenAvionRojo(0));
@@ -73,6 +74,10 @@ public class AvionRojo extends Enemigo implements Movil{
             velocidadH = -2;
             velocidadV = 0;
             setImagen(Utilidades.getImagenAvionRojo(0));
+        }
+
+        if(x < -width){
+            escapar();
         }
 
         x += velocidadH;

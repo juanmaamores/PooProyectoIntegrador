@@ -14,6 +14,7 @@ public class EstrellaNinja extends PowerUp{
 
     @Override
     public void ejecutarAccion(P38 heroe) {
-
+        heroe.setEnergia(100);
+        destruir();
     }
 }

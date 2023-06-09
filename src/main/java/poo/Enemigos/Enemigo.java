@@ -7,7 +7,7 @@ import poo.ObjetoGrafico;
 public abstract class Enemigo extends ObjetoGrafico {
     protected boolean muerto = false, escapo = false;
     protected double velocidadH, velocidadV;
-    protected int vida;
+    protected int vida, puntaje;
 
     public void setVelocidadH(double velocidadH){
         this.velocidadH= velocidadH;
@@ -33,11 +33,20 @@ public abstract class Enemigo extends ObjetoGrafico {
 
     public int getVida(){return vida;}
 
+    public int getPuntaje(){return puntaje;}
+
     public void destruir(){
         super.destruir();
         muerto = true;
         velocidadH = 0;
         velocidadV = 0;
+        x = -5000;
+        y = 5000;
+    }
+
+    public void escapar(){
+        actualizar = false;
+        escapo = true;
         x = -5000;
         y = 5000;
     }

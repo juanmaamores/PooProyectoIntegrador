@@ -11,12 +11,10 @@ public class SuperShell extends PowerUp{
         setImagen(Utilidades.getImagenBonus(7));
     }
 
-    public void disparoContinuo(){
-
-    }
-
     @Override
     public void ejecutarAccion(P38 heroe) {
-
+        heroe.getTiempoBonus().run(heroe.getDuracionBonus());
+        heroe.setVelocidadDisparo(100);
+        destruir();
     }
 }

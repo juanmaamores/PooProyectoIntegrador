@@ -14,5 +14,6 @@ public class GrupoAvionesHostilesFormacion2 extends GrupoAvionesHostiles{
             aviones.get(i).setPosicion(50,alto-805-pos);
             pos += 100;
         }
+        puntaje = 300;
     }
 }

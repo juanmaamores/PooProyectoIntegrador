@@ -28,7 +28,5 @@ public class Cronometro {
 
     public long getDelta(){return delta;}
 
-    public boolean isRunning(){
-        return corriendo;
-    }
+    public void setDelta(long delta){this.delta = delta;}
 }

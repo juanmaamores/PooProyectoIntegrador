@@ -14,6 +14,7 @@ public class Refuerzos extends Bonus{
 
     @Override
     public void ejecutarAccion(P38 heroe) {
-
+        //accion
+        destruir();
     }
 }

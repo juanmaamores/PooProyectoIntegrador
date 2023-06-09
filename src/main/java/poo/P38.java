@@ -1,24 +1,28 @@
 package poo;
 
+import poo.Armas.Arma;
+import poo.Armas.ArmaBasica;
 import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
 import poo.Sistema.Cronometro;
 
 import java.awt.image.BufferedImage;
 
-public class P38 extends ObjetoGrafico implements Disparable, Movil {
+public class P38 extends ObjetoGrafico implements Movil {
+    private final int DUR_BONUS_DEF= 10000;
     private int energia, cantAtaqEsp;
-    private int velocidadDeDisparo = 500;
-    private Cronometro delayDisparo;
+    private int velocidadDisparo, duracionBonus;
+    private Cronometro tiempoBonus;
+    private Arma arma;
 
     public P38(){
         super();
         setImagen(Utilidades.getImagenP38(0));
         energia = 100;
         cantAtaqEsp = 3;
-        energia = energia - 20;
-        delayDisparo = new Cronometro();
-        delayDisparo.run(velocidadDeDisparo);
+        arma = new ArmaBasica();
+        duracionBonus = DUR_BONUS_DEF;
+        tiempoBonus = new Cronometro();
     }
 
     public void moverse(int ancho, int alto){
@@ -31,10 +35,8 @@ public class P38 extends ObjetoGrafico implements Disparable, Movil {
         if(y <= alto-585)
             y = alto-585;
 
-        if(y >= alto-30)
-            y = alto-30;
-
-        delayDisparo.update();
+        if(y >= alto-38)
+            y = alto-38;
     };
 
     public void setEnergia(int e){
@@ -45,25 +47,22 @@ public class P38 extends ObjetoGrafico implements Disparable, Movil {
         }
     }
 
-    public int getEnergia(){
-        return energia;
+    public void setVelocidadDisparo(int velocidadDisparo) {this.velocidadDisparo = velocidadDisparo;}
+
+    public int getDuracionBonus(){return duracionBonus;}
+
+    public int getEnergia(){return energia;}
+
+    public Cronometro getTiempoBonus(){return tiempoBonus;}
+
+    public Arma getArma(){return arma;}
+
+    public void setArma(Arma arma){this.arma = arma;}
+
+    public void chequearBonus(){
+        if(tiempoBonus.getDelta() >= duracionBonus) {
+            getTiempoBonus().setDelta((long)0);
+            arma = new ArmaBasica();
+        }
     }
-
-    public int getVelocidadDeDisparo(){
-        return velocidadDeDisparo;
-    }
-
-    @Override
-    public Municion disparar() {
-        delayDisparo.run(velocidadDeDisparo);
-        return new Municion(x+width/2,y,-8);
-    }
-
-    public boolean puedeDisparar(){return delayDisparo.getDelta() >= velocidadDeDisparo;}
-
 }
-
-
-
-
-

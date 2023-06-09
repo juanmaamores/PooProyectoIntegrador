@@ -5,7 +5,7 @@ import poo.Interfaces.Movil;
 import poo.Municion;
 import poo.Utilidades;
 
-public class Barco extends Enemigo implements Movil, Disparable {
+public class Barco extends Enemigo implements Movil{
     public Barco(int x, int y){
         super();
         this.x = x;
@@ -24,8 +24,4 @@ public class Barco extends Enemigo implements Movil, Disparable {
         y += velocidadV;
     }
 
-    @Override
-    public Municion disparar() {
-        return null;
-    }
 }

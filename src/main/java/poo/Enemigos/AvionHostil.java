@@ -1,22 +1,29 @@
 package poo.Enemigos;
 
+import poo.Armas.Arma;
+import poo.Armas.ArmaAvionHostil;
 import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
 import poo.Municion;
+import poo.Sistema.Cronometro;
 import poo.Utilidades;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class AvionHostil extends Enemigo implements Movil, Disparable{
-    boolean disparar, diovuelta, volviendo;
+public class AvionHostil extends Enemigo implements Movil{
+    private Arma arma;
+    private boolean disparar, diovuelta, volviendo;
+
 
     public AvionHostil(){
         super();
         vida = 100;
+        puntaje = 100;
         disparar = true;
         diovuelta = false;
         volviendo = false;
+        arma = new ArmaAvionHostil();
         setImagen(Utilidades.getImagenAvionHostil(0));
     }
 
@@ -57,20 +64,12 @@ public class AvionHostil extends Enemigo implements Movil, Disparable{
 
         //El jugador no pudo matarlo, escapa
         if(y >= 620 && diovuelta){
-            disparar = false;
-            escapo = true;
-            velocidadV *= 0;
-            velocidadH *= 0;
-            x = 5000;
-            y = 5000;
+            escapar();
         }
 
         x += velocidadH;
         y += velocidadV;
     }
 
-    @Override
-    public Municion disparar() {
-        return new Municion(x+width/2,y,8);
-    }
+    public Arma getArma(){return arma;}
 }

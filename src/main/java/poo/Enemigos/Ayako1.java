@@ -16,8 +16,4 @@ public class Ayako1 extends Jefe{
 
     }
 
-    @Override
-    public Municion disparar() {
-        return null;
-    }
 }

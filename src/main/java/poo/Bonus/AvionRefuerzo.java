@@ -7,14 +7,9 @@ import poo.ObjetoGrafico;
 
 import java.awt.image.BufferedImage;
 
-public class AvionRefuerzo extends ObjetoGrafico implements Disparable, Movil {
+public class AvionRefuerzo extends ObjetoGrafico implements Movil {
     public AvionRefuerzo() {
 
-    }
-
-    @Override
-    public Municion disparar() {
-        return null;
     }
 
     @Override

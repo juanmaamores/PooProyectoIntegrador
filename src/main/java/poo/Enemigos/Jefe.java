@@ -6,5 +6,5 @@ import poo.Municion;
 
 import java.awt.image.BufferedImage;
 
-public abstract class Jefe extends Enemigo implements Movil, Disparable {
+public abstract class Jefe extends Enemigo implements Movil{
 }

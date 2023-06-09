@@ -13,6 +13,7 @@ public class Auto extends PowerUp{
 
     @Override
     public void ejecutarAccion(P38 heroe) {
-
+        //accion
+        destruir();
     }
 }

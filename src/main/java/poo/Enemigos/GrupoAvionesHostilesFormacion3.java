@@ -18,5 +18,6 @@ public class GrupoAvionesHostilesFormacion3 extends GrupoAvionesHostiles{
                 pos += 80;
             pos *= -1;
         }
+        puntaje = 500;
     }
 }

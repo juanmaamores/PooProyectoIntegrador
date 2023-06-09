@@ -11,6 +11,7 @@ public class GrupoAvionesRojos extends GrupoAviones{
 
     public GrupoAvionesRojos(int alto){
         super();
+        puntaje = 200;
         aviones = new Vector<>();
         int pos = 0;
         for(int i=0; i <= 3; i++) {

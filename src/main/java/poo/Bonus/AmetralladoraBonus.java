@@ -3,16 +3,16 @@ package poo.Bonus;
 import poo.P38;
 import poo.Utilidades;
 
-import java.awt.image.BufferedImage;
+public class AmetralladoraBonus extends ArmaEspecial{
 
-public class Ametralladora extends ArmaEspecial{
-
-    public Ametralladora(){
+    public AmetralladoraBonus(){
         setImagen(Utilidades.getImagenBonus(1));
     }
 
     @Override
     public void ejecutarAccion(P38 heroe) {
+        //accion
+        destruir();
     }
 }
 

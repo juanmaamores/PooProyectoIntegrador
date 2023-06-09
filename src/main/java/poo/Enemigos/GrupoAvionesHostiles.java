@@ -17,4 +17,15 @@ public abstract class GrupoAvionesHostiles extends GrupoAviones{
 
         actualizar = false;
     }
+
+    public boolean todosDestruidos(){
+        for (AvionHostil avion: aviones) {
+            if(!avion.estaMuerto())
+                return false;
+        }
+
+        actualizar = false;
+        return true;
+    }
+
 }

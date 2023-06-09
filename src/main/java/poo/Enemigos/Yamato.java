@@ -16,8 +16,4 @@ public class Yamato extends Jefe{
 
     }
 
-    @Override
-    public Municion disparar() {
-        return null;
-    }
 }
