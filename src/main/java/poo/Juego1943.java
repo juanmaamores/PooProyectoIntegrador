@@ -4,12 +4,14 @@
 package poo;
 import com.entropyinteractive.*;  //jgame
 import poo.Bonus.*;
+import poo.Enemigos.*;
 
 import java.awt.*;
 import java.awt.event.*; //eventos
 import java.awt.image.*;  //imagenes
 import javax.imageio.*; //imagenes
 import java.awt.Graphics2D;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.*;
 //import java.text.*;
@@ -19,9 +21,11 @@ public class Juego1943 extends JGame {
     Random random = new Random();
 	Date dInit = new Date();
 	Date dAhora;
-    final double NAVE_DESPLAZAMIENTO=150.0;
-    BufferedImage img_fondo, img_municion_base, img_heroe, img_ametralladora, img_auto, img_escopeta, img_estrellaNinja, img_laser, img_pow, img_refuerzos, img_superShell;
-    private static final ArrayList<ObjetoGrafico> objetosGraficos = new ArrayList<>();
+    final double NAVE_DESPLAZAMIENTO=200.0;
+    Fondo fondo;
+    Vector<GrupoAvionesHostiles> avioneshostiles;
+    Vector<GrupoAvionesRojos> avionesrojos;
+    Vector<Barco> barcos;
     P38 heroe;
     POW testPow;
 
@@ -31,87 +35,41 @@ public class Juego1943 extends JGame {
     }
 
     public void gameStartup() {
-		System.out.println("gameStartup");
-        try{
-           img_fondo = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/fondojuegoTest.jpg")));
-           img_municion_base = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png")));
-           img_heroe = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
-           img_ametralladora = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ametralladora.png")));
-           img_auto = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/auto.png")));
-           img_escopeta = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/escopeta.png")));
-           img_estrellaNinja = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/estrellaNinja.png")));
-           img_laser = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/laser.png")));
-           img_pow = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/pow.png")));
-           img_refuerzos = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/refuerzos.png")));
-           img_superShell = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/superShell.png")));
+        System.out.println("Iniciando 1943: The Battle of Midway");
+        cargarImagenes();
+        fondo = new Fondo(Utilidades.getImagenNivel(0));
+        fondo.setPosicion(8,-(int)fondo.getHeight()+getHeight());
+        avioneshostiles = new Vector<>();
+        avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
+        avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
+        avioneshostiles.add(new GrupoAvionesHostilesFormacion3(getHeight()));
+        avionesrojos = new Vector<>();
+        avionesrojos.add(new GrupoAvionesRojos(getHeight()));
+        barcos = new Vector<>();
+        barcos.add(new Barco(70, -100));
+        heroe = new P38();
+        heroe.setPosicion(getWidth() / 2, getHeight() / 2);
 
-           heroe = new P38((double) getWidth() / 2, (double) getHeight() / 2, img_heroe);
-           testPow = new POW((double) getWidth() / 2, (double) getHeight() / 2 - 100, img_pow);
-           objetosGraficos.add(heroe);
-           objetosGraficos.add(testPow);
-        }
-        catch(Exception e){
-			System.out.println(e);
-        }
+        testPow = new POW((double) getWidth() / 2, (double) getHeight() / 2 - 100, img_pow);
+        objetosGraficos.add(heroe);
+        objetosGraficos.add(testPow);
 
         objetosGraficos.add(heroe);
         objetosGraficos.add(testPow);
     }
 
-
-
     public void gameUpdate(double delta) {
 
-        Keyboard keyboard = this.getKeyboard();
+        chequearTeclas(delta);
 
-        // Procesar teclas de direccion
-        if (keyboard.isKeyPressed(KeyEvent.VK_UP)){
-            heroe.setY( heroe.getY() - NAVE_DESPLAZAMIENTO * delta);
-            //shipY -= NAVE_DESPLAZAMIENTO * delta;
-        }
+        actualizarObjetos();
 
-        if (keyboard.isKeyPressed(KeyEvent.VK_DOWN)){
-            //shipY += NAVE_DESPLAZAMIENTO * delta;
-            heroe.setY( heroe.getY() + NAVE_DESPLAZAMIENTO * delta);
-        }
+        chequearColisiones();
 
-        if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)){
-            ///shipX -= NAVE_DESPLAZAMIENTO * delta;
-            heroe.setX( heroe.getX() - NAVE_DESPLAZAMIENTO * delta);
-        }
+        fondo.setY((int)fondo.getY()+1);
 
-        if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)){
-            //shipX += NAVE_DESPLAZAMIENTO * delta;
-            heroe.setX( heroe.getX() + NAVE_DESPLAZAMIENTO * delta);
-        }
-
-        if (keyboard.isKeyPressed(KeyEvent.VK_SPACE) && !heroe.getVelocidadDeDisparo()){
-            heroe.disparar();
-            objetosGraficos.add(new Municion(heroe.getX(), heroe.getY(), img_municion_base));
-        }
-
-        // Esc fin del juego
-        LinkedList < KeyEvent > keyEvents = keyboard.getEvents();
-        for (KeyEvent event: keyEvents) {
-            if ((event.getID() == KeyEvent.KEY_PRESSED) &&
-                (event.getKeyCode() == KeyEvent.VK_ESCAPE)) {
-                stop();
-            }
-        }
         heroe.actualizarVelocidadDeDisparo();
         //testPow.moverse();
-
-        for (int i = 0; i < objetosGraficos.size(); i++) {
-            ObjetoGrafico mo = objetosGraficos.get(i);
-            mo.update(delta);
-
-            if(mo.estaMuerto()) {
-                objetosGraficos.remove(i);
-                i--;
-            }
-        }
-
-        this.colision();
 
     }
 
@@ -127,18 +85,109 @@ public class Juego1943 extends JGame {
         int y = (int) (0.07 * height); // Posición y relativa al 7% de la altura de la ventana
 
         //interfaz
-        g.drawImage(img_fondo,0,0,null);// imagen de fondo
         g.setColor(Color.black);
         g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, x, y + (int) (0.01 * height));
         g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.04 * height));
         g.drawString("Puntaje: " + 0,  x + (int) (0.75 * width), y + (int) (0.01 * height));
         g.drawString("Tecla ESC = Fin del Juego", x + (int) (0.75 * width), y + (int) (0.04 * height));
 
-        for (ObjetoGrafico objetosGrafico : objetosGraficos) objetosGrafico.draw(g);
+        fondo.draw(g);
+
+        for (Barco barco : barcos)
+            barco.draw(g);
+
+        for (GrupoAvionesRojos grupo : avionesrojos)
+            for (AvionRojo avion : grupo.getAviones())
+                avion.draw(g);
+
+        for (GrupoAvionesHostiles grupo : avioneshostiles)
+            for (AvionHostil avion : grupo.getAviones())
+                avion.draw(g);
+
+        heroe.draw(g);
 
     }
 
-    private void colision(){
+    public void cargarImagenes(){
+        System.out.println("Cargando imágenes...");
+        try {
+            Utilidades.setImagenNivel(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/mapa1.jpg")));
+            Utilidades.setImagenP38(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
+            Utilidades.setImagenP38(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38izq.png")));
+            Utilidades.setImagenP38(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/p38der.png")));
+            Utilidades.setImagenAvionHostil(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png")));
+            Utilidades.setImagenAvionHostil(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil2.png")));
+            Utilidades.setImagenAvionHostil(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil3.png")));
+            Utilidades.setImagenAvionHostil(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionhostil4.png")));
+            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoizq.png")));
+            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoabizq.png")));
+            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoab.png")));
+            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoabder.png")));
+            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoder.png")));
+            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoarder.png")));
+            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoar.png")));
+            Utilidades.setImagenAvionRojo(ImageIO.read(getClass().getClassLoader().getResourceAsStream("img/avionrojoarizq.png")));
+            /*img_fondo = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/fondojuegoTest.jpg")));
+            img_municion_base = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png")));
+            img_heroe = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38.png")));
+            img_ametralladora = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ametralladora.png")));
+            img_auto = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/auto.png")));
+            img_escopeta = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/escopeta.png")));
+            img_estrellaNinja = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/estrellaNinja.png")));
+            img_laser = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/laser.png")));
+            img_pow = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/pow.png")));
+            img_refuerzos = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/refuerzos.png")));
+            img_superShell = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/superShell.png")));
+             */
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        System.out.println("Imágenes cargadas");
+    }
+
+    public void actualizarObjetos(){
+
+        heroe.moverse(getWidth(), getHeight());
+
+        for (GrupoAvionesHostiles grupo : avioneshostiles)
+            if(grupo.getActualizar()) {
+                for (AvionHostil avion : grupo.getAviones())
+                    if (!avion.escapo() || !avion.estaMuerto())
+                        avion.moverse(getWidth(), getHeight());
+
+                grupo.setEstado();
+            }
+
+        for(GrupoAvionesRojos grupo : avionesrojos)
+            if(grupo.getActualizar()) {
+                for (AvionRojo avion : grupo.getAviones())
+                    avion.moverse(getWidth(), getHeight());
+
+                if(grupo.todosDestruidos()) {
+                    //System.out.println("Bonus");
+                    //System.out.println("Bonus en x:"+grupo.getUltimoDestruidoX()+" y: "+grupo.getUltimoDestruidoY());
+                    //generar bonus
+                }
+
+                grupo.setEstado();
+            }
+
+        for(Barco barco : barcos)
+            if(!barco.estaMuerto()||!barco.escapo())
+                barco.moverse(getWidth(), getHeight());
+    }
+
+    private void chequearColisiones(){
+
+        for(GrupoAvionesRojos grupo : avionesrojos)
+            for (AvionRojo avion : grupo.getAviones())
+                if(heroe.intersects(avion)) {
+                    grupo.setUltimoDestruidoX(avion.getX());
+                    grupo.setUltimoDestruidoY(avion.getY());
+                    avion.destruir();
+                    //heroe.setEnergia(X);
+                }
+
         int i = 0;
         while(i < (objetosGraficos.size()-1) ){
             ObjetoGrafico a = objetosGraficos.get(i);
@@ -180,6 +229,46 @@ public class Juego1943 extends JGame {
                     }
                     objetosGraficos.add(bonusType);
                 }
+            }
+        }
+    }
+
+    public void chequearTeclas(double delta) {
+        Keyboard keyboard = this.getKeyboard();
+
+        heroe.setImagen(Utilidades.getImagenP38(0));
+
+        // Procesar teclas de direccion
+        if (keyboard.isKeyPressed(KeyEvent.VK_UP)) {
+            heroe.setY((int) (heroe.getY() - NAVE_DESPLAZAMIENTO * delta));
+            heroe.setImagen(Utilidades.getImagenP38(0));
+        }
+
+        if(keyboard.isKeyPressed(KeyEvent.VK_DOWN)) {
+            heroe.setY((int) (heroe.getY() + NAVE_DESPLAZAMIENTO * delta));
+            heroe.setImagen(Utilidades.getImagenP38(0));
+        }
+
+        if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)) {
+            heroe.setX((int) (heroe.getX() - NAVE_DESPLAZAMIENTO * delta));
+            heroe.setImagen(Utilidades.getImagenP38(1));
+        }
+
+        if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)) {
+            heroe.setX((int) (heroe.getX() + NAVE_DESPLAZAMIENTO * delta));
+            heroe.setImagen(Utilidades.getImagenP38(2));
+        }
+
+        if (keyboard.isKeyPressed(KeyEvent.VK_X)) {
+            //disparar
+        }
+
+        // Esc fin del juego
+        LinkedList<KeyEvent> keyEvents = keyboard.getEvents();
+        for (KeyEvent event : keyEvents) {
+            if ((event.getID() == KeyEvent.KEY_PRESSED) &&
+                    (event.getKeyCode() == KeyEvent.VK_ESCAPE)) {
+                stop();
             }
         }
     }
