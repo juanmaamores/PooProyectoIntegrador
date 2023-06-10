@@ -1,19 +1,19 @@
 package poo.Bonus;
 
+import poo.Armas.Auto;
 import poo.P38;
 import poo.Utilidades;
 
-import java.awt.image.BufferedImage;
+public class AutoBonus extends PowerUp{
 
-public class Auto extends PowerUp{
-
-    public Auto() {
+    public AutoBonus() {
         setImagen(Utilidades.getImagenBonus(2));
     }
 
     @Override
     public void ejecutarAccion(P38 heroe) {
-        //accion
+        heroe.getTiempoBonus().run(heroe.getDuracionBonus());
+        heroe.setArma(new Auto());
         destruir();
     }
 }

@@ -1,5 +1,7 @@
 package poo.Bonus;
 
+import poo.Armas.Ametralladora;
+import poo.Armas.Escopeta;
 import poo.P38;
 import poo.Utilidades;
 
@@ -11,7 +13,8 @@ public class AmetralladoraBonus extends ArmaEspecial{
 
     @Override
     public void ejecutarAccion(P38 heroe) {
-        //accion
+        heroe.getTiempoBonus().run(heroe.getDuracionBonus());
+        heroe.setArma(new Ametralladora());
         destruir();
     }
 }

@@ -10,7 +10,7 @@ public class ArmaAvionHostil extends Arma{
 
     public ArmaAvionHostil(){
         poder = 10;
-        velocidadDisparo = 500;
+        velocidadDisparo = 2000;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);
     }
@@ -18,6 +18,6 @@ public class ArmaAvionHostil extends Arma{
     @Override
     public void disparar(Vector<Municion> municiones, int x, int y) {
         delayDisparo.run(velocidadDisparo);
-        municiones.add(new Municion(x, y, 6,poder, Utilidades.getImagenMunicion(0)));
+        municiones.add(new Municion(x, y,0,6,poder, Utilidades.getImagenMunicion(0)));
     }
 }

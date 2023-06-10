@@ -14,4 +14,6 @@ public abstract class Arma implements Disparable {
     public Cronometro getDelayDisparo(){return delayDisparo;}
 
     public boolean puedeDisparar(){return delayDisparo.getDelta() >= velocidadDisparo;}
+
+    public void setVelocidadDisparo(int velocidadDisparo){this.velocidadDisparo = velocidadDisparo;}
 }

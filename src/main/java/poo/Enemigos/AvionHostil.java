@@ -12,22 +12,19 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 
 public class AvionHostil extends Enemigo implements Movil{
-    private Arma arma;
-    private boolean disparar, diovuelta, volviendo;
+    private final Arma arma;
+    private boolean diovuelta, volviendo;
 
 
     public AvionHostil(){
         super();
         vida = 100;
         puntaje = 100;
-        disparar = true;
         diovuelta = false;
         volviendo = false;
         arma = new ArmaAvionHostil();
         setImagen(Utilidades.getImagenAvionHostil(0));
     }
-
-    public boolean getDisparar(){return disparar;}
 
     public boolean getVolviendo(){return volviendo;}
 
@@ -37,7 +34,6 @@ public class AvionHostil extends Enemigo implements Movil{
         //Llega hasta abajo de la pantalla
 
         if(y >= alto-80 && y < alto-50  && !volviendo && !diovuelta){
-            disparar = false;
             setImagen(Utilidades.getImagenAvionHostil(1));
         }
 
@@ -54,7 +50,6 @@ public class AvionHostil extends Enemigo implements Movil{
 
         //Llega hasta arriba de la pantalla luego de volver
         if(y <= alto-590 && volviendo) {
-            disparar = true;
             diovuelta = true;
             volviendo = false;
             velocidadV *= -1;

@@ -12,8 +12,6 @@ public abstract class Bonus extends ObjetoGrafico implements Movil {
 
     public void setGolpesRecibidos(short golpesRecibidos){this.golpesRecibidos += golpesRecibidos;}
 
-    public short getGolpesRecibidos(){return golpesRecibidos;}
-
     public static Bonus crearBonus(int x, int y){
         Bonus nuevo;
         Random random = new Random();
@@ -23,7 +21,7 @@ public abstract class Bonus extends ObjetoGrafico implements Movil {
 
         nuevo = switch (randomNumber) {
             case 1 -> new AmetralladoraBonus();
-            case 2 -> new Auto();
+            case 2 -> new AutoBonus();
             case 3 -> new EscopetaBonus();
             case 4 -> new EstrellaNinja();
             case 5 -> new LaserBonus();
@@ -46,7 +44,7 @@ public abstract class Bonus extends ObjetoGrafico implements Movil {
             destruir();
     }
 
-    public boolean cambiar(){return golpesRecibidos == 5;}
+    public boolean cambiar(){return golpesRecibidos == 3;}
 
     public abstract void ejecutarAccion(P38 heroe);
 }

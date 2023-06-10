@@ -6,15 +6,16 @@ import java.awt.image.BufferedImage;
 
 public class Municion extends ObjetoGrafico implements Movil {
 
-    private int poder, velocidad;
+    private int poder, velocidadH, velocidadV;
 
-    public Municion(int x, int y, int velocidad, int poder, BufferedImage imagen){
+    public Municion(int x, int y, int velocidadH, int velocidadV, int poder, BufferedImage imagen){
         super();
         this.poder = poder;
         setImagen(imagen);
         this.x = x;
         this.y = y;
-        this.velocidad = velocidad;
+        this.velocidadH = velocidadH;
+        this.velocidadV = velocidadV;
     }
 
     public void setPoder(int poder){this.poder = poder;}
@@ -23,7 +24,8 @@ public class Municion extends ObjetoGrafico implements Movil {
 
     @Override
     public void moverse(int ancho, int alto) {
-        y = y+velocidad;
+        x += velocidadH;
+        y += velocidadV;
 
         if(this.getX() < -10 || this.getX() > ancho || this.getY() < -10 || this.getY() > alto){
             this.destruir();

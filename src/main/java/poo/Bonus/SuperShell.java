@@ -14,7 +14,7 @@ public class SuperShell extends PowerUp{
     @Override
     public void ejecutarAccion(P38 heroe) {
         heroe.getTiempoBonus().run(heroe.getDuracionBonus());
-        heroe.setVelocidadDisparo(100);
+        heroe.getArma().setVelocidadDisparo(100);
         destruir();
     }
 }
