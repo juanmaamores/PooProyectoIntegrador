@@ -23,7 +23,7 @@ public class Juego1943 extends JGame {
 
 	Date dInit = new Date();
 	Date dAhora;
-    int puntaje;
+    private int puntaje, puntajeMaximo;
     Fondo fondo;
     Vector<GrupoAvionesHostiles> avioneshostiles;
     Vector<GrupoAvionesRojos> avionesrojos;
@@ -41,6 +41,7 @@ public class Juego1943 extends JGame {
         System.out.println("Iniciando 1943: The Battle of Midway");
         cargarImagenes();
         puntaje = 0;
+        puntajeMaximo = 0;
         fondo = new Fondo(Utilidades.getImagenNivel(0));
         fondo.setPosicion(8,-(int)fondo.getHeight()+getHeight());
         heroe = new P38();
@@ -486,6 +487,19 @@ public class Juego1943 extends JGame {
         if (keyboard.isKeyPressed(KeyEvent.VK_ESCAPE)) {
             stop();
         }
+    }
+
+    //metodos para manejar el puntaje
+    public void aumentarPuntuacion(int puntos) {
+        puntaje += puntos;
+    }
+
+    public int getPuntaje() {
+        return puntaje;
+    }
+
+    public int getPuntajeMaximo() {
+        return puntajeMaximo;
     }
 
     public void gameShutdown() {
