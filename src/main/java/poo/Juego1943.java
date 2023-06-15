@@ -3,7 +3,6 @@
  */
 package poo;
 import com.entropyinteractive.*;  //jgame
-import poo.Armas.Arma;
 import poo.Armas.ArmaBarco;
 import poo.Armas.Escopeta;
 import poo.Bonus.*;
@@ -11,30 +10,56 @@ import poo.Enemigos.*;
 
 import java.awt.*;
 import java.awt.event.*; //eventos
-import java.awt.image.*;  //imagenes
 import javax.imageio.*; //imagenes
 import java.awt.Graphics2D;
-import java.text.SimpleDateFormat;
-import java.util.LinkedList;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 //import java.text.*;
 
 public class Juego1943 extends JGame {
 
-	Date dInit = new Date();
-	Date dAhora;
+    private Date dInit = new Date();
+    private Date dAhora;
     private int puntaje, puntajeMaximo;
-    Fondo fondo;
-    Vector<GrupoAvionesHostiles> avioneshostiles;
-    Vector<GrupoAvionesRojos> avionesrojos;
-    Vector<Barco> barcos;
-    Vector<Bonus> bonus;
-    Vector<Municion> municionesP38, municionesHostiles, municionesAliadas;
-    P38 heroe;
+    private Fondo fondo;
+    private Vector<GrupoAvionesHostiles> avioneshostiles;
+    private Vector<GrupoAvionesRojos> avionesrojos;
+    private Vector<Barco> barcos;
+    private Vector<Bonus> bonus;
+    private Vector<Municion> municionesP38, municionesHostiles, municionesAliadas;
+    private P38 heroe;
+    private String teclaActDesSonido, teclaActDesMusica, teclaPausar, teclaMovIzq, teclaMovDer, teclaMovArriba, teclaMovAbajo, teclaDisparar, teclaAtqEsp, teclaIniciar, pistaMusical;
+    private Boolean musicaActiva, sonidoActivo;
+    private final String ARCHIVO_CONFIGURACION1943 = "src\\main\\resources\\conf\\configuracion1943.properties";
 
     public Juego1943() {
         super("1943: The Battle of Midway", 800, 600);
-        //System.out.println(appProperties.stringPropertyNames());
+        try (FileInputStream fis = new FileInputStream(ARCHIVO_CONFIGURACION1943)) {
+            Properties propiedades = new Properties();
+            propiedades.load(fis);
+
+            // Obtener los valores de las propiedades
+            teclaActDesSonido = (String.valueOf(propiedades.getProperty("sonidoActivo")));
+            teclaActDesMusica = (String.valueOf(propiedades.getProperty("musicaActiva")));
+            pistaMusical = (String.valueOf(propiedades.getProperty("seleccionMusica")));
+            teclaPausar = (String.valueOf(propiedades.getProperty("teclaPausar")));
+            teclaMovIzq = (String.valueOf(propiedades.getProperty("teclaMovIzq")));
+            teclaMovDer = (String.valueOf(propiedades.getProperty("teclaMovDer")));
+            teclaMovArriba = (String.valueOf(propiedades.getProperty("teclaMovArriba")));
+            teclaMovAbajo = (String.valueOf(propiedades.getProperty("teclaMovAbajo")));
+            teclaDisparar = (String.valueOf(propiedades.getProperty("teclaDisparar")));
+            teclaAtqEsp = (String.valueOf(propiedades.getProperty("teclaAtqEsp")));
+            teclaIniciar = (String.valueOf(propiedades.getProperty("teclaIniciar")));
+
+            //ventana.setState(Boolean.parseBoolean(propiedades.getProperty("ventana")));
+            //pantallaCompleta.setState(Boolean.parseBoolean(propiedades.getProperty("pantallaCompleta")));
+            //pantallaCompletaActiva = Boolean.parseBoolean (propiedades.getProperty("pantallaCompletaActiva"));*/
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("Error al cargar!");
+        }
     }
 
     public void gameStartup() {
@@ -454,38 +479,132 @@ public class Juego1943 extends JGame {
     }
 
     public void chequearTeclas() {
-        Keyboard keyboard = this.getKeyboard();
 
+        Keyboard keyboard = this.getKeyboard();
         heroe.setImagen(Utilidades.getImagenP38(0));
 
         // Procesar teclas de direccion
-        if (keyboard.isKeyPressed(KeyEvent.VK_UP)) {
-            heroe.setY((int)heroe.getY()-4);
-            heroe.setImagen(Utilidades.getImagenP38(0));
+        if(teclaMovArriba.equals("W")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_W)) {
+                heroe.setY((int)heroe.getY()-4);
+                heroe.setImagen(Utilidades.getImagenP38(0));
+            }
+        } else {
+            if (keyboard.isKeyPressed(KeyEvent.VK_UP)) {
+                heroe.setY((int)heroe.getY()-4);
+                heroe.setImagen(Utilidades.getImagenP38(0));
+            }
         }
 
-        if(keyboard.isKeyPressed(KeyEvent.VK_DOWN)) {
-            heroe.setY((int)heroe.getY()+4);
-            heroe.setImagen(Utilidades.getImagenP38(0));
+        if(teclaMovAbajo.equals("S")){
+            if(keyboard.isKeyPressed(KeyEvent.VK_S)) {
+                heroe.setY((int)heroe.getY()+4);
+                heroe.setImagen(Utilidades.getImagenP38(0));
+            }
+        } else {
+            if(keyboard.isKeyPressed(KeyEvent.VK_DOWN)) {
+                heroe.setY((int)heroe.getY()+4);
+                heroe.setImagen(Utilidades.getImagenP38(0));
+            }
         }
 
-        if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)) {
-            heroe.setX((int)heroe.getX()-4);
-            heroe.setImagen(Utilidades.getImagenP38(1));
+        if(teclaMovIzq.equals("A")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_A)) {
+                heroe.setX((int)heroe.getX()-4);
+                heroe.setImagen(Utilidades.getImagenP38(1));
+            }
+        } else {
+            if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)) {
+                heroe.setX((int)heroe.getX()-4);
+                heroe.setImagen(Utilidades.getImagenP38(1));
+            }
         }
 
-        if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)) {
-            heroe.setX((int)heroe.getX()+4);
-            heroe.setImagen(Utilidades.getImagenP38(2));
+        if(teclaMovDer.equals("D")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_D)) {
+                heroe.setX((int)heroe.getX()+4);
+                heroe.setImagen(Utilidades.getImagenP38(2));
+            }
+        } else {
+            if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)) {
+                heroe.setX((int)heroe.getX()+4);
+                heroe.setImagen(Utilidades.getImagenP38(2));
+            }
         }
 
-        if (keyboard.isKeyPressed(KeyEvent.VK_X)) {
-            if(heroe.getArma().puedeDisparar())
-                heroe.getArma().disparar(municionesP38,(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
+        //disparar
+        if(teclaDisparar.equals("Barra espaciadora")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
+                if(heroe.getArma().puedeDisparar())
+                    heroe.getArma().disparar(municionesP38,(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
+            }
+        } else {
+            if (keyboard.isKeyPressed(KeyEvent.VK_X)) {
+                if(heroe.getArma().puedeDisparar())
+                    heroe.getArma().disparar(municionesP38,(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
+            }
         }
 
+        //Ataque especial
+        if(teclaAtqEsp.equals("B")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_B)) {
+                //lanza ataque especial
+            }
+        } else {
+            if (keyboard.isKeyPressed(KeyEvent.VK_Z)) {
+                //lanza ataque especial
+            }
+        }
+
+        // Activar/desactivar efectos de sonido
+        if(teclaActDesSonido.equals("O")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_O)) {
+                //activa desactiva los efectos de sonido
+            }
+        } else {
+            if (keyboard.isKeyPressed(KeyEvent.VK_Q)) {
+                //activa desactiva los efectos de sonido
+            }
+        }
+
+        // Activar/desactivar musica
+        if(teclaActDesMusica.equals("I")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_I)) {
+                //activa desactiva la musica
+            }
+        } else {
+            if (keyboard.isKeyPressed(KeyEvent.VK_W)) {
+                //activa desactiva la musica
+            }
+        }
+
+        // Pausar el juego
+        if(teclaPausar.equals("P")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_P)) {
+                //pausar juego
+            }
+        } else {
+            if (keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
+                //pausar juego
+            }
+        }
+
+        // Iniciar el juego
+        if(teclaIniciar.equals("C")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_C)) {
+                //iniciar juego
+                //this.run(1.0 / 60.0);
+            }
+        } else {
+            if (keyboard.isKeyPressed(KeyEvent.VK_ENTER)) {
+                //iniciar juego
+                //this.run(1.0 / 60.0);
+            }
+        }
+
+        // Cerrar juego
         if (keyboard.isKeyPressed(KeyEvent.VK_ESCAPE)) {
-            stop();
+            this.stop();
         }
     }
 

@@ -25,7 +25,7 @@ public class Barco extends Enemigo implements Movil{
         armas.add(new ArmaBarco(p38));
         armas.add(new ArmaBarco(p38));
         armas.add(new ArmaBarco(p38));
-        this.puntaje = 10;
+        puntaje = 30;
     }
 
     public Vector<ArmaBarco> getArmas(){return armas;}

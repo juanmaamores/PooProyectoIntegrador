@@ -1,11 +1,11 @@
 package poo.Sistema;
 
+import poo.Inicio;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 import java.awt.image.*;
 
-@SuppressWarnings("serial")
 public class Lanzador extends Frame implements ActionListener, ItemListener {
 
 	private ConfiguracionVideoJuego configJuego1, configJuego2, configJuego3;
@@ -16,21 +16,17 @@ public class Lanzador extends Frame implements ActionListener, ItemListener {
 	private Checkbox checkBoxJ1, checkBoxJ2, checkBoxJ3;
 	private Vector<ConfiguracionVideoJuego> configuraciones;
 	private int index = 0;
-	private BufferedImage portada1;
-	private BufferedImage portada2;
-	private BufferedImage portada3;
-	private Canvas canvas1;
-	private Canvas canvas2;
-	private Canvas canvas3;
+	private BufferedImage portada1, portada2, portada3;
+	private Canvas canvas1, canvas2, canvas3;
 
 	public Lanzador() {
 
 		configuraciones = new Vector<ConfiguracionVideoJuego>();
-		configJuego1 = new ConfiguracionVideoJuego(this, "1943: Battle of Midway");
+		configJuego1 = new ConfiguracionVideoJuego(this, "1943: Battle of Midway", 0);
 		configuraciones.add(configJuego1);
-		configJuego2 = new ConfiguracionVideoJuego(this, "Pacman");
+		configJuego2 = new ConfiguracionVideoJuego(this, "Pacman", 1);
 		configuraciones.add(configJuego2);
-		configJuego3 = new ConfiguracionVideoJuego(this, "Pong");
+		configJuego3 = new ConfiguracionVideoJuego(this, "Pong", 2);
 		configuraciones.add(configJuego3);
 
 		// Configuración de la ventana principal
@@ -164,7 +160,6 @@ public class Lanzador extends Frame implements ActionListener, ItemListener {
 		setVisible(true);
 	}
 
-
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 
@@ -191,14 +186,14 @@ public class Lanzador extends Frame implements ActionListener, ItemListener {
 		}
 	}
 
-	public static void main(String[] args) {
-
-		Lanzador sys = new Lanzador();
-	}
-
 	private void ejecutar() {
+		setVisible(false);
 
-		log.setText("Juego iniciado");
+		Thread juegoThread = new Thread(() -> {
+			Inicio inicio1943 = new Inicio(this);
+		});
+		juegoThread.start();
+		setVisible(true);
 	}
 
 	// Carga la imagen desde el archivo y la convierte en un BufferedImage
@@ -219,4 +214,7 @@ public class Lanzador extends Frame implements ActionListener, ItemListener {
 		}
 	}
 
+	public static void main(String[] args) {
+		Lanzador sys = new Lanzador();
+	}
 }
