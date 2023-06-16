@@ -4,6 +4,7 @@ import poo.Municion;
 import poo.Sistema.Cronometro;
 import poo.Utilidades;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Laser extends Arma{
@@ -15,7 +16,7 @@ public class Laser extends Arma{
     }
 
     @Override
-    public void disparar(Vector<Municion> municiones, int x, int y) {
+    public void disparar(ArrayList<Municion> municiones, int x, int y) {
         delayDisparo.run(velocidadDisparo);
         municiones.add(new Municion(x, y, 0,-10,poder, Utilidades.getImagenMunicion(0)));
     }

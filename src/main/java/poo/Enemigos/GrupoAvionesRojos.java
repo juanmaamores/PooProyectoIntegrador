@@ -1,5 +1,6 @@
 package poo.Enemigos;
 
+import poo.Juego1943;
 import poo.Municion;
 
 import java.util.Vector;
@@ -9,8 +10,9 @@ public class GrupoAvionesRojos extends GrupoAviones{
     Vector<AvionRojo> aviones;
     double ultimoDestruidoX, ultimoDestruidoY;
 
-    public GrupoAvionesRojos(int alto){
+    public GrupoAvionesRojos(){
         super();
+        int alto = Juego1943.getAlto();
         puntaje = 200;
         aviones = new Vector<>();
         int pos = 0;

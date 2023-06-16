@@ -1,5 +1,6 @@
 package poo;
 
+import com.entropyinteractive.Keyboard;
 import poo.Armas.Arma;
 import poo.Armas.ArmaBasica;
 import poo.Armas.Escopeta;
