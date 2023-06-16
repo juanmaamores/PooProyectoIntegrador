@@ -21,7 +21,7 @@ public class ArmaBarco extends Arma{
         this.p38 = p38;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);
-        setImagen(Utilidades.getImagenP38(0));
+        setImagen(Utilidades.getImagenBarco(0));
     }
 
     public void setVida(int vida){this.vida = vida;}

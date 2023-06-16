@@ -7,7 +7,6 @@ import poo.Armas.ArmaBarco;
 import poo.Armas.Escopeta;
 import poo.Bonus.*;
 import poo.Enemigos.*;
-import poo.Sistema.Cronometro;
 import java.awt.*;
 import java.awt.event.*; //eventos
 import javax.imageio.*; //imagenes
@@ -20,7 +19,8 @@ public class Juego1943 extends JGame {
 
     private Date dInit = new Date();
     private Date dAhora;
-    private int puntaje, puntajeMaximo, nroNivel = 1;
+    private int puntaje, nroNivel = 1;
+    private static int puntajeMaximo = 0;
     private Fondo fondo;
     private Vector<GrupoAvionesHostiles> avioneshostiles;
     private Vector<GrupoAvionesRojos> avionesrojos;
@@ -32,9 +32,8 @@ public class Juego1943 extends JGame {
     private final String ARCHIVO_CONFIGURACION1943 = "src\\main\\resources\\conf\\configuracion1943.properties";
     private final Font fuente = new Font("Calibri", Font.PLAIN, 16);
     private Boolean musicaActiva, sonidoActivo, juegoCorriendo = false, inicioJuego = true, gameOver = false, transicion = false;
-    private Cronometro cronoBonus;
     //control de tiempo entre niveles
-    private float cronoNivel1 = 0, cronoNivel2 = 0;
+    private float cronoNivel1 = 0, cronoNivel2 = 0, cronoAviones1 = 0, cronoAviones2 = 0, cronoAviones3 = 0, cronoAvionesRojos = 0, cronoBarcos = 0;
 
     public Juego1943() {
         super("1943: The Battle of Midway", 800, 600);
@@ -69,30 +68,44 @@ public class Juego1943 extends JGame {
         System.out.println("Iniciando 1943: The Battle of Midway");
         cargarImagenes();
         puntaje = 0;
-        puntajeMaximo = 0;
         fondo = new Fondo(Utilidades.getImagenNivel(0));
         fondo.setPosicion(8,-(int)fondo.getHeight()+getHeight());
         heroe = new P38();
         heroe.setPosicion(getWidth() / 2-10, getHeight() / 2+100);
         avioneshostiles = new Vector<>();
-        /*
-        avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
-        avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
-        avioneshostiles.add(new GrupoAvionesHostilesFormacion3(getHeight()));
-        //avionesrojos.add(new GrupoAvionesRojos(getHeight()));
-        */
         avionesrojos = new Vector<>();
         barcos = new Vector<>();
-        barcos.add(new Barco(70, -100,heroe));
         bonus = new Vector<>();
         municionesP38 = new Vector<>();
         municionesHostiles = new Vector<>();
         municionesAliadas = new Vector<>();
-        //cronometros
-        cronoBonus = new Cronometro();
-        cronoBonus.run(10000);
-
+        spawnearAviones1();
+        spawnearAvionesRojos();
     }
+
+    public void spawnearAvionesRojos(){
+        avionesrojos.add(new GrupoAvionesRojos(getHeight()));
+    }
+
+    public void spawnearAviones1(){
+        avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
+    }
+
+    public void spawnearAviones2(){
+        avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
+    }
+
+    public void spawnearAviones3(){
+        avioneshostiles.add(new GrupoAvionesHostilesFormacion3(getHeight()));
+    }
+
+    public void spawnearBarcos() {
+        Random random = new Random();
+        int x = random.nextInt(801); // Genera un número aleatorio entre 0 y 800 (inclusive)
+        int y = -50;
+        barcos.add(new Barco(x, y, heroe));
+    }
+
 
     public void gameUpdate(double delta) {
 
@@ -101,8 +114,58 @@ public class Juego1943 extends JGame {
         if(juegoCorriendo && !gameOver){
             if(nroNivel == 1){
                 cronoNivel1 += 1 % 0.02;
+                cronoAviones1 += 1 % 0.02;
+                cronoAviones2 += 1 % 0.02;
+                cronoAviones3 += 1 % 0.02;
+                cronoAvionesRojos += 1 % 0.02;
+                cronoBarcos += 1 % 0.02;
+                if((int)cronoAviones1 == 15){
+                    spawnearAviones1();
+                    cronoAviones1 = 0;
+                }
+                if((int)cronoAviones2 == 30){
+                    spawnearAviones2();
+                    cronoAviones2 = 0;
+                }
+                if((int)cronoAviones3 == 45){
+                    spawnearAviones3();
+                    cronoAviones3 = 0;
+                }
+                if((int)cronoAvionesRojos == 10){
+                    spawnearAvionesRojos();
+                    cronoAvionesRojos = 0;
+                }
+                if((int)cronoBarcos == 20){
+                    spawnearBarcos();
+                    cronoBarcos = 0;
+                }
             } else if(nroNivel == 2){
                 cronoNivel2 += 1 % 0.02;
+                cronoAviones1 += 1 % 0.02;
+                cronoAviones2 += 1 % 0.02;
+                cronoAviones3 += 1 % 0.02;
+                cronoAvionesRojos += 1 % 0.02;
+                cronoBarcos += 1 % 0.02;
+                if((int)cronoAviones1 == 15){
+                    spawnearAviones1();
+                    cronoAviones1 = 0;
+                }
+                if((int)cronoAviones2 == 30){
+                    spawnearAviones2();
+                    cronoAviones2 = 0;
+                }
+                if((int)cronoAviones3 == 45){
+                    spawnearAviones3();
+                    cronoAviones3 = 0;
+                }
+                if((int)cronoAvionesRojos == 10){
+                    spawnearAvionesRojos();
+                    cronoAvionesRojos = 0;
+                }
+                if((int)cronoBarcos == 20){
+                    spawnearBarcos();
+                    cronoBarcos = 0;
+                }
             }
             actualizarObjetos();
             chequearColisiones();
@@ -113,14 +176,16 @@ public class Juego1943 extends JGame {
             transicion = true;
             juegoCorriendo = false;
             nroNivel += 1;
-            System.out.println("nroNivel: "+nroNivel);
-            System.out.println("Fin nivel 1");
         }
 
         if((int)cronoNivel2 == 180 && nroNivel == 2){
-            System.out.println("nroNivel: "+nroNivel);
-            System.out.println("Fin nivel 2");
             gameOver = true;
+        }
+
+        if(gameOver){
+            if (puntaje > puntajeMaximo){
+                puntajeMaximo = puntaje;
+            }
         }
 
     }
@@ -149,7 +214,7 @@ public class Juego1943 extends JGame {
         int yTextoPausa = height / 2;
 
         //Transicion
-        String textoTransicion= "Transicion";
+        String textoTransicion= "Mision cumplida! Nivel 1 superado";
         String textoContinuar= "Tecla Enter o C para continuar";
         int xTextoTransicion = (width - metrics.stringWidth(textoTransicion)) / 2;
         int yTextoTransicion = (height / 2)-50;
@@ -252,6 +317,7 @@ public class Juego1943 extends JGame {
     public void cargarImagenes(){
         System.out.println("Cargando imágenes...");
         try {
+            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/barco.png"))));
             Utilidades.setImagenNivel(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/mapa1.jpg"))));
             Utilidades.setImagenP38(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38.png"))));
             Utilidades.setImagenP38(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38izq.png"))));
@@ -477,10 +543,10 @@ public class Juego1943 extends JGame {
         for(Barco barco : barcos)
             for(ArmaBarco arma : barco.getArmas()) {
                 if (arma.getActualizar()) {
-                    if (heroe.intersects(arma)) {
+                    /*if (heroe.intersects(arma)) {
                         arma.setVida(0);
                         heroe.setEnergia(-20);
-                    }
+                    }*/
 
                     for (Municion municion : municionesP38)
                         if (municion.getActualizar())
