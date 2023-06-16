@@ -4,6 +4,7 @@
 package poo;
 import com.entropyinteractive.*;  //jgame
 import poo.Armas.Arma;
+import poo.Armas.ArmaAvionHostil;
 import poo.Armas.ArmaBarco;
 import poo.Armas.Escopeta;
 import poo.Bonus.*;
@@ -21,6 +22,7 @@ import java.util.*;
 
 public class Juego1943 extends JGame {
 
+    Sound sound;
 	Date dInit = new Date();
 	Date dAhora;
     private int puntaje, puntajeMaximo;
@@ -31,6 +33,15 @@ public class Juego1943 extends JGame {
     Vector<Bonus> bonus;
     Vector<Municion> municionesP38, municionesHostiles, municionesAliadas;
     P38 heroe;
+
+    //prueba timeout()
+    Timer timer;
+    int delay;
+
+    Yamato yamato;
+    Ayako1 ayako1;
+
+
 
     public Juego1943() {
         super("1943: The Battle of Midway", 800, 600);
@@ -44,8 +55,13 @@ public class Juego1943 extends JGame {
         puntajeMaximo = 0;
         fondo = new Fondo(Utilidades.getImagenNivel(0));
         fondo.setPosicion(8,-(int)fondo.getHeight()+getHeight());
+
+        //sonido
+        //sound = new Sound();
+        //playMusic(0);
+
         heroe = new P38();
-        heroe.setPosicion(getWidth() / 2, getHeight() / 2);
+        heroe.setPosicion(getWidth() / 2, getHeight() / 3);
         avioneshostiles = new Vector<>();
         //avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
         //avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
@@ -58,6 +74,12 @@ public class Juego1943 extends JGame {
         municionesP38 = new Vector<>();
         municionesHostiles = new Vector<>();
         municionesAliadas = new Vector<>();
+
+        //Jefes
+        yamato = new Yamato(heroe);
+        ayako1 = new Ayako1(); //cambiar posicion para que este en el centro, usar la misma que yamato
+
+
     }
 
     public void gameUpdate(double delta) {
@@ -117,11 +139,41 @@ public class Juego1943 extends JGame {
         for(Municion municion: municionesP38)
             municion.draw(g);
 
+        //Draw Jefes Finales
+
+        yamato.draw(g);
+
+        for(ArmaBarco arma : yamato.getArmas()) {
+            arma.setImagen(Utilidades.getImagenBarco(2));
+            arma.draw(g);
+        }
+
+        ayako1.draw(g);
+        for(ArmaAvionHostil arma : ayako1.getArmas()) {
+            arma.setImagen(Utilidades.getImagenBarco(3));
+            arma.draw(g);
+        }
+
         //interfaz
         g.setColor(Color.white);
         g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, x, y + (int) (0.01 * height));
         g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.04 * height));
         g.drawString("Puntaje: " + puntaje,  x + (int) (0.75 * width), y + (int) (0.01 * height));
+    }
+
+    public void playMusic(int i){
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+
+    public void stopMusic(){
+        sound.stop();
+    }
+
+    public void playSEffects(int i){
+        sound.setFile(i);
+        sound.play();
     }
 
     public void cargarImagenes(){
@@ -152,6 +204,14 @@ public class Juego1943 extends JGame {
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/refuerzos.png"))));
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/superShell.png"))));
             Utilidades.setImagenMunicion(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png"))));
+            Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/Yamato.png"))));
+            Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ayako1.png"))));
+            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/barco.png"))));
+            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/torret1s.png"))));
+            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/torret2s.png"))));
+            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ayako-motor.png"))));
+
+
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -261,7 +321,38 @@ public class Juego1943 extends JGame {
         for(Bonus bonus : bonus)
             if(bonus.getActualizar())
                 bonus.moverse(getWidth(), getHeight());
+
+        //Yamato
+        if(yamato.getActualizar()) {
+            yamato.moverse(getWidth(), getHeight());
+
+            for(ArmaBarco arma : yamato.getArmas()) {
+                if(arma.getVida() <= 0)
+                    arma.destruir();
+
+                if (arma.getActualizar() && arma.puedeDisparar()) {
+                        arma.disparar(municionesHostiles, (int) (arma.getX()), (int) arma.getY());
+                    }
+                }
+            }
+        //Ayako
+
+        if (ayako1.getActualizar()) {
+
+            ayako1.moverse(getWidth(), getHeight());
+
+            for(ArmaAvionHostil arma : ayako1.getArmas())
+                arma.disparar(municionesHostiles, (int)(arma.getX()+arma.getWidth()/2-4), (int)arma.getY());
+
+            if(ayako1.getVida() <= 0) {
+                ayako1.destruir();
+                puntaje += ayako1.getPuntaje();
+            }
+        }
+
     }
+
+
 
     private void chequearColisiones() {
 

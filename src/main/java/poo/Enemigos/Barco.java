@@ -16,6 +16,7 @@ public class Barco extends Enemigo implements Movil{
 
     public Barco(int x, int y, P38 p38){
         super();
+        setImagen(Utilidades.getImagenBarco(0));
         this.x = x;
         this.y = y;
         this.p38 = p38;

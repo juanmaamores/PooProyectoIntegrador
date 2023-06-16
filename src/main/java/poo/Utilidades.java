@@ -10,6 +10,11 @@ public class Utilidades {
     static Vector<BufferedImage> imagenesAvionRojo = new Vector<>();
     static Vector<BufferedImage> imagenesBonus = new Vector<>();
     static Vector<BufferedImage> imagenesMunicion = new Vector<>();
+    static Vector<BufferedImage> imagenesJefes = new Vector<>();
+
+    static Vector<BufferedImage> imagenesBarco = new Vector<>();
+
+
 
     public static void setImagenNivel(BufferedImage img){imagenesNivel.add(img);}
 
@@ -34,4 +39,12 @@ public class Utilidades {
     public static void setImagenMunicion(BufferedImage img){imagenesMunicion.add(img);}
 
     public static BufferedImage getImagenMunicion(int i){return imagenesMunicion.get(i);}
+
+    public static void setImagenJefes(BufferedImage img){imagenesJefes.add(img);}
+
+    public static BufferedImage getImagenJefes(int i){return imagenesJefes.get(i);}
+
+    public static void setImagenBarco(BufferedImage img) {imagenesBarco.add(img);}
+
+    public static BufferedImage getImagenBarco(int i){return imagenesBarco.get(i);}
 }

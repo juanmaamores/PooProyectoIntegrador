@@ -8,6 +8,7 @@ public class Municion extends ObjetoGrafico implements Movil {
 
     private int poder, velocidadH, velocidadV;
 
+
     public Municion(int x, int y, int velocidadH, int velocidadV, int poder, BufferedImage imagen){
         super();
         this.poder = poder;
@@ -31,5 +32,4 @@ public class Municion extends ObjetoGrafico implements Movil {
             this.destruir();
         }
     }
-
 }
