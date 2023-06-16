@@ -6,8 +6,8 @@ import poo.Sistema.Cronometro;
 
 import java.util.ArrayList;
 
-public class Nivel1 extends Nivel{
-    public Nivel1(){
+public class Nivel2 extends Nivel{
+    public Nivel2(){
         fondo = new Fondo(Utilidades.getImagenNivel(0));
         fondo.setPosicion(8,-(int)fondo.getHeight()+Juego1943.getAncho());
         heroe = new P38();
@@ -31,6 +31,7 @@ public class Nivel1 extends Nivel{
         if(tiempo.getDelta() >= 3000 && contadorEnemigos == 0){
             avioneshostiles.add(new GrupoAvionesHostilesFormacion1());
             contadorEnemigos++;
+            barcos.add(new Barco());
         }
 
         if(tiempo.getDelta() >= 6000 && contadorEnemigos == 1){
@@ -90,18 +91,17 @@ public class Nivel1 extends Nivel{
         }
 
         if(tiempo.getDelta() >= 62000 && contadorEnemigos == 11){
-            ayako1 = new Ayako1();
+            yamato = new Yamato(heroe);
         }
 
-        if(tiempo.getDelta() >= 66000 && contadorEnemigos == 12){
-            avionesrojos.add(new GrupoAvionesRojos());
+        if(tiempo.getDelta() >= 65000 && contadorEnemigos == 12){
             avioneshostiles.add(new GrupoAvionesHostilesFormacion3());
             contadorEnemigos++;
         }
 
-        if(tiempo.getDelta() >= 70000 && contadorEnemigos == 13){
-            avionesrojos.add(new GrupoAvionesRojos());
-            avioneshostiles.add(new GrupoAvionesHostilesFormacion3());
+        if(tiempo.getDelta() >= 69000 && contadorEnemigos == 13){
+            avioneshostiles.add(new GrupoAvionesHostilesFormacion1());
+            avioneshostiles.add(new GrupoAvionesHostilesFormacion2());
             contadorEnemigos++;
         }
     }

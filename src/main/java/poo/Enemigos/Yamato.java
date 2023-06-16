@@ -31,6 +31,7 @@ public class Yamato extends Jefe{
         armas.add(new ArmaBarco(p38));
         armas.add(new ArmaBarco(p38));
         this.puntaje = 100;
+        this.vida = 700;
     }
 
     public Vector<ArmaBarco> getArmas(){return armas;}

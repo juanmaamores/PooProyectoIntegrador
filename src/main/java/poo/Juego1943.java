@@ -61,8 +61,9 @@ public class Juego1943 extends JGame {
         transicion = false;
         ancho = getWidth();
         alto = getHeight();
-        nivelActual = null;
+        nivelActual = null;;
     }
+
 
     public void gameUpdate(double delta) {
 
@@ -187,6 +188,12 @@ public class Juego1943 extends JGame {
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/refuerzos.png"))));
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/superShell.png"))));
             Utilidades.setImagenMunicion(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png"))));
+            Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/Yamato.png"))));
+            Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ayako1.png"))));
+            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/barco.png"))));
+            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/torret1s.png"))));
+            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/torret2s.png"))));
+            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ayako-motor.png"))));
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -291,7 +298,7 @@ public class Juego1943 extends JGame {
         // Activar/desactivar musica
         if(teclaActDesMusica.equals("I")){
             if (keyboard.isKeyPressed(KeyEvent.VK_I)) {
-                //activa desactiva la musica
+                //sound.play();
             }
         } else {
             if (keyboard.isKeyPressed(KeyEvent.VK_W)) {

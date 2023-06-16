@@ -1,10 +1,7 @@
 package poo.Enemigos;
 
-import poo.Armas.Arma;
 import poo.Armas.ArmaBarco;
-import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
-import poo.Municion;
 import poo.P38;
 import poo.Utilidades;
 
@@ -14,7 +11,7 @@ public class Barco extends Enemigo implements Movil{
     private Vector<ArmaBarco> armas;
     private P38 p38;
 
-    public Barco(int x, int y, P38 p38){
+    public Barco(){
         super();
         setImagen(Utilidades.getImagenBarco(0));
         this.x = x;
