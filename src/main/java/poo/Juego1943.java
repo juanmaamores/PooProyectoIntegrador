@@ -7,7 +7,7 @@ import poo.Armas.ArmaBarco;
 import poo.Armas.Escopeta;
 import poo.Bonus.*;
 import poo.Enemigos.*;
-
+import poo.Sistema.Cronometro;
 import java.awt.*;
 import java.awt.event.*; //eventos
 import javax.imageio.*; //imagenes
@@ -15,13 +15,12 @@ import java.awt.Graphics2D;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
-//import java.text.*;
 
 public class Juego1943 extends JGame {
 
     private Date dInit = new Date();
     private Date dAhora;
-    private int puntaje, puntajeMaximo;
+    private int puntaje, puntajeMaximo, nroNivel = 1;
     private Fondo fondo;
     private Vector<GrupoAvionesHostiles> avioneshostiles;
     private Vector<GrupoAvionesRojos> avionesrojos;
@@ -30,8 +29,12 @@ public class Juego1943 extends JGame {
     private Vector<Municion> municionesP38, municionesHostiles, municionesAliadas;
     private P38 heroe;
     private String teclaActDesSonido, teclaActDesMusica, teclaPausar, teclaMovIzq, teclaMovDer, teclaMovArriba, teclaMovAbajo, teclaDisparar, teclaAtqEsp, teclaIniciar, pistaMusical;
-    private Boolean musicaActiva, sonidoActivo;
     private final String ARCHIVO_CONFIGURACION1943 = "src\\main\\resources\\conf\\configuracion1943.properties";
+    private final Font fuente = new Font("Calibri", Font.PLAIN, 16);
+    private Boolean musicaActiva, sonidoActivo, juegoCorriendo = false, inicioJuego = true, gameOver = false, transicion = false;
+    private Cronometro cronoBonus;
+    //control de tiempo entre niveles
+    private float cronoNivel1 = 0, cronoNivel2 = 0;
 
     public Juego1943() {
         super("1943: The Battle of Midway", 800, 600);
@@ -70,83 +73,180 @@ public class Juego1943 extends JGame {
         fondo = new Fondo(Utilidades.getImagenNivel(0));
         fondo.setPosicion(8,-(int)fondo.getHeight()+getHeight());
         heroe = new P38();
-        heroe.setPosicion(getWidth() / 2, getHeight() / 2);
+        heroe.setPosicion(getWidth() / 2-10, getHeight() / 2+100);
         avioneshostiles = new Vector<>();
-        //avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
-        //avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
-        //avioneshostiles.add(new GrupoAvionesHostilesFormacion3(getHeight()));
-        avionesrojos = new Vector<>();
+        /*
+        avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
+        avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
+        avioneshostiles.add(new GrupoAvionesHostilesFormacion3(getHeight()));
         //avionesrojos.add(new GrupoAvionesRojos(getHeight()));
+        */
+        avionesrojos = new Vector<>();
         barcos = new Vector<>();
         barcos.add(new Barco(70, -100,heroe));
         bonus = new Vector<>();
         municionesP38 = new Vector<>();
         municionesHostiles = new Vector<>();
         municionesAliadas = new Vector<>();
+        //cronometros
+        cronoBonus = new Cronometro();
+        cronoBonus.run(10000);
+
     }
 
     public void gameUpdate(double delta) {
 
         chequearTeclas();
 
-        actualizarObjetos();
+        if(juegoCorriendo && !gameOver){
+            if(nroNivel == 1){
+                cronoNivel1 += 1 % 0.02;
+            } else if(nroNivel == 2){
+                cronoNivel2 += 1 % 0.02;
+            }
+            actualizarObjetos();
+            chequearColisiones();
+            fondo.setY((int)fondo.getY()+1);
+        }
 
-        chequearColisiones();
+        if ((int)cronoNivel1 == 180 && nroNivel == 1){
+            transicion = true;
+            juegoCorriendo = false;
+            nroNivel += 1;
+            System.out.println("nroNivel: "+nroNivel);
+            System.out.println("Fin nivel 1");
+        }
 
-        fondo.setY((int)fondo.getY()+1);
+        if((int)cronoNivel2 == 180 && nroNivel == 2){
+            System.out.println("nroNivel: "+nroNivel);
+            System.out.println("Fin nivel 2");
+            gameOver = true;
+        }
+
     }
 
     public void gameDraw(Graphics2D g) {
 
-    	dAhora= new Date( );
-    	long dateDiff = dAhora.getTime() - dInit.getTime();
-    	long diffSeconds = dateDiff / 1000 % 60;
-		long diffMinutes = dateDiff / (60 * 1000) % 60;
         int width = this.getWidth(); // Ancho de la ventana
         int height = this.getHeight(); // Altura de la ventana
         int x = (int) (0.02 * width); // Posición x relativa al 2% del ancho de la ventana
         int y = (int) (0.07 * height); // Posición y relativa al 7% de la altura de la ventana
+        FontMetrics metrics = g.getFontMetrics(fuente);
+        g.setColor(Color.white);
+        g.setFont(fuente);
 
-        fondo.draw(g);
+        //Incio juego
+        String textoPresentacion = "1943: The Battle of Midway";
+        String textoInicar = "Tecla Enter o C para iniciar";
+        int xTextoPresentacion = (width - metrics.stringWidth(textoPresentacion)) / 2;
+        int yTextoPresentacion = (height / 2)-50;
+        int xTextoInicar = (width - metrics.stringWidth(textoInicar)) / 2;
+        int yTextoInicar = height / 2;
 
-        for(Bonus bonus : bonus)
-            bonus.draw(g);
+        //Pausa
+        String textoPausa = "Pausa";
+        int xTextoPausa = (width - metrics.stringWidth(textoPausa)) / 2;
+        int yTextoPausa = height / 2;
 
-        for (Barco barco : barcos) {
-            barco.draw(g);
+        //Transicion
+        String textoTransicion= "Transicion";
+        String textoContinuar= "Tecla Enter o C para continuar";
+        int xTextoTransicion = (width - metrics.stringWidth(textoTransicion)) / 2;
+        int yTextoTransicion = (height / 2)-50;
+        int xTextoContinuar = (width - metrics.stringWidth(textoContinuar)) / 2;
+        int yTextoContinuar = height / 2;
 
-            for(ArmaBarco arma : barco.getArmas())
-                arma.draw(g);
+        //Gameover
+        String textoGameOver = "GAME OVER";
+        String textoPuntaje = "Puntaje final: " + puntaje;
+        String textoRecord = "Record: " + puntajeMaximo;
+        String textoReiniciar = "Tecla Enter o C para jugar de nuevo";
+
+        int xTextoGameOver = (width - metrics.stringWidth(textoGameOver)) / 2;
+        int yTextoGameOver = (height / 2)-60;
+        int xTextoPuntaje = (width - metrics.stringWidth(textoPuntaje)) / 2;
+        int yTextoPuntaje = (height / 2)-30;
+        int xTextoRecord = (width - metrics.stringWidth(textoRecord)) / 2;
+        int yTextoRecord = (height / 2);
+        int xTextoReiniciar = (width - metrics.stringWidth(textoReiniciar)) / 2;
+        int yTextoReiniciar = (height / 2)+30;
+
+        dAhora = new Date( );
+        long dateDiff = dAhora.getTime() - dInit.getTime();
+        long diffSeconds = dateDiff / 1000 % 60;
+        long diffMinutes = dateDiff / (60 * 1000) % 60;
+
+        //La seccion que dibuja los objetos graficos
+        if(!transicion){
+            fondo.draw(g);
+
+            for(Bonus bonus : bonus)
+                bonus.draw(g);
+
+            for (Barco barco : barcos) {
+                barco.draw(g);
+
+                for(ArmaBarco arma : barco.getArmas())
+                    arma.draw(g);
+            }
+
+            for (GrupoAvionesRojos grupo : avionesrojos)
+                for (AvionRojo avion : grupo.getAviones())
+                    avion.draw(g);
+
+            for (GrupoAvionesHostiles grupo : avioneshostiles)
+                for (AvionHostil avion : grupo.getAviones())
+                    avion.draw(g);
+
+            for(Municion municion : municionesHostiles)
+                municion.draw(g);
+
+            for(Municion municion: municionesAliadas)
+                municion.draw(g);
+
+            for(Municion municion: municionesP38)
+                municion.draw(g);
+
         }
 
-        for (GrupoAvionesRojos grupo : avionesrojos)
-            for (AvionRojo avion : grupo.getAviones())
-                avion.draw(g);
+        if(!gameOver){
+            if(!transicion){
+                if(heroe.getRefuerzo1() != null)
+                    heroe.getRefuerzo1().draw(g);
+                if(heroe.getRefuerzo2() != null)
+                    heroe.getRefuerzo2().draw(g);
+                heroe.draw(g);
+            }
+        }
 
-        for (GrupoAvionesHostiles grupo : avioneshostiles)
-            for (AvionHostil avion : grupo.getAviones())
-                avion.draw(g);
-
-        if(heroe.getRefuerzo1() != null)
-            heroe.getRefuerzo1().draw(g);
-        if(heroe.getRefuerzo2() != null)
-            heroe.getRefuerzo2().draw(g);
-        heroe.draw(g);
-
-        for(Municion municion : municionesHostiles)
-            municion.draw(g);
-
-        for(Municion municion: municionesAliadas)
-            municion.draw(g);
-
-        for(Municion municion: municionesP38)
-            municion.draw(g);
-
-        //interfaz
-        g.setColor(Color.white);
+        //seccion que dibuja la interfaz
+        //interfaz inicio o pausa
+        if (!juegoCorriendo){
+            if(inicioJuego){
+                g.drawString(textoPresentacion, xTextoPresentacion, yTextoPresentacion);
+                g.drawString(textoInicar, xTextoInicar, yTextoInicar);
+            } else if(!transicion){
+                g.drawString(textoPausa, xTextoPausa, yTextoPausa);
+            } else {
+                g.drawString(textoTransicion, xTextoTransicion, yTextoTransicion);
+                g.drawString(textoContinuar, xTextoContinuar, yTextoContinuar);
+            }
+        }
+        //interfaz gameover
+        if(gameOver){
+            g.drawString(textoGameOver, xTextoGameOver, yTextoGameOver);
+            g.drawString(textoPuntaje, xTextoPuntaje, yTextoPuntaje);
+            g.drawString(textoRecord, xTextoRecord, yTextoRecord);
+            g.drawString(textoReiniciar, xTextoReiniciar, yTextoReiniciar);
+        }
+        //interfaz juego
         g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, x, y + (int) (0.01 * height));
-        g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.04 * height));
-        g.drawString("Puntaje: " + puntaje,  x + (int) (0.75 * width), y + (int) (0.01 * height));
+        g.drawString("Nivel 1: " + (int)cronoNivel1, x, y + (int) (0.05 * height));
+        g.drawString("Nivel 2: " + (int)cronoNivel2, x, y + (int) (0.09 * height));
+        g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.13 * height));
+        if(!gameOver){
+            g.drawString("Puntaje: " + puntaje,  x + (int) (0.75 * width), y + (int) (0.01 * height));
+        }
     }
 
     public void cargarImagenes(){
@@ -189,6 +289,13 @@ public class Juego1943 extends JGame {
         heroe.getArma().getDelayDisparo().update();
         heroe.getTiempoBonus().update();
         heroe.chequearBonus();
+
+        //chequear que el jugador no haya muerto
+        if(heroe.getEnergia() <= 0){
+            gameOver = true;
+            System.out.println("GameOver");
+        }
+
         AvionRefuerzo ref1 = heroe.getRefuerzo1();
         AvionRefuerzo ref2 = heroe.getRefuerzo2();
 
@@ -483,76 +590,78 @@ public class Juego1943 extends JGame {
         Keyboard keyboard = this.getKeyboard();
         heroe.setImagen(Utilidades.getImagenP38(0));
 
-        // Procesar teclas de direccion
-        if(teclaMovArriba.equals("W")){
-            if (keyboard.isKeyPressed(KeyEvent.VK_W)) {
-                heroe.setY((int)heroe.getY()-4);
-                heroe.setImagen(Utilidades.getImagenP38(0));
+        if(juegoCorriendo){
+            // Procesar teclas de direccion
+            if(teclaMovArriba.equals("W")){
+                if (keyboard.isKeyPressed(KeyEvent.VK_W)) {
+                    heroe.setY((int)heroe.getY()-4);
+                    heroe.setImagen(Utilidades.getImagenP38(0));
+                }
+            } else {
+                if (keyboard.isKeyPressed(KeyEvent.VK_UP)) {
+                    heroe.setY((int)heroe.getY()-4);
+                    heroe.setImagen(Utilidades.getImagenP38(0));
+                }
             }
-        } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_UP)) {
-                heroe.setY((int)heroe.getY()-4);
-                heroe.setImagen(Utilidades.getImagenP38(0));
-            }
-        }
 
-        if(teclaMovAbajo.equals("S")){
-            if(keyboard.isKeyPressed(KeyEvent.VK_S)) {
-                heroe.setY((int)heroe.getY()+4);
-                heroe.setImagen(Utilidades.getImagenP38(0));
+            if(teclaMovAbajo.equals("S")){
+                if(keyboard.isKeyPressed(KeyEvent.VK_S)) {
+                    heroe.setY((int)heroe.getY()+4);
+                    heroe.setImagen(Utilidades.getImagenP38(0));
+                }
+            } else {
+                if(keyboard.isKeyPressed(KeyEvent.VK_DOWN)) {
+                    heroe.setY((int)heroe.getY()+4);
+                    heroe.setImagen(Utilidades.getImagenP38(0));
+                }
             }
-        } else {
-            if(keyboard.isKeyPressed(KeyEvent.VK_DOWN)) {
-                heroe.setY((int)heroe.getY()+4);
-                heroe.setImagen(Utilidades.getImagenP38(0));
-            }
-        }
 
-        if(teclaMovIzq.equals("A")){
-            if (keyboard.isKeyPressed(KeyEvent.VK_A)) {
-                heroe.setX((int)heroe.getX()-4);
-                heroe.setImagen(Utilidades.getImagenP38(1));
+            if(teclaMovIzq.equals("A")){
+                if (keyboard.isKeyPressed(KeyEvent.VK_A)) {
+                    heroe.setX((int)heroe.getX()-4);
+                    heroe.setImagen(Utilidades.getImagenP38(1));
+                }
+            } else {
+                if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)) {
+                    heroe.setX((int)heroe.getX()-4);
+                    heroe.setImagen(Utilidades.getImagenP38(1));
+                }
             }
-        } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_LEFT)) {
-                heroe.setX((int)heroe.getX()-4);
-                heroe.setImagen(Utilidades.getImagenP38(1));
-            }
-        }
 
-        if(teclaMovDer.equals("D")){
-            if (keyboard.isKeyPressed(KeyEvent.VK_D)) {
-                heroe.setX((int)heroe.getX()+4);
-                heroe.setImagen(Utilidades.getImagenP38(2));
+            if(teclaMovDer.equals("D")){
+                if (keyboard.isKeyPressed(KeyEvent.VK_D)) {
+                    heroe.setX((int)heroe.getX()+4);
+                    heroe.setImagen(Utilidades.getImagenP38(2));
+                }
+            } else {
+                if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)) {
+                    heroe.setX((int)heroe.getX()+4);
+                    heroe.setImagen(Utilidades.getImagenP38(2));
+                }
             }
-        } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT)) {
-                heroe.setX((int)heroe.getX()+4);
-                heroe.setImagen(Utilidades.getImagenP38(2));
-            }
-        }
 
-        //disparar
-        if(teclaDisparar.equals("Barra espaciadora")){
-            if (keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
-                if(heroe.getArma().puedeDisparar())
-                    heroe.getArma().disparar(municionesP38,(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
+            //disparar
+            if(teclaDisparar.equals("Barra espaciadora")){
+                if (keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
+                    if(heroe.getArma().puedeDisparar())
+                        heroe.getArma().disparar(municionesP38,(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
+                }
+            } else {
+                if (keyboard.isKeyPressed(KeyEvent.VK_X)) {
+                    if(heroe.getArma().puedeDisparar())
+                        heroe.getArma().disparar(municionesP38,(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
+                }
             }
-        } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_X)) {
-                if(heroe.getArma().puedeDisparar())
-                    heroe.getArma().disparar(municionesP38,(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
-            }
-        }
 
-        //Ataque especial
-        if(teclaAtqEsp.equals("B")){
-            if (keyboard.isKeyPressed(KeyEvent.VK_B)) {
-                //lanza ataque especial
-            }
-        } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_Z)) {
-                //lanza ataque especial
+            //Ataque especial
+            if(teclaAtqEsp.equals("B")){
+                if (keyboard.isKeyPressed(KeyEvent.VK_B)) {
+                    //lanza ataque especial
+                }
+            } else {
+                if (keyboard.isKeyPressed(KeyEvent.VK_Z)) {
+                    //lanza ataque especial
+                }
             }
         }
 
@@ -578,27 +687,67 @@ public class Juego1943 extends JGame {
             }
         }
 
+        // Declara una variable booleana para seguir el estado de la tecla
+        boolean teclaPresionada = false;
+
         // Pausar el juego
-        if(teclaPausar.equals("P")){
-            if (keyboard.isKeyPressed(KeyEvent.VK_P)) {
-                //pausar juego
+        if (teclaPausar.equals("P")) {
+            if (keyboard.isKeyPressed(KeyEvent.VK_P) && !inicioJuego && !teclaPresionada) {
+                juegoCorriendo = !juegoCorriendo;
+                teclaPresionada = true;  // Marcar la tecla como presionada
+                try {
+                    Thread.sleep(100);  // Agregar un retraso de 100 milisegundos
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else if (!keyboard.isKeyPressed(KeyEvent.VK_P)) {
+                teclaPresionada = false;  // Restablecer la tecla presionada cuando se suelta
             }
         } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
-                //pausar juego
+            if (keyboard.isKeyPressed(KeyEvent.VK_SPACE) && !inicioJuego && !teclaPresionada) {
+                juegoCorriendo = !juegoCorriendo;
+                teclaPresionada = true;  // Marcar la tecla como presionada
+                try {
+                    Thread.sleep(100);  // Agregar un retraso de 100 milisegundos
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else if (!keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
+                teclaPresionada = false;  // Restablecer la tecla presionada cuando se suelta
             }
         }
 
-        // Iniciar el juego
+
+        // Iniciar el juego (Revisar si está bien resuelto)
         if(teclaIniciar.equals("C")){
-            if (keyboard.isKeyPressed(KeyEvent.VK_C)) {
-                //iniciar juego
-                //this.run(1.0 / 60.0);
+            if (keyboard.isKeyPressed(KeyEvent.VK_C) && inicioJuego) {
+                juegoCorriendo = !juegoCorriendo;
+                inicioJuego = false;
+            }
+            if (keyboard.isKeyPressed(KeyEvent.VK_C) && transicion) {
+                transicion = false;
+                juegoCorriendo = true;
+            }
+            if (keyboard.isKeyPressed(KeyEvent.VK_C) && gameOver) {
+                gameOver = false;
+                inicioJuego = true;
+                juegoCorriendo = false;
+                run(1.0 / 60.0);
             }
         } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_ENTER)) {
-                //iniciar juego
-                //this.run(1.0 / 60.0);
+            if (keyboard.isKeyPressed(KeyEvent.VK_ENTER) && inicioJuego) {
+                juegoCorriendo = !juegoCorriendo;
+                inicioJuego = false;
+            }
+            if (keyboard.isKeyPressed(KeyEvent.VK_ENTER) && transicion) {
+                transicion = false;
+                juegoCorriendo = true;
+            }
+            if (keyboard.isKeyPressed(KeyEvent.VK_ENTER) && gameOver) {
+                gameOver = false;
+                inicioJuego = true;
+                juegoCorriendo = false;
+                run(1.0 / 60.0);
             }
         }
 

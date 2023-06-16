@@ -29,4 +29,12 @@ public class Cronometro {
     public long getDelta(){return delta;}
 
     public void setDelta(long delta){this.delta = delta;}
+
+    public Boolean isRunning(){
+        return corriendo;
+    }
+
+    public void aumentarTiempo(long tiempo){
+        this.tiempo += tiempo;
+    }
 }

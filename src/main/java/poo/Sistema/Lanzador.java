@@ -1,6 +1,7 @@
 package poo.Sistema;
 
-import poo.Inicio;
+import poo.Juego1943;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -188,11 +189,12 @@ public class Lanzador extends Frame implements ActionListener, ItemListener {
 
 	private void ejecutar() {
 		setVisible(false);
-
 		Thread juegoThread = new Thread(() -> {
-			Inicio inicio1943 = new Inicio(this);
+			Juego1943 game = new Juego1943();
+			game.run(1.0 / 60.0);
 		});
 		juegoThread.start();
+
 		setVisible(true);
 	}
 
@@ -218,3 +220,6 @@ public class Lanzador extends Frame implements ActionListener, ItemListener {
 		Lanzador sys = new Lanzador();
 	}
 }
+
+//abc
+//dfeg
