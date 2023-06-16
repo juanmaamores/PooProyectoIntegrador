@@ -3,10 +3,9 @@
  */
 package poo;
 import com.entropyinteractive.*;  //jgame
-import poo.Armas.ArmaBarco;
-import poo.Armas.Escopeta;
-import poo.Bonus.*;
-import poo.Enemigos.*;
+import poo.Niveles.Nivel;
+import poo.Niveles.Nivel1;
+
 import java.awt.*;
 import java.awt.event.*; //eventos
 import javax.imageio.*; //imagenes
@@ -17,23 +16,12 @@ import java.util.*;
 
 public class Juego1943 extends JGame {
 
-    private Date dInit = new Date();
-    private Date dAhora;
-    private int puntaje, nroNivel = 1;
-    private static int puntajeMaximo = 0;
-    private Fondo fondo;
-    private Vector<GrupoAvionesHostiles> avioneshostiles;
-    private Vector<GrupoAvionesRojos> avionesrojos;
-    private Vector<Barco> barcos;
-    private Vector<Bonus> bonus;
-    private Vector<Municion> municionesP38, municionesHostiles, municionesAliadas;
-    private P38 heroe;
+    private static Nivel nivelActual;
+    private static int puntajeMaximo = 0, ancho, alto;
     private String teclaActDesSonido, teclaActDesMusica, teclaPausar, teclaMovIzq, teclaMovDer, teclaMovArriba, teclaMovAbajo, teclaDisparar, teclaAtqEsp, teclaIniciar, pistaMusical;
     private final String ARCHIVO_CONFIGURACION1943 = "src\\main\\resources\\conf\\configuracion1943.properties";
     private final Font fuente = new Font("Calibri", Font.PLAIN, 16);
-    private Boolean musicaActiva, sonidoActivo, juegoCorriendo = false, inicioJuego = true, gameOver = false, transicion = false;
-    //control de tiempo entre niveles
-    private float cronoNivel1 = 0, cronoNivel2 = 0, cronoAviones1 = 0, cronoAviones2 = 0, cronoAviones3 = 0, cronoAvionesRojos = 0, cronoBarcos = 0;
+    private static Boolean musicaActiva, sonidoActivo, juegoCorriendo = false, inicioJuego = true, gameOver = false, transicion = false;
 
     public Juego1943() {
         super("1943: The Battle of Midway", 800, 600);
@@ -67,122 +55,27 @@ public class Juego1943 extends JGame {
     public void gameStartup() {
         System.out.println("Iniciando 1943: The Battle of Midway");
         cargarImagenes();
-        puntaje = 0;
-        fondo = new Fondo(Utilidades.getImagenNivel(0));
-        fondo.setPosicion(8,-(int)fondo.getHeight()+getHeight());
-        heroe = new P38();
-        heroe.setPosicion(getWidth() / 2-10, getHeight() / 2+100);
-        avioneshostiles = new Vector<>();
-        avionesrojos = new Vector<>();
-        barcos = new Vector<>();
-        bonus = new Vector<>();
-        municionesP38 = new Vector<>();
-        municionesHostiles = new Vector<>();
-        municionesAliadas = new Vector<>();
-        spawnearAviones1();
-        spawnearAvionesRojos();
+        juegoCorriendo = false;
+        inicioJuego = true;
+        gameOver = false;
+        transicion = false;
+        ancho = getWidth();
+        alto = getHeight();
+        nivelActual = null;
     }
-
-    public void spawnearAvionesRojos(){
-        avionesrojos.add(new GrupoAvionesRojos(getHeight()));
-    }
-
-    public void spawnearAviones1(){
-        avioneshostiles.add(new GrupoAvionesHostilesFormacion1(getHeight()));
-    }
-
-    public void spawnearAviones2(){
-        avioneshostiles.add(new GrupoAvionesHostilesFormacion2(getHeight()));
-    }
-
-    public void spawnearAviones3(){
-        avioneshostiles.add(new GrupoAvionesHostilesFormacion3(getHeight()));
-    }
-
-    public void spawnearBarcos() {
-        Random random = new Random();
-        int x = random.nextInt(801); // Genera un número aleatorio entre 0 y 800 (inclusive)
-        int y = -50;
-        barcos.add(new Barco(x, y, heroe));
-    }
-
 
     public void gameUpdate(double delta) {
 
         chequearTeclas();
 
         if(juegoCorriendo && !gameOver){
-            if(nroNivel == 1){
-                cronoNivel1 += 1 % 0.02;
-                cronoAviones1 += 1 % 0.02;
-                cronoAviones2 += 1 % 0.02;
-                cronoAviones3 += 1 % 0.02;
-                cronoAvionesRojos += 1 % 0.02;
-                cronoBarcos += 1 % 0.02;
-                if((int)cronoAviones1 == 15){
-                    spawnearAviones1();
-                    cronoAviones1 = 0;
-                }
-                if((int)cronoAviones2 == 30){
-                    spawnearAviones2();
-                    cronoAviones2 = 0;
-                }
-                if((int)cronoAviones3 == 45){
-                    spawnearAviones3();
-                    cronoAviones3 = 0;
-                }
-                if((int)cronoAvionesRojos == 10){
-                    spawnearAvionesRojos();
-                    cronoAvionesRojos = 0;
-                }
-                if((int)cronoBarcos == 20){
-                    spawnearBarcos();
-                    cronoBarcos = 0;
-                }
-            } else if(nroNivel == 2){
-                cronoNivel2 += 1 % 0.02;
-                cronoAviones1 += 1 % 0.02;
-                cronoAviones2 += 1 % 0.02;
-                cronoAviones3 += 1 % 0.02;
-                cronoAvionesRojos += 1 % 0.02;
-                cronoBarcos += 1 % 0.02;
-                if((int)cronoAviones1 == 15){
-                    spawnearAviones1();
-                    cronoAviones1 = 0;
-                }
-                if((int)cronoAviones2 == 30){
-                    spawnearAviones2();
-                    cronoAviones2 = 0;
-                }
-                if((int)cronoAviones3 == 45){
-                    spawnearAviones3();
-                    cronoAviones3 = 0;
-                }
-                if((int)cronoAvionesRojos == 10){
-                    spawnearAvionesRojos();
-                    cronoAvionesRojos = 0;
-                }
-                if((int)cronoBarcos == 20){
-                    spawnearBarcos();
-                    cronoBarcos = 0;
-                }
-            }
-            actualizarObjetos();
-            chequearColisiones();
-            fondo.setY((int)fondo.getY()+1);
-        }
-
-        if ((int)cronoNivel1 == 180 && nroNivel == 1){
-            transicion = true;
-            juegoCorriendo = false;
-            nroNivel += 1;
-        }
-
-        if((int)cronoNivel2 == 180 && nroNivel == 2){
-            gameOver = true;
+            nivelActual.actualizarObjetos();
+            nivelActual.chequearColisiones();
+            nivelActual.crearEnemigos();
         }
 
         if(gameOver){
+            int puntaje = nivelActual.getPuntaje();
             if (puntaje > puntajeMaximo){
                 puntajeMaximo = puntaje;
             }
@@ -222,66 +115,24 @@ public class Juego1943 extends JGame {
         int yTextoContinuar = height / 2;
 
         //Gameover
-        String textoGameOver = "GAME OVER";
-        String textoPuntaje = "Puntaje final: " + puntaje;
-        String textoRecord = "Record: " + puntajeMaximo;
-        String textoReiniciar = "Tecla Enter o C para jugar de nuevo";
 
-        int xTextoGameOver = (width - metrics.stringWidth(textoGameOver)) / 2;
-        int yTextoGameOver = (height / 2)-60;
-        int xTextoPuntaje = (width - metrics.stringWidth(textoPuntaje)) / 2;
-        int yTextoPuntaje = (height / 2)-30;
-        int xTextoRecord = (width - metrics.stringWidth(textoRecord)) / 2;
-        int yTextoRecord = (height / 2);
-        int xTextoReiniciar = (width - metrics.stringWidth(textoReiniciar)) / 2;
-        int yTextoReiniciar = (height / 2)+30;
-
-        dAhora = new Date( );
-        long dateDiff = dAhora.getTime() - dInit.getTime();
-        long diffSeconds = dateDiff / 1000 % 60;
-        long diffMinutes = dateDiff / (60 * 1000) % 60;
-
-        //La seccion que dibuja los objetos graficos
-        if(!transicion){
-            fondo.draw(g);
-
-            for(Bonus bonus : bonus)
-                bonus.draw(g);
-
-            for (Barco barco : barcos) {
-                barco.draw(g);
-
-                for(ArmaBarco arma : barco.getArmas())
-                    arma.draw(g);
-            }
-
-            for (GrupoAvionesRojos grupo : avionesrojos)
-                for (AvionRojo avion : grupo.getAviones())
-                    avion.draw(g);
-
-            for (GrupoAvionesHostiles grupo : avioneshostiles)
-                for (AvionHostil avion : grupo.getAviones())
-                    avion.draw(g);
-
-            for(Municion municion : municionesHostiles)
-                municion.draw(g);
-
-            for(Municion municion: municionesAliadas)
-                municion.draw(g);
-
-            for(Municion municion: municionesP38)
-                municion.draw(g);
-
-        }
-
-        if(!gameOver){
-            if(!transicion){
-                if(heroe.getRefuerzo1() != null)
-                    heroe.getRefuerzo1().draw(g);
-                if(heroe.getRefuerzo2() != null)
-                    heroe.getRefuerzo2().draw(g);
-                heroe.draw(g);
-            }
+        if(gameOver) {
+            String textoGameOver = "GAME OVER";
+            String textoPuntaje = "Puntaje final: " + nivelActual.getPuntaje();
+            String textoRecord = "Record: " + puntajeMaximo;
+            String textoReiniciar = "Tecla Enter o C para jugar de nuevo";
+            int xTextoGameOver = (width - metrics.stringWidth(textoGameOver)) / 2;
+            int yTextoGameOver = (height / 2)-60;
+            int xTextoPuntaje = (width - metrics.stringWidth(textoPuntaje)) / 2;
+            int yTextoPuntaje = (height / 2)-30;
+            int xTextoRecord = (width - metrics.stringWidth(textoRecord)) / 2;
+            int yTextoRecord = (height / 2);
+            int xTextoReiniciar = (width - metrics.stringWidth(textoReiniciar)) / 2;
+            int yTextoReiniciar = (height / 2)+30;
+            g.drawString(textoGameOver, xTextoGameOver, yTextoGameOver);
+            g.drawString(textoPuntaje, xTextoPuntaje, yTextoPuntaje);
+            g.drawString(textoRecord, xTextoRecord, yTextoRecord);
+            g.drawString(textoReiniciar, xTextoReiniciar, yTextoReiniciar);
         }
 
         //seccion que dibuja la interfaz
@@ -297,21 +148,14 @@ public class Juego1943 extends JGame {
                 g.drawString(textoContinuar, xTextoContinuar, yTextoContinuar);
             }
         }
-        //interfaz gameover
-        if(gameOver){
-            g.drawString(textoGameOver, xTextoGameOver, yTextoGameOver);
-            g.drawString(textoPuntaje, xTextoPuntaje, yTextoPuntaje);
-            g.drawString(textoRecord, xTextoRecord, yTextoRecord);
-            g.drawString(textoReiniciar, xTextoReiniciar, yTextoReiniciar);
+        else {
+            nivelActual.draw(g);
+            g.drawString("Energia: " + nivelActual.getHeroe().getEnergia(), x, y + (int) (0.01 * height));
+            if(!gameOver){
+                g.drawString("Puntaje: " + nivelActual.getPuntaje(),  x + (int) (0.75 * width), y + (int) (0.01 * height));
+            }
         }
-        //interfaz juego
-        g.drawString("Tiempo de Juego: " + diffMinutes + ":" + diffSeconds, x, y + (int) (0.01 * height));
-        g.drawString("Nivel 1: " + (int)cronoNivel1, x, y + (int) (0.05 * height));
-        g.drawString("Nivel 2: " + (int)cronoNivel2, x, y + (int) (0.09 * height));
-        g.drawString("Energia P38: " + heroe.getEnergia(), x, y + (int) (0.13 * height));
-        if(!gameOver){
-            g.drawString("Puntaje: " + puntaje,  x + (int) (0.75 * width), y + (int) (0.01 * height));
-        }
+
     }
 
     public void cargarImagenes(){
@@ -349,314 +193,16 @@ public class Juego1943 extends JGame {
         System.out.println("Imágenes cargadas");
     }
 
-    public void actualizarObjetos(){
-
-        heroe.moverse(getWidth(), getHeight());
-        heroe.getArma().getDelayDisparo().update();
-        heroe.getTiempoBonus().update();
-        heroe.chequearBonus();
-
-        //chequear que el jugador no haya muerto
-        if(heroe.getEnergia() <= 0){
-            gameOver = true;
-            System.out.println("GameOver");
-        }
-
-        AvionRefuerzo ref1 = heroe.getRefuerzo1();
-        AvionRefuerzo ref2 = heroe.getRefuerzo2();
-
-        if(ref1 != null) {
-            if(ref1.getArma().puedeDisparar())
-                ref1.getArma().disparar(municionesAliadas, (int)(ref1.getX()+ref1.getWidth()/2-4), (int)ref1.getY());
-
-            if(ref1.getVida() <= 0) {
-                ref1.destruir();
-                heroe.setRefuerzo1(null);
-            }
-        }
-
-        if(ref2 != null) {
-            if (ref2.getArma().puedeDisparar())
-                ref2.getArma().disparar(municionesAliadas, (int) (ref2.getX() + ref2.getWidth() / 2 - 4), (int) ref2.getY());
-
-            if(ref2.getVida() <= 0) {
-                ref2.destruir();
-                heroe.setRefuerzo2(null);
-            }
-        }
-
-        for(Municion municion : municionesP38)
-            municion.moverse(getWidth(), getHeight());
-
-        for(Municion municion : municionesAliadas)
-            municion.moverse(getWidth(), getHeight());
-
-        for(Municion municion : municionesHostiles)
-            municion.moverse(getWidth(), getHeight());
-
-        for (GrupoAvionesHostiles grupo : avioneshostiles)
-            if(grupo.getActualizar()) {
-                for (AvionHostil avion : grupo.getAviones())
-                    if (avion.getActualizar()) {
-
-                        avion.moverse(getWidth(), getHeight());
-
-                        avion.getArma().getDelayDisparo().update();
-
-                        if(!avion.getVolviendo() && avion.getArma().puedeDisparar())
-                            avion.getArma().disparar(municionesHostiles, (int)(avion.getX()+avion.getWidth()/2-4), (int)avion.getY());
-
-                        if(avion.getVida() <= 0) {
-                            avion.destruir();
-                            puntaje += avion.getPuntaje();
-                        }
-                    }
-
-                grupo.setEstado();
-
-                if(grupo.todosDestruidos())
-                    puntaje += grupo.getPuntaje();
-            }
-
-        for(GrupoAvionesRojos grupo : avionesrojos)
-            if(grupo.getActualizar()) {
-                for (AvionRojo avion : grupo.getAviones()) {
-                    if(avion.getActualizar()) {
-
-                        avion.moverse(getWidth(), getHeight());
-
-                        if (avion.getVida() <= 0) {
-                            grupo.setUltimoDestruidoX(avion.getX());
-                            grupo.setUltimoDestruidoY(avion.getY());
-                            avion.destruir();
-                            puntaje += avion.getPuntaje();
-                        }
-                    }
-                }
-
-                grupo.setEstado();
-
-                if(grupo.todosDestruidos()) {
-                    bonus.add(Bonus.crearBonus((int)grupo.getUltimoDestruidoX(),(int)grupo.getUltimoDestruidoY()));
-                    puntaje += grupo.getPuntaje();
-                }
-            }
-
-        for(Barco barco : barcos)
-            if(barco.getActualizar()) {
-                barco.moverse(getWidth(), getHeight());
-
-                for(ArmaBarco arma : barco.getArmas()) {
-                    if(arma.getVida() <= 0)
-                        arma.destruir();
-
-                    if (arma.getActualizar() && arma.puedeDisparar())
-                        arma.disparar(municionesHostiles, (int) (arma.getX()), (int) arma.getY());
-                }
-
-            }
-
-        for(Bonus bonus : bonus)
-            if(bonus.getActualizar())
-                bonus.moverse(getWidth(), getHeight());
-    }
-
-    private void chequearColisiones() {
-
-        for (GrupoAvionesRojos grupo : avionesrojos)
-            for (AvionRojo avion : grupo.getAviones()) {
-                if (avion.getActualizar()) {
-                    if (heroe.intersects(avion)) {
-                        avion.setVida(0);
-                        heroe.setEnergia(-10);
-                    }
-
-                    for (Municion municion : municionesP38)
-                        if(municion.getActualizar())
-                            if (municion.intersects(avion)) {
-                                avion.setVida(avion.getVida() - municion.getPoder());
-                                municion.destruir();
-                            }
-
-                    for (Municion municion : municionesAliadas)
-                        if(municion.getActualizar())
-                            if (municion.intersects(avion)) {
-                                municion.destruir();
-                                avion.setVida(avion.getVida() - municion.getPoder());
-                            }
-
-                    AvionRefuerzo ref1 = heroe.getRefuerzo1(), ref2 = heroe.getRefuerzo2();
-
-                    if(ref1 != null)
-                        if(avion.intersects(ref1)){
-                            avion.setVida(0);
-                            ref1.setVida(ref1.getVida()-50);
-                        }
-
-                    if(ref2 != null)
-                        if(avion.intersects(ref2)){
-                            avion.setVida(0);
-                            ref2.setVida(ref2.getVida()-50);
-                        }
-                }
-            }
-
-        for (GrupoAvionesHostiles grupo : avioneshostiles)
-            for (AvionHostil avion : grupo.getAviones()) {
-                if (avion.getActualizar()) {
-                    if (heroe.intersects(avion)) {
-                        avion.setVida(0);
-                        heroe.setEnergia(-20);
-                    }
-
-                    for (Municion municion : municionesP38)
-                        if(municion.getActualizar())
-                            if (municion.intersects(avion)) {
-                                municion.destruir();
-                                avion.setVida(avion.getVida() - municion.getPoder());
-                            }
-
-                    for (Municion municion : municionesAliadas)
-                        if(municion.getActualizar())
-                            if (municion.intersects(avion)) {
-                                municion.destruir();
-                                avion.setVida(avion.getVida() - municion.getPoder());
-                            }
-
-                    AvionRefuerzo ref1 = heroe.getRefuerzo1(), ref2 = heroe.getRefuerzo2();
-
-                    if(ref1 != null)
-                        if(avion.intersects(ref1)){
-                            avion.setVida(0);
-                            ref1.setVida(ref1.getVida()-20);
-                        }
-
-                    if(ref2 != null)
-                        if(avion.intersects(ref2)){
-                            avion.setVida(0);
-                            ref2.setVida(ref2.getVida()-20);
-                        }
-
-                }
-            }
-
-        for(Barco barco : barcos)
-            for(ArmaBarco arma : barco.getArmas()) {
-                if (arma.getActualizar()) {
-                    /*if (heroe.intersects(arma)) {
-                        arma.setVida(0);
-                        heroe.setEnergia(-20);
-                    }*/
-
-                    for (Municion municion : municionesP38)
-                        if (municion.getActualizar())
-                            if (municion.intersects(arma)) {
-                                municion.destruir();
-                                arma.setVida(arma.getVida() - municion.getPoder());
-                            }
-
-                    for (Municion municion : municionesAliadas)
-                        if (municion.getActualizar())
-                            if (municion.intersects(arma)) {
-                                municion.destruir();
-                                arma.setVida(arma.getVida() - municion.getPoder());
-                            }
-
-                    AvionRefuerzo ref1 = heroe.getRefuerzo1(), ref2 = heroe.getRefuerzo2();
-
-                    if (ref1 != null)
-                        if (arma.intersects(ref1)) {
-                            arma.setVida(0);
-                            ref1.setVida(ref1.getVida() - 20);
-                        }
-
-                    if (ref2 != null)
-                        if (arma.intersects(ref2)) {
-                            arma.setVida(0);
-                            ref2.setVida(ref2.getVida() - 20);
-                        }
-
-                }
-            }
-
-
-        for(Municion municion : municionesHostiles)
-            if(municion.getActualizar()) {
-                if (municion.intersects(heroe)) {
-                    heroe.setEnergia(-municion.getPoder());
-                    municion.destruir();
-                }
-
-                AvionRefuerzo ref1 = heroe.getRefuerzo1(), ref2 = heroe.getRefuerzo2();
-
-                if(ref1 != null)
-                    if(municion.intersects(ref1)){
-                        municion.destruir();
-                        ref1.setVida(ref1.getVida()-municion.getPoder());
-                    }
-
-                if(ref2 != null)
-                    if(municion.intersects(ref2)){
-                        municion.destruir();
-                        ref2.setVida(ref2.getVida()-municion.getPoder());
-                    }
-            }
-
-        for(Municion municion : municionesP38) {
-
-            if (municion.getActualizar()) {
-                Rectangle rango = heroe.getRango();
-
-                if (rango != null)
-                    if(!municion.intersects(rango))
-                        municion.destruir();
-
-                if(heroe.getArma() instanceof Escopeta)
-                    for(Municion munienemiga : municionesHostiles)
-                        if(munienemiga.actualizar)
-                            if(municion.intersects(munienemiga)){
-                                municion.destruir();
-                                munienemiga.destruir();
-                            }
-
-
-
-                Bonus nuevo = null;
-                boolean cambio = false;
-
-                for (Bonus b : bonus)
-                        if (b.getActualizar()) {
-                            if (municion.intersects(b)) {
-                                b.setY((int) b.getY() - 5);
-                                b.setGolpesRecibidos((short) 1);
-                                municion.destruir();
-                            }
-
-                            if (b.cambiar()) {
-                                nuevo = Bonus.crearBonus((int) b.getX(), (int) b.getY());
-                                cambio = true;
-                                b.destruir();
-                            }
-                        }
-
-                if(cambio)
-                    bonus.add(nuevo);
-            }
-
-        }
-
-        for(Bonus b : bonus)
-            if(b.getActualizar())
-                if(b.intersects(heroe))
-                    b.ejecutarAccion(heroe);
-    }
-
     public void chequearTeclas() {
 
         Keyboard keyboard = this.getKeyboard();
-        heroe.setImagen(Utilidades.getImagenP38(0));
 
         if(juegoCorriendo){
+
+            P38 heroe = nivelActual.getHeroe();
+
+            heroe.setImagen(Utilidades.getImagenP38(0));
+
             // Procesar teclas de direccion
             if(teclaMovArriba.equals("W")){
                 if (keyboard.isKeyPressed(KeyEvent.VK_W)) {
@@ -710,12 +256,12 @@ public class Juego1943 extends JGame {
             if(teclaDisparar.equals("Barra espaciadora")){
                 if (keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
                     if(heroe.getArma().puedeDisparar())
-                        heroe.getArma().disparar(municionesP38,(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
+                        heroe.getArma().disparar(nivelActual.getMunicionesP38(),(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
                 }
             } else {
                 if (keyboard.isKeyPressed(KeyEvent.VK_X)) {
                     if(heroe.getArma().puedeDisparar())
-                        heroe.getArma().disparar(municionesP38,(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
+                        heroe.getArma().disparar(nivelActual.getMunicionesP38(),(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
                 }
             }
 
@@ -787,8 +333,9 @@ public class Juego1943 extends JGame {
         // Iniciar el juego (Revisar si está bien resuelto)
         if(teclaIniciar.equals("C")){
             if (keyboard.isKeyPressed(KeyEvent.VK_C) && inicioJuego) {
-                juegoCorriendo = !juegoCorriendo;
+                juegoCorriendo = true;
                 inicioJuego = false;
+                nivelActual = new Nivel1();
             }
             if (keyboard.isKeyPressed(KeyEvent.VK_C) && transicion) {
                 transicion = false;
@@ -798,15 +345,14 @@ public class Juego1943 extends JGame {
                 gameOver = false;
                 inicioJuego = true;
                 juegoCorriendo = false;
-                cronoNivel1 = 0;
-                cronoNivel2 = 0;
-                nroNivel = 1;
+                nivelActual = new Nivel1();
                 run(1.0 / 60.0);
             }
         } else {
             if (keyboard.isKeyPressed(KeyEvent.VK_ENTER) && inicioJuego) {
-                juegoCorriendo = !juegoCorriendo;
+                juegoCorriendo = true;
                 inicioJuego = false;
+                nivelActual = new Nivel1();
             }
             if (keyboard.isKeyPressed(KeyEvent.VK_ENTER) && transicion) {
                 transicion = false;
@@ -816,9 +362,7 @@ public class Juego1943 extends JGame {
                 gameOver = false;
                 inicioJuego = true;
                 juegoCorriendo = false;
-                cronoNivel1 = 0;
-                cronoNivel2 = 0;
-                nroNivel = 1;
+                nivelActual = new Nivel1();
                 run(1.0 / 60.0);
             }
         }
@@ -829,15 +373,6 @@ public class Juego1943 extends JGame {
         }
     }
 
-    //metodos para manejar el puntaje
-    public void aumentarPuntuacion(int puntos) {
-        puntaje += puntos;
-    }
-
-    public int getPuntaje() {
-        return puntaje;
-    }
-
     public int getPuntajeMaximo() {
         return puntajeMaximo;
     }
@@ -845,4 +380,13 @@ public class Juego1943 extends JGame {
     public void gameShutdown() {
        Log.info(getClass().getSimpleName(), "Cerrando el juego");
     }
+
+    public static boolean getGameOver(){return gameOver;}
+    public static void setGameOver(boolean g){gameOver = g;}
+
+    public static boolean getTransicion(){return transicion;}
+    public static void setTransicion(boolean t){transicion = t;}
+
+    public static int getAncho(){return ancho;}
+    public static int getAlto(){return alto;}
 }

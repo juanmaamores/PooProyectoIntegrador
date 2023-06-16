@@ -1,10 +1,13 @@
 package poo.Enemigos;
 
+import poo.Juego1943;
+
 import java.util.Vector;
 
 public class GrupoAvionesHostilesFormacion2 extends GrupoAvionesHostiles{
-    public GrupoAvionesHostilesFormacion2(int alto){
+    public GrupoAvionesHostilesFormacion2(){
         super();
+        int alto = Juego1943.getAlto();
         aviones = new Vector<>();
         int pos = 0;
         for(int i=0; i <= 2; i++) {
