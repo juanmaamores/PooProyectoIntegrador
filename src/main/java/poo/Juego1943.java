@@ -732,6 +732,9 @@ public class Juego1943 extends JGame {
                 gameOver = false;
                 inicioJuego = true;
                 juegoCorriendo = false;
+                cronoNivel1 = 0;
+                cronoNivel2 = 0;
+                nroNivel = 1;
                 run(1.0 / 60.0);
             }
         } else {
@@ -747,6 +750,9 @@ public class Juego1943 extends JGame {
                 gameOver = false;
                 inicioJuego = true;
                 juegoCorriendo = false;
+                cronoNivel1 = 0;
+                cronoNivel2 = 0;
+                nroNivel = 1;
                 run(1.0 / 60.0);
             }
         }
