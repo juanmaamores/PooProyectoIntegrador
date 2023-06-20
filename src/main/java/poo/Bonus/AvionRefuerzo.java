@@ -2,14 +2,9 @@ package poo.Bonus;
 
 import poo.Armas.Arma;
 import poo.Armas.ArmaBasica;
-import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
-import poo.Municion;
-import poo.ObjetoGrafico;
-import poo.Sistema.Cronometro;
-import poo.Utilidades;
-
-import java.awt.image.BufferedImage;
+import poo.Otros.ObjetoGrafico;
+import poo.Otros.Utilidades;
 
 public class AvionRefuerzo extends ObjetoGrafico implements Movil {
     private int vida;

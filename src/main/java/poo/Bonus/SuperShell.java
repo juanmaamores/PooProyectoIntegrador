@@ -1,9 +1,7 @@
 package poo.Bonus;
 
-import poo.P38;
-import poo.Utilidades;
-
-import java.awt.image.BufferedImage;
+import poo.Otros.P38;
+import poo.Otros.Utilidades;
 
 public class SuperShell extends PowerUp{
 

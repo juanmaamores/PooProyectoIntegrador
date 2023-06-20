@@ -1,10 +1,9 @@
 package poo.Bonus;
 
 import poo.Interfaces.Movil;
-import poo.ObjetoGrafico;
-import poo.P38;
+import poo.Otros.ObjetoGrafico;
+import poo.Otros.P38;
 
-import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public abstract class Bonus extends ObjetoGrafico implements Movil {

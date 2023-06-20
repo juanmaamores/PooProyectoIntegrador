@@ -1,4 +1,4 @@
-package poo;
+package poo.Otros;
 
 public class Ranking {
     public Ranking(){

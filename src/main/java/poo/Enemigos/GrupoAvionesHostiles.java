@@ -1,7 +1,5 @@
 package poo.Enemigos;
 
-import poo.Municion;
-
 import java.util.Vector;
 
 public abstract class GrupoAvionesHostiles extends GrupoAviones{

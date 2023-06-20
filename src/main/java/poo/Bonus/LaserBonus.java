@@ -1,9 +1,8 @@
 package poo.Bonus;
 
-import poo.Armas.Auto;
 import poo.Armas.Laser;
-import poo.P38;
-import poo.Utilidades;
+import poo.Otros.P38;
+import poo.Otros.Utilidades;
 
 public class LaserBonus extends ArmaEspecial{
 

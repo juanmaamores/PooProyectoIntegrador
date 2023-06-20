@@ -1,10 +1,7 @@
 package poo.Enemigos;
 
-import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
-import poo.Municion;
-
-import java.awt.image.BufferedImage;
+import poo.Otros.Municion;
 
 public abstract class Jefe extends Enemigo implements Movil{
     public abstract Municion disparar();

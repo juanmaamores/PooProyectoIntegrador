@@ -1,4 +1,4 @@
-package poo.Sistema;
+package poo.Otros;
 
 public class Cronometro {
     private long delta, ultimoTiempo, tiempo;

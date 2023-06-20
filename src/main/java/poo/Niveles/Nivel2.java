@@ -2,7 +2,11 @@ package poo.Niveles;
 
 import poo.*;
 import poo.Enemigos.*;
-import poo.Sistema.Cronometro;
+import poo.Otros.Cronometro;
+import poo.Otros.Fondo;
+import poo.Otros.P38;
+import poo.Otros.Sound;
+import poo.Otros.Utilidades;
 
 import java.util.ArrayList;
 

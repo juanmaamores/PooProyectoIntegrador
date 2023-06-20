@@ -1,9 +1,8 @@
 package poo.Bonus;
 
 import poo.Armas.Ametralladora;
-import poo.Armas.Escopeta;
-import poo.P38;
-import poo.Utilidades;
+import poo.Otros.P38;
+import poo.Otros.Utilidades;
 
 public class AmetralladoraBonus extends ArmaEspecial{
 

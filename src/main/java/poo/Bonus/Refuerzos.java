@@ -1,10 +1,7 @@
 package poo.Bonus;
 
-import poo.P38;
-import poo.Utilidades;
-
-import java.awt.image.BufferedImage;
-import java.util.Vector;
+import poo.Otros.P38;
+import poo.Otros.Utilidades;
 
 public class Refuerzos extends Bonus{
 

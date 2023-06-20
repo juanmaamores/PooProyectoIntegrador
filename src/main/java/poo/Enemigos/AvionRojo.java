@@ -1,12 +1,7 @@
 package poo.Enemigos;
 
 import poo.Interfaces.Movil;
-import poo.Municion;
-import poo.ObjetoGrafico;
-import poo.Utilidades;
-
-import javax.imageio.ImageIO;
-import java.io.IOException;
+import poo.Otros.Utilidades;
 
 public class AvionRojo extends Enemigo implements Movil{
 

@@ -1,8 +1,6 @@
 package poo.Enemigos;
 
-import poo.Interfaces.Disparable;
-import poo.Interfaces.Movil;
-import poo.ObjetoGrafico;
+import poo.Otros.ObjetoGrafico;
 
 public abstract class Enemigo extends ObjetoGrafico {
     protected boolean muerto = false, escapo = false;

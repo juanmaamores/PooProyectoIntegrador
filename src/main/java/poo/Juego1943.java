@@ -5,6 +5,8 @@ package poo;
 import com.entropyinteractive.*;  //jgame
 import poo.Niveles.Nivel;
 import poo.Niveles.Nivel1;
+import poo.Otros.P38;
+import poo.Otros.Utilidades;
 
 import java.awt.*;
 import java.awt.event.*; //eventos

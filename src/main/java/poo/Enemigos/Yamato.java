@@ -1,8 +1,8 @@
 package poo.Enemigos;
 
-import poo.Municion;
-import poo.P38;
-import poo.Utilidades;
+import poo.Otros.Municion;
+import poo.Otros.P38;
+import poo.Otros.Utilidades;
 import poo.Armas.ArmaBarco;
 
 import java.util.Vector;

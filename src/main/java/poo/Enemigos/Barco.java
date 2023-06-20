@@ -2,8 +2,8 @@ package poo.Enemigos;
 
 import poo.Armas.ArmaBarco;
 import poo.Interfaces.Movil;
-import poo.P38;
-import poo.Utilidades;
+import poo.Otros.P38;
+import poo.Otros.Utilidades;
 
 import java.util.Vector;
 

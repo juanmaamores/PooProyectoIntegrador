@@ -1,4 +1,4 @@
-package poo;
+package poo.Otros;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;

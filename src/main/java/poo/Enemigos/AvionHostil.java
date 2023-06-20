@@ -2,14 +2,8 @@ package poo.Enemigos;
 
 import poo.Armas.Arma;
 import poo.Armas.ArmaAvionHostil;
-import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
-import poo.Municion;
-import poo.Sistema.Cronometro;
-import poo.Utilidades;
-
-import javax.imageio.ImageIO;
-import java.io.IOException;
+import poo.Otros.Utilidades;
 
 public class AvionHostil extends Enemigo implements Movil{
     private final Arma arma;

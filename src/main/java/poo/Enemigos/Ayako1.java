@@ -1,12 +1,10 @@
 package poo.Enemigos;
 
 import poo.Armas.ArmaAvionHostil;
-import poo.Armas.ArmaBarco;
-import poo.Municion;
-import poo.P38;
-import poo.Utilidades;
+import poo.Otros.Municion;
+import poo.Otros.P38;
+import poo.Otros.Utilidades;
 
-import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 public class Ayako1 extends Jefe{

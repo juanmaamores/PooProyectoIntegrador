@@ -1,8 +1,8 @@
 package poo.Bonus;
 
 import poo.Armas.Auto;
-import poo.P38;
-import poo.Utilidades;
+import poo.Otros.P38;
+import poo.Otros.Utilidades;
 
 public class AutoBonus extends PowerUp{
 

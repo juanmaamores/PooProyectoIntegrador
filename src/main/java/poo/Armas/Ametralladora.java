@@ -1,11 +1,10 @@
 package poo.Armas;
 
-import poo.Municion;
-import poo.Sistema.Cronometro;
-import poo.Utilidades;
+import poo.Otros.Municion;
+import poo.Otros.Cronometro;
+import poo.Otros.Utilidades;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Ametralladora extends Arma{
     public Ametralladora(){

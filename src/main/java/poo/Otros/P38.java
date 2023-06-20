@@ -1,16 +1,11 @@
-package poo;
+package poo.Otros;
 
-import com.entropyinteractive.Keyboard;
 import poo.Armas.Arma;
 import poo.Armas.ArmaBasica;
-import poo.Armas.Escopeta;
 import poo.Bonus.AvionRefuerzo;
-import poo.Interfaces.Disparable;
 import poo.Interfaces.Movil;
-import poo.Sistema.Cronometro;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class P38 extends ObjetoGrafico implements Movil {
     private int energia, cantAtaqEsp;

@@ -1,4 +1,4 @@
-package poo;
+package poo.Otros;
 
 import java.awt.image.BufferedImage;
 import java.util.Vector;

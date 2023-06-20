@@ -7,7 +7,8 @@ import poo.Armas.Escopeta;
 import poo.Bonus.AvionRefuerzo;
 import poo.Bonus.Bonus;
 import poo.Enemigos.*;
-import poo.Sistema.Cronometro;
+import poo.Otros.Cronometro;
+import poo.Otros.*;
 
 import java.awt.*;
 import java.util.ArrayList;

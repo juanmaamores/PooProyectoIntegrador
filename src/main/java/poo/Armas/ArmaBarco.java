@@ -1,12 +1,11 @@
 package poo.Armas;
 
-import poo.Municion;
-import poo.P38;
-import poo.Sistema.Cronometro;
-import poo.Utilidades;
+import poo.Otros.Municion;
+import poo.Otros.P38;
+import poo.Otros.Cronometro;
+import poo.Otros.Utilidades;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
