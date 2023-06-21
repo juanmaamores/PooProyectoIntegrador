@@ -4,7 +4,6 @@ import poo.Otros.Municion;
 import poo.Otros.P38;
 import poo.Otros.Utilidades;
 import poo.Armas.ArmaBarco;
-
 import java.util.Vector;
 
 public class Yamato extends Jefe{

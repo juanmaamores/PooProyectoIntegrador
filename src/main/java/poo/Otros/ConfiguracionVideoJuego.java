@@ -27,7 +27,6 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 		setLocationRelativeTo(v);
 		setLayout(new BorderLayout());
 		this.index = index;
-		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -35,7 +34,6 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 				dispose(); // Liberar recursos de la ventana
 			}
 		});
-
 		// Componentes para el titulo de la ventana
 		titulo = new Label("Configuracion del videojuego " + nombreJuego);
 		titulo.setAlignment(Label.CENTER);
@@ -203,10 +201,8 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 		panelCentral.add(panelBotones);
 		add(panelCentral, BorderLayout.CENTER);
 		pack();
-		setResizable(false); // Evitar que se pueda cambiar el tamaño
-
+		//setResizable(false); // Evitar que se pueda cambiar el tamaño
 		cargarConfiguracion(index);
-
 	}
 
 	@Override

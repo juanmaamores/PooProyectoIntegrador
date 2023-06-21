@@ -4,7 +4,6 @@ import poo.Armas.ArmaAvionHostil;
 import poo.Otros.Municion;
 import poo.Otros.P38;
 import poo.Otros.Utilidades;
-
 import java.util.Vector;
 
 public class Ayako1 extends Jefe{

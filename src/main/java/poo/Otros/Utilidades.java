@@ -39,4 +39,9 @@ public class Utilidades {
     public static void setImagenBarco(BufferedImage img){imagenesBarco.add(img);}
 
     public static BufferedImage getImagenBarco(int i){return imagenesBarco.get(i);}
+
+    public static BufferedImage getImagenJefes(int i) {return null;}
+
+    public static void setImagenJefes(BufferedImage read) {
+    }
 }

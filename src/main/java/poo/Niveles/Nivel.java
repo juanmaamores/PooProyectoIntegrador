@@ -1,18 +1,16 @@
 package poo.Niveles;
 
-import poo.*;
 import poo.Armas.ArmaAvionHostil;
 import poo.Armas.ArmaBarco;
 import poo.Armas.Escopeta;
 import poo.Bonus.AvionRefuerzo;
 import poo.Bonus.Bonus;
 import poo.Enemigos.*;
-import poo.Otros.Cronometro;
+import poo.Juego1943;
 import poo.Otros.*;
 
 import java.awt.*;
 import java.util.ArrayList;
-
 import static poo.Juego1943.*;
 
 public abstract class Nivel {
@@ -25,25 +23,23 @@ public abstract class Nivel {
     protected ArrayList<Municion> municionesP38, municionesHostiles, municionesAliadas;
     protected P38 heroe;
     protected Cronometro tiempo;
-
     protected Ayako1 ayako1;
-
     protected Yamato yamato;
+    protected Sound musicaNivel;
 
-    protected Sound sound;
     public void playMusic(int i){
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        musicaNivel.setFile(i);
+        musicaNivel.play();
+        musicaNivel.loop();
     }
 
-    public void stopMusic(){
-        sound.stop();
+    public void stopMusic(int i){
+        musicaNivel.stop();
     }
 
     public void playSEffects(int i){
-        sound.setFile(i);
-        sound.play();
+        musicaNivel.setFile(i);
+        musicaNivel.play();
     }
 
     public void actualizarObjetos(){
@@ -51,9 +47,7 @@ public abstract class Nivel {
         int alto = Juego1943.getAlto();
 
         tiempo.update();
-
         fondo.mover();
-
         heroe.moverse(ancho, alto);
         heroe.getArma().getDelayDisparo().update();
         heroe.getTiempoBonus().update();
@@ -61,7 +55,8 @@ public abstract class Nivel {
 
         //chequear que el jugador no haya muerto
         if(heroe.getEnergia() <= 0){
-            setGameOver(true);
+            stopMusic(0);
+            setGameOver();
             heroe.destruir();
         }
 
@@ -397,63 +392,64 @@ public abstract class Nivel {
 
     public void draw(Graphics2D g){
 
-        fondo.draw(g);
-
-        if(!getTransicion()){
-
-            for(Bonus bonus : bonus)
-                bonus.draw(g);
-
-            for (Barco barco : barcos) {
-                barco.draw(g);
-
-                for(ArmaBarco arma : barco.getArmas())
-                    arma.draw(g);
-            }
-
-            for (GrupoAvionesRojos grupo : avionesrojos)
-                for (AvionRojo avion : grupo.getAviones())
-                    avion.draw(g);
-
-            for (GrupoAvionesHostiles grupo : avioneshostiles)
-                for (AvionHostil avion : grupo.getAviones())
-                    avion.draw(g);
-
-            for(Municion municion : municionesHostiles)
-                municion.draw(g);
-
-            for(Municion municion: municionesAliadas)
-                municion.draw(g);
-
-            for(Municion municion: municionesP38)
-                municion.draw(g);
-
-        }
-
-        if(ayako1 != null){
-        ayako1.draw(g);
-        for(ArmaAvionHostil arma : ayako1.getArmas()) {
-            arma.draw(g);
-        }}
-
-        if(yamato != null){
-            yamato.draw(g);
-
-            for(ArmaBarco arma : yamato.getArmas()) {
-                arma.setImagen(Utilidades.getImagenBarco(2));
-                arma.draw(g);
-            }
-        }
-
-
-
         if(!Juego1943.getGameOver()){
+
+            fondo.draw(g);
+
             if(!getTransicion()){
-                if(heroe.getRefuerzo1() != null)
-                    heroe.getRefuerzo1().draw(g);
-                if(heroe.getRefuerzo2() != null)
-                    heroe.getRefuerzo2().draw(g);
-                heroe.draw(g);
+
+                for(Bonus bonus : bonus)
+                    bonus.draw(g);
+
+                for (Barco barco : barcos) {
+                    barco.draw(g);
+
+                    for(ArmaBarco arma : barco.getArmas())
+                        arma.draw(g);
+                }
+
+                for (GrupoAvionesRojos grupo : avionesrojos)
+                    for (AvionRojo avion : grupo.getAviones())
+                        avion.draw(g);
+
+                for (GrupoAvionesHostiles grupo : avioneshostiles)
+                    for (AvionHostil avion : grupo.getAviones())
+                        avion.draw(g);
+
+                for(Municion municion : municionesHostiles)
+                    municion.draw(g);
+
+                for(Municion municion: municionesAliadas)
+                    municion.draw(g);
+
+                for(Municion municion: municionesP38)
+                    municion.draw(g);
+
+            }
+
+            if(ayako1 != null){
+                ayako1.draw(g);
+                for(ArmaAvionHostil arma : ayako1.getArmas()) {
+                    arma.draw(g);
+                }}
+
+            if(yamato != null){
+                yamato.draw(g);
+
+                for(ArmaBarco arma : yamato.getArmas()) {
+                    arma.setImagen(Utilidades.getImagenBarco(2));
+                    arma.draw(g);
+                }
+            }
+
+            if(!Juego1943.getGameOver()){
+                if(!getTransicion()){
+                    if(heroe.getRefuerzo1() != null)
+                        heroe.getRefuerzo1().draw(g);
+                    if(heroe.getRefuerzo2() != null)
+                        heroe.getRefuerzo2().draw(g);
+                    heroe.draw(g);
+                }
             }
         }
     }
