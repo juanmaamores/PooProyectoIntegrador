@@ -3,6 +3,7 @@ package poo.Enemigos;
 import poo.Otros.ObjetoGrafico;
 
 public abstract class Enemigo extends ObjetoGrafico {
+
     protected boolean muerto = false, escapo = false;
     protected double velocidadH, velocidadV;
     protected int vida, puntaje;

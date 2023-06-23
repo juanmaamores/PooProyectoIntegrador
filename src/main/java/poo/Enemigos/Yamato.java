@@ -8,35 +8,31 @@ import java.util.Vector;
 
 public class Yamato extends Jefe{
     private Vector<ArmaBarco> armas;
-
-    private P38 p38;
-
     private int num;
+    private final P38 p38;
 
     public Yamato(P38 p38){
         super();
-        setImagen(Utilidades.getImagenJefes(0));
-        armas = new Vector<ArmaBarco>();
         this.p38 = p38;
-        //setPosicion(400,-450);
-        this.x = 350;
-        this.y = 50;
-        velocidadH = 0;
-        velocidadV = 2;
+        vida = 2000;
+        puntaje = 99999;
         armas = new Vector<>();
         armas.add(new ArmaBarco(p38));
         armas.add(new ArmaBarco(p38));
         armas.add(new ArmaBarco(p38));
         armas.add(new ArmaBarco(p38));
-        armas.add(new ArmaBarco(p38));
-        this.puntaje = 100;
-        this.vida = 700;
+        setImagen(Utilidades.getImagenJefes(0));
+        x = (800/2)-(width/2);
+        y = 50;
+        velocidadH = 0;
+        velocidadV = 2;
+        //armas.add(new ArmaBarco(p38));
+        //setPosicion(400,-450);
     }
 
     public Vector<ArmaBarco> getArmas(){return armas;}
 
     public int getNum(){return num;}
-
     public void setNum(int num){this.num = num;}
     @Override
     public void moverse(int ancho, int alto) {

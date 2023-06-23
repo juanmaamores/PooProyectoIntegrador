@@ -27,7 +27,7 @@ public abstract class Bonus extends ObjetoGrafico implements Movil {
             case 6 -> new POW();
             case 7 -> new Refuerzos();
             case 8 -> new SuperShell();
-            default -> null; //Caso que jamás debería ocurrir.
+            default -> null; // Usar un try catch para atrapar la excepcion.
         };
 
         nuevo.setX(x);

@@ -15,7 +15,7 @@ public class Nivel1 extends Nivel{
         fondo = new Fondo(Utilidades.getImagenNivel(0));
         fondo.setPosicion(8,-(int)fondo.getHeight()+Juego1943.getAncho());
         heroe = new P38();
-        heroe.setPosicion(Juego1943.getAncho()/ 2-50, Juego1943.getAlto()/ 2);
+        heroe.setPosicion(Juego1943.getAncho()/2-50, Juego1943.getAlto()/2 + 100);
         avioneshostiles = new ArrayList<>();
         avionesrojos = new ArrayList<>();
         barcos = new ArrayList<>();
@@ -26,12 +26,13 @@ public class Nivel1 extends Nivel{
         tiempo = new Cronometro();
         tiempo.run(180000);
         contadorEnemigos = 0;
-        musicaNivel = new Sound();
-        playMusic(0);
+        //musicaNivel = new Sound();
+        //playMusic(0);
     }
 
     @Override
     public void crearEnemigos() {
+
         if(tiempo.getDelta() >= 3000 && contadorEnemigos == 0){
             avioneshostiles.add(new GrupoAvionesHostilesFormacion1());
             contadorEnemigos++;
@@ -93,8 +94,9 @@ public class Nivel1 extends Nivel{
             contadorEnemigos++;
         }
 
-        if(tiempo.getDelta() >= 62000 && contadorEnemigos == 11){
+        if(tiempo.getDelta() >= 62000 && contAyako == 1 && contadorEnemigos == 11){
             ayako1 = new Ayako1();
+            contAyako = 0;
         }
 
         if(tiempo.getDelta() >= 66000 && contadorEnemigos == 12){

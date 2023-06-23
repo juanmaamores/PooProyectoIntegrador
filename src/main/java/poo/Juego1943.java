@@ -3,37 +3,34 @@ package poo;
 import com.entropyinteractive.*;  //jgame
 import poo.Niveles.Nivel;
 import poo.Niveles.Nivel1;
+import poo.Niveles.Nivel2;
 import poo.Otros.P38;
 import poo.Otros.Utilidades;
 import java.awt.*;
 import java.awt.event.*; //eventos
 import javax.imageio.*; //imagenes
-import javax.swing.*;
 import java.awt.Graphics2D;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
-
 public class Juego1943 extends JGame {
-
     private static Nivel nivelActual;
     private static int puntajeMaximo = 0, puntaje = 0, ancho, alto;
     private String teclaActDesSonido, teclaActDesMusica, teclaPausar, teclaMovIzq, teclaMovDer, teclaMovArriba, teclaMovAbajo, teclaDisparar, teclaAtqEsp, teclaIniciar, pistaMusical;
     private final String ARCHIVO_CONFIGURACION1943 = "src\\main\\resources\\conf\\configuracion1943.properties";
-    private final Font fuente = new Font("Calibri", Font.PLAIN, 18);
-    private static Boolean juegoCorriendo, inicioJuego, gameOver, transicion;
+    private final Font fuente = new Font("Arial", Font.PLAIN, 18);
+    private static Boolean juegoPausado = false, inicioJuego = true, gameOver = false, transicion = false, musicaActiva = true, sonidoActivo = false;
 
     public Juego1943() {
-        super("1943: The Battle of Midway", 800, 600);
+        super("1943: Battle Of Midway", 800, 600);
         try (FileInputStream fis = new FileInputStream(ARCHIVO_CONFIGURACION1943)) {
             Properties propiedades = new Properties();
             propiedades.load(fis);
             // Obtener los valores de las propiedades
-            teclaActDesSonido = (String.valueOf(propiedades.getProperty("sonidoActivo")));
-            teclaActDesMusica = (String.valueOf(propiedades.getProperty("musicaActiva")));
+            teclaActDesSonido = (String.valueOf(propiedades.getProperty("teclaActDesSonido")));
+            teclaActDesMusica = (String.valueOf(propiedades.getProperty("teclaActDesMusica")));
             pistaMusical = (String.valueOf(propiedades.getProperty("seleccionMusica")));
             teclaPausar = (String.valueOf(propiedades.getProperty("teclaPausar")));
             teclaMovIzq = (String.valueOf(propiedades.getProperty("teclaMovIzq")));
@@ -52,16 +49,16 @@ public class Juego1943 extends JGame {
         }
     }
 
+    // Este metodo se ejecuta una sola vez:
     public void gameStartup() {
         System.out.println("Iniciando 1943: The Battle of Midway");
         cargarImagenes();
-        juegoCorriendo = false;
         inicioJuego = true;
+        juegoPausado = false;
         gameOver = false;
         transicion = false;
         ancho = getWidth();
         alto = getHeight();
-        nivelActual = null;
         try {
             puntajeMaximo = Sistema.pasarRecordJugador();
         } catch (SQLException e) {
@@ -73,7 +70,7 @@ public class Juego1943 extends JGame {
 
         chequearTeclas();
 
-        if(juegoCorriendo && !gameOver){
+        if(!inicioJuego && !gameOver && !transicion && !juegoPausado){
             nivelActual.actualizarObjetos();
             nivelActual.chequearColisiones();
             nivelActual.crearEnemigos();
@@ -83,6 +80,9 @@ public class Juego1943 extends JGame {
 
     public void gameDraw(Graphics2D g) {
 
+        if(nivelActual!=null && !inicioJuego && !gameOver && !transicion && !juegoPausado){
+            nivelActual.draw(g);
+        }
         int width = this.getWidth(); // Ancho de la ventana
         int height = this.getHeight(); // Altura de la ventana
         int x = (int) (0.02 * width); // Posición x relativa al 2% del ancho de la ventana
@@ -90,7 +90,6 @@ public class Juego1943 extends JGame {
         FontMetrics metrics = g.getFontMetrics(fuente);
         g.setColor(Color.white);
         g.setFont(fuente);
-
         //Incio juego
         String textoPresentacion = "1943: The Battle of Midway";
         String textoInicar = "Tecla Enter o C para iniciar";
@@ -98,20 +97,17 @@ public class Juego1943 extends JGame {
         int yTextoPresentacion = (height / 2)-50;
         int xTextoInicar = (width - metrics.stringWidth(textoInicar)) / 2;
         int yTextoInicar = height / 2;
-
         //Pausa
         String textoPausa = "Pausa";
         int xTextoPausa = (width - metrics.stringWidth(textoPausa)) / 2;
         int yTextoPausa = height / 2;
-
         //Transicion
-        String textoTransicion= "Mision cumplida! Nivel 1 superado";
+        String textoTransicion= "Mision cumplida! Nivel 1 superado Ayako destruido.";
         String textoContinuar= "Tecla Enter o C para continuar";
         int xTextoTransicion = (width - metrics.stringWidth(textoTransicion)) / 2;
         int yTextoTransicion = (height / 2)-50;
         int xTextoContinuar = (width - metrics.stringWidth(textoContinuar)) / 2;
         int yTextoContinuar = height / 2;
-
         //Gameover
         if(gameOver) {
             String textoGameOver = "GAME OVER";
@@ -131,24 +127,30 @@ public class Juego1943 extends JGame {
             g.drawString(textoRecord, xTextoRecord, yTextoRecord);
             g.drawString(textoReiniciar, xTextoReiniciar, yTextoReiniciar);
         }
-
-        //seccion que dibuja la interfaz
         //interfaz inicio o pausa
-        if (!juegoCorriendo && !gameOver){
-            if(inicioJuego){
-                g.drawString(textoPresentacion, xTextoPresentacion, yTextoPresentacion);
-                g.drawString(textoInicar, xTextoInicar, yTextoInicar);
-            } else if(!transicion){
-                g.drawString(textoPausa, xTextoPausa, yTextoPausa);
-            } else {
-                g.drawString(textoTransicion, xTextoTransicion, yTextoTransicion);
-                g.drawString(textoContinuar, xTextoContinuar, yTextoContinuar);
+        if(inicioJuego){
+            g.drawString(textoPresentacion, xTextoPresentacion, yTextoPresentacion);
+            g.drawString(textoInicar, xTextoInicar, yTextoInicar);
+        }
+        if(juegoPausado) {
+            g.drawString(textoPausa, xTextoPausa, yTextoPausa);
+        }
+        if(transicion) {
+            g.drawString(textoTransicion, xTextoTransicion, yTextoTransicion);
+            g.drawString(textoContinuar, xTextoContinuar, yTextoContinuar);
+        }
+        if(!inicioJuego && !gameOver && !transicion && !juegoPausado) { //interfaz jugando
+            g.drawString("Energia P38: " + Nivel.getHeroe().getEnergia(), x, y + (int) (0.01 * height));
+            g.drawString("Puntaje: " + nivelActual.getPuntaje(),  x + (int) (0.75 * width), y + (int) (0.01 * height));
+            if(nivelActual.ayakoNull()){
+                if(nivelActual.getVidaAyako()>0){
+                    g.drawString("Energia Ayako: " + nivelActual.getVidaAyako(), x, y + (int) (0.05 * Juego1943.getAlto()));
+                }
             }
-        } else {
-            nivelActual.draw(g);
-            g.drawString("Energia: " + nivelActual.getHeroe().getEnergia(), x, y + (int) (0.01 * height));
-            if(!gameOver){
-                g.drawString("Puntaje: " + nivelActual.getPuntaje(),  x + (int) (0.75 * width), y + (int) (0.01 * height));
+            if(nivelActual.yamatoNull()){
+                if(nivelActual.getVidaYamato()>0){
+                    g.drawString("Energia Yamato: " + nivelActual.getVidaYamato(), x, y + (int) (0.05 * Juego1943.getAlto()));
+                }
             }
         }
     }
@@ -156,15 +158,19 @@ public class Juego1943 extends JGame {
     public void cargarImagenes(){
         System.out.println("Cargando imágenes...");
         try {
-            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/barco.png"))));
+            //mapa
             Utilidades.setImagenNivel(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/mapa1.jpg"))));
+            Utilidades.setImagenNivel(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/mapa2.jpg"))));
+            //heroe
             Utilidades.setImagenP38(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38.png"))));
             Utilidades.setImagenP38(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38izq.png"))));
             Utilidades.setImagenP38(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/p38der.png"))));
+            //avion hostil
             Utilidades.setImagenAvionHostil(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionhostil.png"))));
             Utilidades.setImagenAvionHostil(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionhostil2.png"))));
             Utilidades.setImagenAvionHostil(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionhostil3.png"))));
             Utilidades.setImagenAvionHostil(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionhostil4.png"))));
+            //avion rojo
             Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoizq.png"))));
             Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoabizq.png"))));
             Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoab.png"))));
@@ -173,6 +179,7 @@ public class Juego1943 extends JGame {
             Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoarder.png"))));
             Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoar.png"))));
             Utilidades.setImagenAvionRojo(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/avionrojoarizq.png"))));
+            //bonus
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/pow.png"))));
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ametralladora.png"))));
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/auto.png"))));
@@ -181,29 +188,32 @@ public class Juego1943 extends JGame {
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/laser.png"))));
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/refuerzos.png"))));
             Utilidades.setImagenBonus(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/superShell.png"))));
+            //municion basica
             Utilidades.setImagenMunicion(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png"))));
+            //jefes
             Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/Yamato.png"))));
             Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ayako1.png"))));
+            //barco y sus armas
             Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/barco.png"))));
             Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/torret1s.png"))));
             Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/torret2s.png"))));
-            Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ayako-motor.png"))));
+            //motor ayako
+            //Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ayako-motor.png"))));
+            System.out.println("Imágenes cargadas");
         } catch (Exception e) {
             System.out.println(e);
         }
-        System.out.println("Imágenes cargadas");
     }
 
     public void chequearTeclas() {
-
         Keyboard keyboard = this.getKeyboard();
 
-        if(juegoCorriendo){
+        if(!inicioJuego && !gameOver && !transicion && !juegoPausado){
 
-            P38 heroe = nivelActual.getHeroe();
+            P38 heroe = Nivel.getHeroe();
             heroe.setImagen(Utilidades.getImagenP38(0));
-
             // Procesar teclas de direccion
+            // Arriba
             if(teclaMovArriba.equals("W")){
                 if (keyboard.isKeyPressed(KeyEvent.VK_W)) {
                     heroe.setY((int)heroe.getY()-4);
@@ -215,7 +225,7 @@ public class Juego1943 extends JGame {
                     heroe.setImagen(Utilidades.getImagenP38(0));
                 }
             }
-
+            //Abajo
             if(teclaMovAbajo.equals("S")){
                 if(keyboard.isKeyPressed(KeyEvent.VK_S)) {
                     heroe.setY((int)heroe.getY()+4);
@@ -227,7 +237,7 @@ public class Juego1943 extends JGame {
                     heroe.setImagen(Utilidades.getImagenP38(0));
                 }
             }
-
+            //Izquierda
             if(teclaMovIzq.equals("A")){
                 if (keyboard.isKeyPressed(KeyEvent.VK_A)) {
                     heroe.setX((int)heroe.getX()-4);
@@ -239,7 +249,7 @@ public class Juego1943 extends JGame {
                     heroe.setImagen(Utilidades.getImagenP38(1));
                 }
             }
-
+            //Derecha
             if(teclaMovDer.equals("D")){
                 if (keyboard.isKeyPressed(KeyEvent.VK_D)) {
                     heroe.setX((int)heroe.getX()+4);
@@ -251,8 +261,7 @@ public class Juego1943 extends JGame {
                     heroe.setImagen(Utilidades.getImagenP38(2));
                 }
             }
-
-            //disparar
+            //Disparar
             if(teclaDisparar.equals("Barra espaciadora")){
                 if (keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
                     if(heroe.getArma().puedeDisparar())
@@ -264,7 +273,6 @@ public class Juego1943 extends JGame {
                         heroe.getArma().disparar(nivelActual.getMunicionesP38(),(int)(heroe.getX()+heroe.getWidth()/2-4),(int)heroe.getY());
                 }
             }
-
             //Ataque especial
             if(teclaAtqEsp.equals("B")){
                 if (keyboard.isKeyPressed(KeyEvent.VK_B)) {
@@ -276,115 +284,127 @@ public class Juego1943 extends JGame {
                 }
             }
         }
-
         // Activar/desactivar efectos de sonido
         if(teclaActDesSonido.equals("O")){
-            if (keyboard.isKeyPressed(KeyEvent.VK_O)) {
-                //activa desactiva los efectos de sonido
+            if (keyboard.isKeyPressed(KeyEvent.VK_O) && !gameOver) {
+                if(musicaActiva){
+                    //nivelActual.stopMusic(0);
+                    sonidoActivo = false;
+                } else {
+                    //nivelActual.playMusic(0);
+                    sonidoActivo = true;
+                }
             }
         } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_Q)) {
-                //activa desactiva los efectos de sonido
+            if (keyboard.isKeyPressed(KeyEvent.VK_Q) && !gameOver) {
+                if(musicaActiva){
+                    //nivelActual.stopMusic(0);
+                    sonidoActivo = false;
+                } else {
+                    //nivelActual.playMusic(0);
+                    sonidoActivo = true;
+                }
             }
         }
-
-        boolean teclaPresionadaMusica = false, musicaActiva = true, sonidoActivo;
         // Activar/desactivar musica
         if (teclaActDesMusica.equals("I")) {
-            if (keyboard.isKeyPressed(KeyEvent.VK_I) && !gameOver && !teclaPresionadaMusica && musicaActiva) {
-                nivelActual.stopMusic(0);
-                musicaActiva = false;
-                teclaPresionadaMusica = true;  // Marcar la tecla como presionada
+            if (keyboard.isKeyPressed(KeyEvent.VK_I) && !gameOver) {
+                if(musicaActiva){
+                    //nivelActual.stopMusic(0);
+                    musicaActiva = false;
+                } else {
+                    //nivelActual.playMusic(0);
+                    musicaActiva = true;
+                }
                 try {
                     Thread.sleep(100);  // Agregar un retraso de 100 milisegundos
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } else if (!keyboard.isKeyPressed(KeyEvent.VK_I)) {
-                teclaPresionadaMusica = false;  // Restablecer la tecla presionada cuando se suelta
-                nivelActual.playMusic(0);
-                musicaActiva = true;
             }
-        } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_W) && !gameOver && !teclaPresionadaMusica) {
-                juegoCorriendo = !juegoCorriendo;
-                teclaPresionadaMusica = true;  // Marcar la tecla como presionada
+        } else if ((teclaActDesMusica.equals("W"))){
+            if (keyboard.isKeyPressed(KeyEvent.VK_W) && !gameOver) {
+                if(musicaActiva){
+                    //nivelActual.stopMusic(0);
+                    musicaActiva = false;
+                } else {
+                    //nivelActual.playMusic(0);
+                    musicaActiva = true;
+                }
                 try {
                     Thread.sleep(100);  // Agregar un retraso de 100 milisegundos
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } else if (!keyboard.isKeyPressed(KeyEvent.VK_W)) {
-                teclaPresionadaMusica = false;  // Restablecer la tecla presionada cuando se suelta
             }
         }
-
-        // Declara una variable booleana para seguir el estado de la tecla
-        boolean teclaPresionadaPausa = false;
         // Pausar el juego
         if (teclaPausar.equals("P")) {
-            if (keyboard.isKeyPressed(KeyEvent.VK_P) && !inicioJuego && !teclaPresionadaPausa) {
-                juegoCorriendo = !juegoCorriendo;
-                teclaPresionadaPausa = true;  // Marcar la tecla como presionada
+            if (keyboard.isKeyPressed(KeyEvent.VK_P) && !inicioJuego) {
+                if(!juegoPausado){
+                    //nivelActual.stopMusic(0);
+                } else if(musicaActiva) {
+                    //nivelActual.playMusic(0);
+                }
+                juegoPausado = !juegoPausado;
                 try {
-                    Thread.sleep(100);  // Agregar un retraso de 100 milisegundos
+                    Thread.sleep(200);  // Agregar un retraso de 100 milisegundos
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } else if (!keyboard.isKeyPressed(KeyEvent.VK_P)) {
-                teclaPresionadaPausa = false;  // Restablecer la tecla presionada cuando se suelta
             }
-        } else {
-            if (keyboard.isKeyPressed(KeyEvent.VK_SPACE) && !inicioJuego && !teclaPresionadaPausa) {
-                juegoCorriendo = !juegoCorriendo;
-                teclaPresionadaPausa = true;  // Marcar la tecla como presionada
+        } else if(teclaPausar.equals("Barra espaciadora")){
+            if (keyboard.isKeyPressed(KeyEvent.VK_SPACE) && !inicioJuego) {
+                if(!juegoPausado){
+                    //nivelActual.stopMusic(0);
+                } else if(musicaActiva) {
+                    //nivelActual.playMusic(0);
+                }
+                juegoPausado = !juegoPausado;
                 try {
-                    Thread.sleep(100);  // Agregar un retraso de 100 milisegundos
+                    Thread.sleep(200);  // Agregar un retraso de 100 milisegundos
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } else if (!keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
-                teclaPresionadaPausa = false;  // Restablecer la tecla presionada cuando se suelta
             }
         }
-
-
         // Iniciar el juego (Revisar si está bien resuelto)
         if(teclaIniciar.equals("C")){
             if (keyboard.isKeyPressed(KeyEvent.VK_C) && inicioJuego) {
-                juegoCorriendo = true;
                 inicioJuego = false;
                 nivelActual = new Nivel1();
             }
             if (keyboard.isKeyPressed(KeyEvent.VK_C) && transicion) {
                 transicion = false;
-                juegoCorriendo = true;
+                int aux = nivelActual.getPuntaje();
+                nivelActual = new Nivel2();
+                nivelActual.setPuntaje(aux);
+                //nivelActual.stopMusic(0);
             }
             if (keyboard.isKeyPressed(KeyEvent.VK_C) && gameOver) {
                 gameOver = false;
                 inicioJuego = true;
-                juegoCorriendo = false;
             }
         } else {
             if (keyboard.isKeyPressed(KeyEvent.VK_ENTER) && inicioJuego) {
-                juegoCorriendo = true;
                 inicioJuego = false;
                 nivelActual = new Nivel1();
             }
             if (keyboard.isKeyPressed(KeyEvent.VK_ENTER) && transicion) {
                 transicion = false;
-                juegoCorriendo = true;
+                int aux = nivelActual.getPuntaje();
+                nivelActual = new Nivel2();
+                nivelActual.setPuntaje(aux);
+                //nivelActual.stopMusic(0);
             }
             if (keyboard.isKeyPressed(KeyEvent.VK_ENTER) && gameOver) {
                 gameOver = false;
                 inicioJuego = true;
-                juegoCorriendo = false;
             }
         }
-
         // Cerrar juego
         if (keyboard.isKeyPressed(KeyEvent.VK_ESCAPE)) {
-            this.stop();
+            gameShutdown();
         }
     }
 
@@ -395,6 +415,7 @@ public class Juego1943 extends JGame {
     public static boolean getGameOver(){return gameOver;}
 
     public static void setGameOver(){
+        //nivelActual.stopMusic(0);
         puntaje = nivelActual.getPuntaje();
         if (puntaje > puntajeMaximo){
             puntajeMaximo = puntaje;
@@ -405,21 +426,20 @@ public class Juego1943 extends JGame {
             throw new RuntimeException(e);
         }
         gameOver = true;
-        juegoCorriendo = false;
+        juegoPausado = false;
     }
 
     public static boolean getTransicion(){return transicion;}
 
-    public static void setTransicion(boolean t){transicion = t;}
+    public static void setTransicion(boolean b){transicion = b;}
 
     public static int getAncho(){return ancho;}
 
     public static int getAlto(){return alto;}
 
     public void gameShutdown() {
-        Log.info(getClass().getSimpleName(), "Cerrando el juego");
-        nivelActual.stopMusic(0);
+        System.out.println("Cerrando el juego.");
+        //nivelActual.stopMusic(0);
         stop();
     }
-
 }

@@ -2,9 +2,7 @@ package poo;
 
 import poo.Otros.ConfiguracionVideoJuego;
 import poo.Otros.Ranking;
-
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
@@ -15,8 +13,7 @@ public class Sistema extends Frame implements ActionListener, ItemListener {
 
 	private static String juegoSeleccionado = "1943: Battle Of Midway";
 	private static final int nuevoRecord = 0;
-	private static final TextField nombreJugador = new TextField("Nombre");
-	private final Ranking ranking = new Ranking(this, juegoSeleccionado);
+	private static final TextField nombreJugador = new TextField(" ");
 	private final ConfiguracionVideoJuego configJuego1, configJuego2, configJuego3;
 	private final Label titulo, tituloJuego1, tituloJuego2, tituloJuego3, nombreJugadorLabel1, nombreJugadorLabel2;
 	private final Button iniciarJuego, botonConfig, botonRanking;
@@ -199,10 +196,16 @@ public class Sistema extends Frame implements ActionListener, ItemListener {
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource() == iniciarJuego) {
-			if(nombreJugador.getText().equals("Nombre")){
+			if(nombreJugador.getText().equals(" ")){
 				nombreJugadorLabel2.setText("Por favor ingrese su nombre!");
-			} else {
+			} else if (juegoSeleccionado.equals("1943: Battle Of Midway")){
 				this.ejecutar();
+			} else if(juegoSeleccionado.equals("PacMan")){
+				JFrame frame = new JFrame();
+				JOptionPane.showMessageDialog(frame, "Juego no disponible", "Alerta", JOptionPane.WARNING_MESSAGE);
+			} else if (juegoSeleccionado.equals("Pong")){
+				JFrame frame = new JFrame();
+				JOptionPane.showMessageDialog(frame, "Juego no disponible", "Alerta", JOptionPane.WARNING_MESSAGE);
 			}
 		}
 		if (e.getSource() == botonConfig) {
@@ -211,22 +214,21 @@ public class Sistema extends Frame implements ActionListener, ItemListener {
 		}
 		if (e.getSource() == botonRanking) {
 			try {
+				Ranking ranking = new Ranking(this, juegoSeleccionado);
 				Ranking.cargarResultados(juegoSeleccionado);
+				ranking.mostrar();
 			} catch (SQLException ex) {
 				throw new RuntimeException(ex);
 			}
-			ranking.mostrar();
 		}
 	}
 
 	private void ejecutar() {
-		setVisible(false);
 		Thread juegoThread = new Thread(() -> {
 			Juego1943 game = new Juego1943();
 			game.run(1.0 / 60.0);
 		});
 		juegoThread.start();
-		setVisible(true);
 	}
 
 	// Carga la imagen desde el archivo y la convierte en un BufferedImage

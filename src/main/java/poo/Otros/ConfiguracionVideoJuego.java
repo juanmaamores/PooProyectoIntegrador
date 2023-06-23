@@ -1,7 +1,7 @@
 package poo.Otros;
+
 import java.awt.*;
 import java.awt.event.*;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,19 +9,17 @@ import java.util.Objects;
 import java.util.Properties;
 
 public class ConfiguracionVideoJuego extends Frame implements ActionListener, ItemListener{
-
 	private final CheckboxGroup pantalla;
 	private final Checkbox sonidoActivo, musicaActivo, ventana, pantallaCompleta;
 	private final Button guardar, reset;
 	private final Label log = new Label("____________________________");
-	private final Label titulo,pistaMusical, teclaEspacio, teclaIzq, teclaDer, teclaArriba, teclaAbajo, teclaX, teclaZ, teclaQ, teclaW, teclaEnter;
-	private final Choice seleccionMusica, chTeclaQ, chTeclaW, chTeclaEspacio, chTeclaIzq, chTeclaDer, chTeclaArriba, chTeclaAbajo, chTeclaX, chTeclaZ, chTeclaEnter;
+	private final Label titulo, teclaEspacio, teclaIzq, teclaDer, teclaArriba, teclaAbajo, teclaX, teclaZ, teclaQ, teclaW, teclaEnter;
+	private final Choice  chTeclaQ, chTeclaW, chTeclaEspacio, chTeclaIzq, chTeclaDer, chTeclaArriba, chTeclaAbajo, chTeclaX, chTeclaZ, chTeclaEnter;
 	private boolean pantallaCompletaActiva = false;
 	private final String ARCHIVO_CONFIGURACION1943 = "src\\main\\resources\\conf\\configuracion1943.properties";
-	private int index;
+	private final int index;
 
 	public ConfiguracionVideoJuego(Frame v, String nombreJuego, int index) {
-		
 		setTitle("Configuraciones de " + nombreJuego);
 		setSize(600, 600);
 		setLocationRelativeTo(v);
@@ -41,21 +39,18 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 		titulo.setForeground(Color.white);
 		add(titulo, BorderLayout.NORTH);
 		setBackground(Color.black);
-
-		// Componetes para la sección de pantalla
+		// Componetes para la seccion de pantalla
 		pantalla = new CheckboxGroup();
 		ventana = new Checkbox("Ventana", pantalla, true);
 		pantallaCompleta = new Checkbox("Pantalla Completa", pantalla, false);
 		ventana.addItemListener(this);
 		pantallaCompleta.addItemListener(this);
-	
-		// Componententes para la sección de sonido
+		// Componententes para la seccion de sonido
 		sonidoActivo = new Checkbox("Efectos de sonido", true);
 		musicaActivo = new Checkbox("Musica de fondo", true);
 		sonidoActivo.addItemListener(this);
 		musicaActivo.addItemListener(this);
-		
-		// Componentes para la sección de teclas
+		// Componentes para la seccion de teclas
 		teclaQ = new Label("Activar/desactivar efectos de sonido:");
 		teclaW = new Label("Activar/desactivar musica de fondo:");
 		teclaEspacio = new Label("Pausar/reanudar el juego:");
@@ -66,80 +61,70 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 		teclaX = new Label("Disparo:");
 		teclaZ = new Label("Ataque especial:");
 		teclaEnter = new Label("Inicar el juego:");
-
 		// choice teclas
+		// activar/desactivar efectos de sonido
 		chTeclaQ = new Choice();
 		chTeclaQ.add("Q");
 		chTeclaQ.add("O");
-
+		// activar/desactivar musica de fondo
 		chTeclaW = new Choice();
 		chTeclaW.add("W");
 		chTeclaW.add("I");
-
+		chTeclaW.addItemListener(this);
+		// pausar/reanudar juego
 		chTeclaEspacio = new Choice();
 		chTeclaEspacio.add("Barra espaciadora");
-		chTeclaEspacio.add("P"); //Pausa
-
+		chTeclaEspacio.add("P");
+		chTeclaEspacio.addItemListener(this);
+		// moverse a la izquierda
 		chTeclaIzq = new Choice();
 		chTeclaIzq.add("Flecha izquierda");
 		chTeclaIzq.add("A");
-
+		// moverse a la derecha
 		chTeclaDer = new Choice();
 		chTeclaDer.add("Flecha derecha");
 		chTeclaDer.add("D");
-
+		// moverse arriba
 		chTeclaArriba = new Choice();
 		chTeclaArriba.add("Flecha arriba");
 		chTeclaArriba.add("W");
-
+		chTeclaArriba.addItemListener(this);
+		// moverse abajo
 		chTeclaAbajo = new Choice();
 		chTeclaAbajo.add("Flecha abajo");
 		chTeclaAbajo.add("S");
-
+		// disparar
 		chTeclaX = new Choice();
 		chTeclaX.add("X");
 		chTeclaX.add("Barra espaciadora");
-
+		chTeclaX.addItemListener(this);
+		// ataque especial
 		chTeclaZ = new Choice();
 		chTeclaZ.add("Z");
-		chTeclaZ.add("B"); //bomba
-
+		chTeclaZ.add("B");
+		// comenzar juego
 		chTeclaEnter = new Choice();
 		chTeclaEnter.add("Enter");
-		chTeclaEnter.add("C"); //comenzar
-		
-		// Componentes para la selección de musica.
-		pistaMusical = new Label("Pista musical:");
-		seleccionMusica = new Choice();
-		seleccionMusica.add("Tema original");
-		seleccionMusica.add("Tema alternativo 1");
-		seleccionMusica.add("Tema alternativo 2");
-		
+		chTeclaEnter.add("C");
 		// Componentes para los botones de guardar y reset
 		guardar = new Button("Guardar");
 		reset = new Button("Reset");
 		guardar.addActionListener(this);
 		reset.addActionListener(this);
-
 		Panel panelCentral = new Panel(new GridLayout(13,1,0,0));
 		panelCentral.setBackground(Color.black);
-		
 		//Panel ventana
 		Panel configVentana = new Panel(new FlowLayout(FlowLayout.LEFT,5,0));
 		configVentana.setBackground(Color.lightGray);
 		configVentana.add(ventana);
 		configVentana.add(pantallaCompleta);
 		panelCentral.add(configVentana);
-		
 		//panel sonido
 		Panel configSonido = new Panel(new FlowLayout(FlowLayout.LEFT,5,0));
 		configSonido.setBackground(Color.lightGray);
 		configSonido.add(sonidoActivo);
 		configSonido.add(musicaActivo);
-		configSonido.add(pistaMusical);
-		configSonido.add(seleccionMusica);
 		panelCentral.add(configSonido);
-		
 		//Panel teclas
 		Panel configTeclas1 = new Panel(new FlowLayout(FlowLayout.LEFT,5,0));
 		configTeclas1.setBackground(Color.lightGray);
@@ -191,7 +176,6 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 		configTeclas10.add(teclaEnter);
 		configTeclas10.add(chTeclaEnter);
 		panelCentral.add(configTeclas10);
-		
 		//botones
 		Panel panelBotones = new Panel(new FlowLayout(FlowLayout.LEFT,5,0));
 		panelBotones.setBackground(Color.lightGray);
@@ -207,7 +191,6 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
 		if(e.getSource() == reset) {
 			//tf.setText("Los valores se han reiniciado.");
 			if (pantallaCompletaActiva) {
@@ -217,7 +200,6 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 			}
 			sonidoActivo.setState(true);
 			musicaActivo.setState(true);
-			seleccionMusica.select(0);
 			chTeclaQ.select(0);
 			chTeclaW.select(0);
 			chTeclaEspacio.select(0);
@@ -230,16 +212,13 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 			chTeclaEnter.select(0);
 			log.setText("Valores reiniciados!");
 		}
-
 		if(e.getSource() == guardar) { // guardar las configuraciones
 			try {
 				Properties propiedades = new Properties();
-
 				propiedades.setProperty("ventana", String.valueOf(ventana.getState()));
 				propiedades.setProperty("pantallaCompleta", String.valueOf(pantallaCompleta.getState()));
 				propiedades.setProperty("sonidoActivo", String.valueOf(sonidoActivo.getState()));
 				propiedades.setProperty("musicaActiva", String.valueOf(musicaActivo.getState()));
-				propiedades.setProperty("seleccionMusica", seleccionMusica.getSelectedItem());
 				propiedades.setProperty("teclaActDesSonido", chTeclaQ.getSelectedItem());
 				propiedades.setProperty("teclaActDesMusica", chTeclaW.getSelectedItem());
 				propiedades.setProperty("teclaPausar", chTeclaEspacio.getSelectedItem());
@@ -251,46 +230,35 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 				propiedades.setProperty("teclaAtqEsp", chTeclaZ.getSelectedItem());
 				propiedades.setProperty("teclaIniciar", chTeclaEnter.getSelectedItem());
 				propiedades.setProperty("pantallaCompletaActiva", String.valueOf(pantallaCompletaActiva));
-
-				propiedades.store(new FileOutputStream(ARCHIVO_CONFIGURACION1943), "Configuración del juego");
+				propiedades.store(new FileOutputStream(ARCHIVO_CONFIGURACION1943), "Configuracion del juego");
 				log.setText("Guardado!");
 			} catch (IOException ex) {
 				ex.printStackTrace();
 				log.setText("Error al guardar!");
 			}
 		}
-
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-
 		if (e.getSource() == pantallaCompleta) {
 			if (!pantallaCompletaActiva) {
-				pantallaCompletaActiva = true; // Establecer variable de estado en true
-				//tf.setText("Checkbox de pantalla completa presionado.");
+				pantallaCompletaActiva = true;
 			}
 		} else if (e.getSource() == ventana) {
 			if (pantallaCompletaActiva) {
-				pantallaCompletaActiva = false; // Establecer variable de estado en false
-				//tf.setText("Checkbox de ventana presionado.");
+				pantallaCompletaActiva = false;
 			}
 		}
-		
-		if (e.getSource() == sonidoActivo) {
-			if(e.getStateChange() == 1) {
-				//tf.setText("Sonido activado.");
-			} else {
-				//tf.setText("Sonido desactivado.");
+		// con esto se evita que dos funcionalidades distintas esten asignadas a la misma tecla.
+		if(e.getSource() == chTeclaEspacio){
+			if(Objects.equals(chTeclaEspacio.getSelectedItem(), "Barra espaciadora") && Objects.equals(chTeclaX.getSelectedItem(), "Barra espaciadora")){
+				chTeclaX.select(0);
 			}
-			
 		}
-		
-		if (e.getSource() == musicaActivo) {
-			if(e.getStateChange() == 1) {
-				//tf.setText("Musica activada.");
-			} else {
-				//tf.setText("Musica desactivada.");
+		if(e.getSource() == chTeclaX){
+			if(Objects.equals(chTeclaX.getSelectedItem(), "Barra espaciadora") && Objects.equals(chTeclaEspacio.getSelectedItem(), "Barra espaciadora")){
+				chTeclaEspacio.select(1);
 			}
 		}
 	}
@@ -300,7 +268,6 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 	}
 
 	private void cargarConfiguracion(int index) { // cargar la configuracion
-
 		if(index == 0){
 			try (FileInputStream fis = new FileInputStream(ARCHIVO_CONFIGURACION1943)) {
 				Properties propiedades = new Properties();
@@ -310,7 +277,6 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 				pantallaCompleta.setState(Boolean.parseBoolean(propiedades.getProperty("pantallaCompleta")));
 				musicaActivo.setState(Boolean.parseBoolean(propiedades.getProperty("sonidoActivo")));
 				sonidoActivo.setState(Boolean.parseBoolean(propiedades.getProperty("musicaActiva")));
-				seleccionMusica.select(propiedades.getProperty("seleccionMusica"));
 				chTeclaQ.select(propiedades.getProperty("teclaActDesSonido"));
 				chTeclaW.select(propiedades.getProperty("teclaActDesMusica"));
 				chTeclaEspacio.select(propiedades.getProperty("teclaPausar"));
@@ -322,7 +288,6 @@ public class ConfiguracionVideoJuego extends Frame implements ActionListener, It
 				chTeclaZ.select(propiedades.getProperty("teclaAtqEsp"));
 				chTeclaEnter.select(propiedades.getProperty("teclaIniciar"));
 				pantallaCompletaActiva = Boolean.parseBoolean (propiedades.getProperty("pantallaCompletaActiva"));
-
 			} catch (IOException ex) {
 				ex.printStackTrace();
 				log.setText("Error al cargar!");

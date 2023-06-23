@@ -9,7 +9,6 @@ public class AvionHostil extends Enemigo implements Movil{
     private final Arma arma;
     private boolean diovuelta, volviendo;
 
-
     public AvionHostil(){
         super();
         vida = 100;

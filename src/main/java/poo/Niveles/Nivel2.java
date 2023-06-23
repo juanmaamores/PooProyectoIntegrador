@@ -12,10 +12,10 @@ import java.util.ArrayList;
 
 public class Nivel2 extends Nivel{
     public Nivel2(){
-        fondo = new Fondo(Utilidades.getImagenNivel(0));
+        fondo = new Fondo(Utilidades.getImagenNivel(1));
         fondo.setPosicion(8,-(int)fondo.getHeight()+Juego1943.getAncho());
         heroe = new P38();
-        heroe.setPosicion(Juego1943.getAncho()/ 2-50, Juego1943.getAlto()/ 2);
+        heroe.setPosicion(Juego1943.getAncho()/2-50, Juego1943.getAlto()/2 + 100);
         avioneshostiles = new ArrayList<>();
         avionesrojos = new ArrayList<>();
         barcos = new ArrayList<>();
@@ -26,16 +26,22 @@ public class Nivel2 extends Nivel{
         tiempo = new Cronometro();
         tiempo.run(180000);
         contadorEnemigos = 0;
-        musicaNivel = new Sound();
+        //musicaNivel = new Sound();
         //playMusic(0);
     }
 
     @Override
     public void crearEnemigos() {
+
+        if(tiempo.getDelta() >= 2000 && contadorEnemigos == 0){
+            barcos.add(new Barco());
+            barcos.add(new Barco());
+            contadorEnemigos++;
+        }
+
         if(tiempo.getDelta() >= 3000 && contadorEnemigos == 0){
             avioneshostiles.add(new GrupoAvionesHostilesFormacion1());
             contadorEnemigos++;
-            barcos.add(new Barco());
         }
 
         if(tiempo.getDelta() >= 6000 && contadorEnemigos == 1){
@@ -48,8 +54,10 @@ public class Nivel2 extends Nivel{
             contadorEnemigos++;
         }
 
+
         if(tiempo.getDelta() >= 15000 && contadorEnemigos == 3){
-            avioneshostiles.add(new GrupoAvionesHostilesFormacion3());
+            barcos.add(new Barco());
+            barcos.add(new Barco());
             contadorEnemigos++;
         }
 
@@ -67,6 +75,7 @@ public class Nivel2 extends Nivel{
         if(tiempo.getDelta() >= 39000 && contadorEnemigos == 6){
             avioneshostiles.add(new GrupoAvionesHostilesFormacion3());
             avionesrojos.add(new GrupoAvionesRojos());
+            barcos.add(new Barco());
             contadorEnemigos++;
         }
 
@@ -79,6 +88,8 @@ public class Nivel2 extends Nivel{
         if(tiempo.getDelta() >= 49000 && contadorEnemigos == 8){
             avionesrojos.add(new GrupoAvionesRojos());
             avioneshostiles.add(new GrupoAvionesHostilesFormacion2());
+            barcos.add(new Barco());
+            barcos.add(new Barco());
             contadorEnemigos++;
         }
 
@@ -94,8 +105,9 @@ public class Nivel2 extends Nivel{
             contadorEnemigos++;
         }
 
-        if(tiempo.getDelta() >= 62000 && contadorEnemigos == 11){
+        if(tiempo.getDelta() >= 62000 && contYamato == 1 && contadorEnemigos == 11){
             yamato = new Yamato(heroe);
+            contYamato = 0;
         }
 
         if(tiempo.getDelta() >= 65000 && contadorEnemigos == 12){

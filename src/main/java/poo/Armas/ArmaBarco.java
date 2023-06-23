@@ -11,7 +11,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 public class ArmaBarco extends Arma{
-    private P38 p38;
+    private final P38 p38;
     private int vida;
 
     public ArmaBarco(P38 p38){
@@ -21,7 +21,7 @@ public class ArmaBarco extends Arma{
         this.p38 = p38;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);
-        setImagen(Utilidades.getImagenBarco(0));
+        setImagen(Utilidades.getImagenBarco(1));
     }
 
     public void setVida(int vida){this.vida = vida;}

@@ -8,7 +8,6 @@ import poo.Bonus.Bonus;
 import poo.Enemigos.*;
 import poo.Juego1943;
 import poo.Otros.*;
-
 import java.awt.*;
 import java.util.ArrayList;
 import static poo.Juego1943.*;
@@ -21,13 +20,15 @@ public abstract class Nivel {
     protected ArrayList<Barco> barcos;
     protected ArrayList<Bonus> bonus;
     protected ArrayList<Municion> municionesP38, municionesHostiles, municionesAliadas;
-    protected P38 heroe;
+    protected static P38 heroe;
     protected Cronometro tiempo;
     protected Ayako1 ayako1;
     protected Yamato yamato;
-    protected Sound musicaNivel;
+    //protected Sound musicaNivel;
+    protected int contAyako = 1;
+    protected int contYamato = 1;
 
-    public void playMusic(int i){
+    /*public void playMusic(int i){
         musicaNivel.setFile(i);
         musicaNivel.play();
         musicaNivel.loop();
@@ -40,22 +41,20 @@ public abstract class Nivel {
     public void playSEffects(int i){
         musicaNivel.setFile(i);
         musicaNivel.play();
-    }
+    }*/
 
     public void actualizarObjetos(){
         int ancho = Juego1943.getAncho();
         int alto = Juego1943.getAlto();
-
         tiempo.update();
         fondo.mover();
         heroe.moverse(ancho, alto);
         heroe.getArma().getDelayDisparo().update();
         heroe.getTiempoBonus().update();
         heroe.chequearBonus();
-
         //chequear que el jugador no haya muerto
         if(heroe.getEnergia() <= 0){
-            stopMusic(0);
+            //stopMusic(0);
             setGameOver();
             heroe.destruir();
         }
@@ -96,14 +95,10 @@ public abstract class Nivel {
             if(grupo.getActualizar()) {
                 for (AvionHostil avion : grupo.getAviones())
                     if (avion.getActualizar()) {
-
                         avion.moverse(ancho, alto);
-
                         avion.getArma().getDelayDisparo().update();
-
                         if(!avion.getVolviendo() && avion.getArma().puedeDisparar())
                             avion.getArma().disparar(municionesHostiles, (int)(avion.getX()+avion.getWidth()/2-4), (int)avion.getY());
-
                         if(avion.getVida() <= 0) {
                             avion.destruir();
                             puntaje += avion.getPuntaje();
@@ -158,49 +153,72 @@ public abstract class Nivel {
             if(bonus.getActualizar())
                 bonus.moverse(ancho, alto);
 
-        if(ayako1 != null) {
+        if(ayako1 != null){
             if (ayako1.getActualizar()) {
-                if(ayako1.getVida() <= 0) {
-                    ayako1.destruir();
-                    puntaje += ayako1.getPuntaje();
-                    setTransicion(true);
+                //ayako1.moverse(250, 100);
+                for (ArmaAvionHostil arma : ayako1.getArmas()) {
+                    arma.getDelayDisparo().update();
                 }
-
-                ayako1.moverse(250, 100);
-
-                for (ArmaAvionHostil arma : ayako1.getArmas())
-                    arma.disparar(municionesHostiles, (int) (arma.getX() + arma.getWidth() / 2 - 4), (int) arma.getY());
-
+                if(ayako1.getArmas().get(0).puedeDisparar()) { //todas las armas del ayako disparan al mismo tiempo
+                    for (ArmaAvionHostil arma : ayako1.getArmas()) {
+                        arma.disparar(municionesHostiles, (int)(ayako1.getX() + ayako1.getWidth() / 2 - 4), (int) ayako1.getY());
+                    /*if(arma.equals(ayako1.getArmas().get(0))){
+                        arma.disparar(municionesHostiles, (int)(ayako1.getX() + ayako1.getWidth() / 2 - 50), (int) ayako1.getY());
+                    } else {
+                        arma.disparar(municionesHostiles, (int)(ayako1.getX() + ayako1.getWidth() / 2 - 4), (int) ayako1.getY());
+                    }*/
+                    }
+                }
                 if (ayako1.getVida() <= 0) {
                     ayako1.destruir();
                     puntaje += ayako1.getPuntaje();
+                    setTransicion(true);
                 }
             }
         }
 
+
         if (yamato != null){
             if(yamato.getActualizar()) {
-
+                //yamato.moverse(350, 50);
+                for(ArmaBarco arma : yamato.getArmas()) {
+                    arma.getDelayDisparo().update();
+                    if(arma.getVida() <= 0)
+                        arma.destruir();
+                    if (arma.getActualizar() && arma.puedeDisparar()) {
+                        arma.disparar(municionesHostiles, (int)(yamato.getX() + yamato.getWidth() / 2 - 4), (int)yamato.getY());
+                    }
+                }
                 if(yamato.getVida() <= 0) {
                     yamato.destruir();
                     puntaje += yamato.getPuntaje();
-                    setTransicion(true);
-                }
-                yamato.moverse(350, 50);
-
-                for(ArmaBarco arma : yamato.getArmas()) {
-                    if(arma.getVida() <= 0)
-                        arma.destruir();
-
-                    if (arma.getActualizar() && arma.puedeDisparar()) {
-                        arma.disparar(municionesHostiles, (int) (arma.getX()), (int) arma.getY());
-                    }
+                    Juego1943.setGameOver();
                 }
             }
         }
     }
 
     public void chequearColisiones() {
+
+        //la colision se tiene que dar con las armas/motores y no con los jefes en si.
+       if(ayako1 != null){
+            for (Municion municion : municionesP38)
+                if(municion.getActualizar())
+                    if (municion.intersects(ayako1)) {
+                        ayako1.setVida(ayako1.getVida() - municion.getPoder());
+                        municion.destruir();
+                    }
+        }
+
+        if(yamato != null){
+            for (Municion municion : municionesP38)
+                if(municion.getActualizar())
+                    if (municion.intersects(yamato)) {
+                        yamato.setVida(yamato.getVida() - municion.getPoder());
+                        municion.destruir();
+                    }
+        }
+
 
         for (GrupoAvionesRojos grupo : avionesrojos)
             for (AvionRojo avion : grupo.getAviones()) {
@@ -392,66 +410,59 @@ public abstract class Nivel {
 
     public void draw(Graphics2D g){
 
-        if(!Juego1943.getGameOver()){
+        int x = (int) (0.02 * Juego1943.getAncho()); // Posición x relativa al 2% del ancho de la ventana
+        int y = (int) (0.07 * Juego1943.getAlto()); // Posición y relativa al 7% de la altura de la ventana
 
-            fondo.draw(g);
+        fondo.draw(g);
 
-            if(!getTransicion()){
+        for(Bonus bonus : bonus)
+            bonus.draw(g);
 
-                for(Bonus bonus : bonus)
-                    bonus.draw(g);
+        for (Barco barco : barcos) {
+            barco.draw(g);
+            for(ArmaBarco arma : barco.getArmas())
+                arma.draw(g);
+        }
 
-                for (Barco barco : barcos) {
-                    barco.draw(g);
+        for (GrupoAvionesRojos grupo : avionesrojos)
+            for (AvionRojo avion : grupo.getAviones())
+                avion.draw(g);
 
-                    for(ArmaBarco arma : barco.getArmas())
-                        arma.draw(g);
-                }
+        for (GrupoAvionesHostiles grupo : avioneshostiles)
+            for (AvionHostil avion : grupo.getAviones())
+                avion.draw(g);
 
-                for (GrupoAvionesRojos grupo : avionesrojos)
-                    for (AvionRojo avion : grupo.getAviones())
-                        avion.draw(g);
+        for(Municion municion : municionesHostiles)
+            municion.draw(g);
 
-                for (GrupoAvionesHostiles grupo : avioneshostiles)
-                    for (AvionHostil avion : grupo.getAviones())
-                        avion.draw(g);
+        for(Municion municion: municionesAliadas)
+            municion.draw(g);
 
-                for(Municion municion : municionesHostiles)
-                    municion.draw(g);
+        for(Municion municion: municionesP38)
+            municion.draw(g);
 
-                for(Municion municion: municionesAliadas)
-                    municion.draw(g);
-
-                for(Municion municion: municionesP38)
-                    municion.draw(g);
-
-            }
-
-            if(ayako1 != null){
-                ayako1.draw(g);
-                for(ArmaAvionHostil arma : ayako1.getArmas()) {
-                    arma.draw(g);
-                }}
-
-            if(yamato != null){
-                yamato.draw(g);
-
-                for(ArmaBarco arma : yamato.getArmas()) {
-                    arma.setImagen(Utilidades.getImagenBarco(2));
-                    arma.draw(g);
-                }
-            }
-
-            if(!Juego1943.getGameOver()){
-                if(!getTransicion()){
-                    if(heroe.getRefuerzo1() != null)
-                        heroe.getRefuerzo1().draw(g);
-                    if(heroe.getRefuerzo2() != null)
-                        heroe.getRefuerzo2().draw(g);
-                    heroe.draw(g);
-                }
+        if(ayako1 != null){
+            ayako1.draw(g);
+            for(ArmaAvionHostil arma : ayako1.getArmas()) {
+                arma.draw(g);
             }
         }
+
+        if(yamato != null){
+            yamato.draw(g);
+            for(ArmaBarco arma : yamato.getArmas()) {
+                arma.setImagen(Utilidades.getImagenBarco(2));
+                arma.draw(g);
+            }
+        }
+
+        heroe.draw(g);
+
+        if(heroe.getRefuerzo1() != null)
+            heroe.getRefuerzo1().draw(g);
+        if(heroe.getRefuerzo2() != null)
+            heroe.getRefuerzo2().draw(g);
+
     }
 
     public abstract void crearEnemigos();
@@ -459,8 +470,20 @@ public abstract class Nivel {
     public int getPuntaje() {
         return puntaje;
     }
-
     //Métodos necesarios para que el héroe pueda disparar
-    public P38 getHeroe(){return heroe;}
+    public static P38 getHeroe(){return heroe;}
+
+    public boolean ayakoNull(){return ayako1!=null;}
+
+    public int getVidaAyako(){return ayako1.getVida();}
+
     public ArrayList<Municion> getMunicionesP38(){return municionesP38;}
+
+    public void setPuntaje(int aux) {
+        puntaje = aux;
+    }
+
+    public boolean yamatoNull() {return yamato!=null;}
+
+    public int getVidaYamato() {return yamato.getVida();}
 }

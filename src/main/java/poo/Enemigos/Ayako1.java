@@ -1,6 +1,7 @@
 package poo.Enemigos;
 
 import poo.Armas.ArmaAvionHostil;
+import poo.Otros.Cronometro;
 import poo.Otros.Municion;
 import poo.Otros.P38;
 import poo.Otros.Utilidades;
@@ -8,28 +9,24 @@ import java.util.Vector;
 
 public class Ayako1 extends Jefe{
 
-    private Vector<ArmaAvionHostil> armas;
+    private final Vector<ArmaAvionHostil> armas;
     private P38 p38;
+
     public Ayako1() {
         super();
-        setImagen(Utilidades.getImagenJefes(1));
-        this.x = 250;
-        this.y = 100;
-        velocidadH = 0;
-        velocidadV = 2;
+        vida = 1000;
+        puntaje = 10000;
         armas = new Vector<>();
         armas.add(new ArmaAvionHostil());
-        armas.add(new ArmaAvionHostil());
-        armas.add(new ArmaAvionHostil());
-        armas.add(new ArmaAvionHostil());
-        this.puntaje = 500;
-        this.vida= 500;
+        setImagen(Utilidades.getImagenJefes(1));
+        x = (800/2)-(width/2);
+        y = 50;
+        velocidadH = 0;
+        velocidadV = 2;
         //setImagen()
         //setLocation (fija)
-        armas.elementAt(0).setImagen(Utilidades.getImagenBarco(3));
+        //armas.elementAt(0).setImagen(Utilidades.getImagenBarco(3));
     }
-
-    public Vector<ArmaAvionHostil> getArmas(){return armas;}
 
     @Override
     public void moverse(int ancho, int alto) {
@@ -48,6 +45,8 @@ public class Ayako1 extends Jefe{
             y += velocidadV;
         }
     }
+
+    public Vector<ArmaAvionHostil> getArmas(){return armas;}
 
     public Municion disparar() {
         return null;
