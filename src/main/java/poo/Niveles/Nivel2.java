@@ -105,12 +105,10 @@ public class Nivel2 extends Nivel{
             contadorEnemigos++;
         }
 
-        /*
-        if(tiempo.getDelta() >= 62000 && contYamato == 1 && contadorEnemigos == 11){
-            yamato = new Yamato(heroe);
-            contYamato = 0;
+        if(tiempo.getDelta() >= 62000 && contadorEnemigos == 11){
+            jefe = new Yamato(heroe);
+            contadorEnemigos++;
         }
-        */
 
         if(tiempo.getDelta() >= 65000 && contadorEnemigos == 12){
             avioneshostiles.add(new GrupoAvionesHostilesFormacion3());

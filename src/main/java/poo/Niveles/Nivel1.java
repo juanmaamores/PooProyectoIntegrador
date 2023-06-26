@@ -33,9 +33,8 @@ public class Nivel1 extends Nivel{
     @Override
     public void crearEnemigos() {
 
-        if(tiempo.getDelta() >= 3000 && contadorEnemigos == 0){
-            //avioneshostiles.add(new GrupoAvionesHostilesFormacion1());
-            jefe = new Ayako1();
+        if(tiempo.getDelta() >= 1000 && contadorEnemigos == 0){
+            avioneshostiles.add(new GrupoAvionesHostilesFormacion1());
             contadorEnemigos++;
         }
 
@@ -95,12 +94,10 @@ public class Nivel1 extends Nivel{
             contadorEnemigos++;
         }
 
-        /*
         if(tiempo.getDelta() >= 62000 && contadorEnemigos == 11){
             jefe = new Ayako1();
             contadorEnemigos++;
         }
-        */
 
         if(tiempo.getDelta() >= 66000 && contadorEnemigos == 12){
             avionesrojos.add(new GrupoAvionesRojos());

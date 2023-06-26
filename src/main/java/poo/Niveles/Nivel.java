@@ -149,6 +149,8 @@ public abstract class Nivel {
                 bonus.moverse(ancho, alto);
 
         if(jefe != null){
+            jefe.moverse(ancho, alto);
+
             for (ArmaJefe arma : jefe.getArmas()) {
                 if(arma.getActualizar())
                     if(arma.getVida() <= 0)
@@ -386,8 +388,12 @@ public abstract class Nivel {
 
         fondo.draw(g);
 
-        for(Bonus bonus : bonus)
-            bonus.draw(g);
+        if(jefe != null){
+            jefe.draw(g);
+            for(ArmaJefe arma : jefe.getArmas()) {
+                arma.draw(g);
+            }
+        }
 
         for (Barco barco : barcos) {
             barco.draw(g);
@@ -409,15 +415,11 @@ public abstract class Nivel {
         for(Municion municion: municionesAliadas)
             municion.draw(g);
 
+        for(Bonus bonus : bonus)
+            bonus.draw(g);
+
         for(Municion municion: municionesP38)
             municion.draw(g);
-
-        if(jefe != null){
-            jefe.draw(g);
-            for(ArmaJefe arma : jefe.getArmas()) {
-                arma.draw(g);
-            }
-        }
 
         heroe.draw(g);
 
