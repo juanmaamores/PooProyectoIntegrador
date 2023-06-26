@@ -34,7 +34,8 @@ public class Nivel1 extends Nivel{
     public void crearEnemigos() {
 
         if(tiempo.getDelta() >= 3000 && contadorEnemigos == 0){
-            avioneshostiles.add(new GrupoAvionesHostilesFormacion1());
+            //avioneshostiles.add(new GrupoAvionesHostilesFormacion1());
+            jefe = new Ayako1();
             contadorEnemigos++;
         }
 
@@ -53,18 +54,18 @@ public class Nivel1 extends Nivel{
             contadorEnemigos++;
         }
 
-        if(tiempo.getDelta() >= 25000 && contadorEnemigos == 4){
+        if(tiempo.getDelta() >= 22000 && contadorEnemigos == 4){
             avionesrojos.add(new GrupoAvionesRojos());
             contadorEnemigos++;
         }
 
-        if(tiempo.getDelta() >= 35000 && contadorEnemigos == 5){
+        if(tiempo.getDelta() >= 29000 && contadorEnemigos == 5){
             avioneshostiles.add(new GrupoAvionesHostilesFormacion1());
             avioneshostiles.add(new GrupoAvionesHostilesFormacion2());
             contadorEnemigos++;
         }
 
-        if(tiempo.getDelta() >= 39000 && contadorEnemigos == 6){
+        if(tiempo.getDelta() >= 36000 && contadorEnemigos == 6){
             avioneshostiles.add(new GrupoAvionesHostilesFormacion3());
             avionesrojos.add(new GrupoAvionesRojos());
             contadorEnemigos++;
@@ -94,10 +95,12 @@ public class Nivel1 extends Nivel{
             contadorEnemigos++;
         }
 
-        if(tiempo.getDelta() >= 62000 && contAyako == 1 && contadorEnemigos == 11){
-            ayako1 = new Ayako1();
-            contAyako = 0;
+        /*
+        if(tiempo.getDelta() >= 62000 && contadorEnemigos == 11){
+            jefe = new Ayako1();
+            contadorEnemigos++;
         }
+        */
 
         if(tiempo.getDelta() >= 66000 && contadorEnemigos == 12){
             avionesrojos.add(new GrupoAvionesRojos());

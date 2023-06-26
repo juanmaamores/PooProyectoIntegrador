@@ -7,7 +7,6 @@ import poo.Armas.ArmaBarco;
 import java.util.Vector;
 
 public class Yamato extends Jefe{
-    private Vector<ArmaBarco> armas;
     private int num;
     private final P38 p38;
 
@@ -17,10 +16,12 @@ public class Yamato extends Jefe{
         vida = 2000;
         puntaje = 99999;
         armas = new Vector<>();
+        /*
         armas.add(new ArmaBarco(p38));
         armas.add(new ArmaBarco(p38));
         armas.add(new ArmaBarco(p38));
         armas.add(new ArmaBarco(p38));
+        */
         setImagen(Utilidades.getImagenJefes(0));
         x = (800/2)-(width/2);
         y = 50;
@@ -30,8 +31,6 @@ public class Yamato extends Jefe{
         //setPosicion(400,-450);
     }
 
-    public Vector<ArmaBarco> getArmas(){return armas;}
-
     public int getNum(){return num;}
     public void setNum(int num){this.num = num;}
     @Override
@@ -40,22 +39,17 @@ public class Yamato extends Jefe{
             velocidadV = 0;
 
         armas.get(0).getDelayDisparo().update();
-        armas.get(0).moverse(x+16,y+40);
+        armas.get(0).setPosicion(x+16,y+40);
         armas.get(1).getDelayDisparo().update();
-        armas.get(1).moverse(x+5,y+100);
+        armas.get(1).setPosicion(x+5,y+100);
         armas.get(2).getDelayDisparo().update();
-        armas.get(2).moverse(x+30,y+100);
+        armas.get(2).setPosicion(x+30,y+100);
         armas.get(3).getDelayDisparo().update();
-        armas.get(3).moverse(x+16,y+140);
+        armas.get(3).setPosicion(x+16,y+140);
         armas.get(4).getDelayDisparo().update();
-        armas.get(4).moverse(x+16,y+190);
+        armas.get(4).setPosicion(x+16,y+190);
 
         x += velocidadH;
         y += velocidadV;
-    }
-
-    @Override
-    public Municion disparar() {
-        return null;
     }
 }

@@ -140,16 +140,11 @@ public class Juego1943 extends JGame {
             g.drawString(textoContinuar, xTextoContinuar, yTextoContinuar);
         }
         if(!inicioJuego && !gameOver && !transicion && !juegoPausado) { //interfaz jugando
-            g.drawString("Energia P38: " + Nivel.getHeroe().getEnergia(), x, y + (int) (0.01 * height));
+            g.drawString("Energia: " + Nivel.getHeroe().getEnergia(), x, y + (int) (0.01 * height));
             g.drawString("Puntaje: " + nivelActual.getPuntaje(),  x + (int) (0.75 * width), y + (int) (0.01 * height));
-            if(nivelActual.ayakoNull()){
-                if(nivelActual.getVidaAyako()>0){
-                    g.drawString("Energia Ayako: " + nivelActual.getVidaAyako(), x, y + (int) (0.05 * Juego1943.getAlto()));
-                }
-            }
-            if(nivelActual.yamatoNull()){
-                if(nivelActual.getVidaYamato()>0){
-                    g.drawString("Energia Yamato: " + nivelActual.getVidaYamato(), x, y + (int) (0.05 * Juego1943.getAlto()));
+            if(nivelActual.jefeNull()){
+                if(nivelActual.getVidaJefe()>0){
+                    g.drawString("Jefe: " + nivelActual.getVidaJefe(), x, y + (int) (0.05 * Juego1943.getAlto()));
                 }
             }
         }
@@ -191,14 +186,14 @@ public class Juego1943 extends JGame {
             //municion basica
             Utilidades.setImagenMunicion(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/municionBase.png"))));
             //jefes
-            Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/Yamato.png"))));
             Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ayako1.png"))));
+            Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/armaAyako.png"))));
+            Utilidades.setImagenJefes(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/Yamato.png"))));
             //barco y sus armas
             Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/barco.png"))));
             Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/torret1s.png"))));
             Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/torret2s.png"))));
             //motor ayako
-            //Utilidades.setImagenBarco(ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("img/ayako-motor.png"))));
             System.out.println("Imágenes cargadas");
         } catch (Exception e) {
             System.out.println(e);

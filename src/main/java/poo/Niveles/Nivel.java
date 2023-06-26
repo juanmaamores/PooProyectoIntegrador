@@ -1,8 +1,6 @@
 package poo.Niveles;
 
-import poo.Armas.ArmaAvionHostil;
-import poo.Armas.ArmaBarco;
-import poo.Armas.Escopeta;
+import poo.Armas.*;
 import poo.Bonus.AvionRefuerzo;
 import poo.Bonus.Bonus;
 import poo.Enemigos.*;
@@ -22,11 +20,8 @@ public abstract class Nivel {
     protected ArrayList<Municion> municionesP38, municionesHostiles, municionesAliadas;
     protected static P38 heroe;
     protected Cronometro tiempo;
-    protected Ayako1 ayako1;
-    protected Yamato yamato;
+    protected Jefe jefe;
     //protected Sound musicaNivel;
-    protected int contAyako = 1;
-    protected int contYamato = 1;
 
     /*public void playMusic(int i){
         musicaNivel.setFile(i);
@@ -153,47 +148,32 @@ public abstract class Nivel {
             if(bonus.getActualizar())
                 bonus.moverse(ancho, alto);
 
-        if(ayako1 != null){
-            if (ayako1.getActualizar()) {
-                //ayako1.moverse(250, 100);
-                for (ArmaAvionHostil arma : ayako1.getArmas()) {
-                    arma.getDelayDisparo().update();
-                }
-                if(ayako1.getArmas().get(0).puedeDisparar()) { //todas las armas del ayako disparan al mismo tiempo
-                    for (ArmaAvionHostil arma : ayako1.getArmas()) {
-                        arma.disparar(municionesHostiles, (int)(ayako1.getX() + ayako1.getWidth() / 2 - 4), (int) ayako1.getY());
+        if(jefe != null){
+            for (ArmaJefe arma : jefe.getArmas()) {
+                if(arma.getActualizar())
+                    if(arma.getVida() <= 0)
+                        arma.destruir();
+                       else
+                           arma.getDelayDisparo().update();
+            }
+            if(jefe.getArmas().get(0).puedeDisparar()) { //todas las armas del ayako disparan al mismo tiempo
+                for (Arma arma : jefe.getArmas()) {
+                    arma.disparar(municionesHostiles, (int)(arma.getX() + arma.getWidth() / 2 - 4), (int) arma.getY());
                     /*if(arma.equals(ayako1.getArmas().get(0))){
                         arma.disparar(municionesHostiles, (int)(ayako1.getX() + ayako1.getWidth() / 2 - 50), (int) ayako1.getY());
                     } else {
                         arma.disparar(municionesHostiles, (int)(ayako1.getX() + ayako1.getWidth() / 2 - 4), (int) ayako1.getY());
                     }*/
-                    }
-                }
-                if (ayako1.getVida() <= 0) {
-                    ayako1.destruir();
-                    puntaje += ayako1.getPuntaje();
-                    setTransicion(true);
                 }
             }
-        }
 
-
-        if (yamato != null){
-            if(yamato.getActualizar()) {
-                //yamato.moverse(350, 50);
-                for(ArmaBarco arma : yamato.getArmas()) {
-                    arma.getDelayDisparo().update();
-                    if(arma.getVida() <= 0)
-                        arma.destruir();
-                    if (arma.getActualizar() && arma.puedeDisparar()) {
-                        arma.disparar(municionesHostiles, (int)(yamato.getX() + yamato.getWidth() / 2 - 4), (int)yamato.getY());
-                    }
-                }
-                if(yamato.getVida() <= 0) {
-                    yamato.destruir();
-                    puntaje += yamato.getPuntaje();
+            if (jefe.todasArmasDestruidas()) {
+                jefe.destruir();
+                puntaje += jefe.getPuntaje();
+                if(jefe instanceof Yamato)
                     Juego1943.setGameOver();
-                }
+                else
+                    setTransicion(true);
             }
         }
     }
@@ -201,24 +181,15 @@ public abstract class Nivel {
     public void chequearColisiones() {
 
         //la colision se tiene que dar con las armas/motores y no con los jefes en si.
-       if(ayako1 != null){
+       if(jefe != null){
             for (Municion municion : municionesP38)
                 if(municion.getActualizar())
-                    if (municion.intersects(ayako1)) {
-                        ayako1.setVida(ayako1.getVida() - municion.getPoder());
-                        municion.destruir();
-                    }
+                    for(ArmaJefe arma : jefe.getArmas())
+                        if (municion.intersects(arma)) {
+                            arma.setVida(arma.getVida() - municion.getPoder());
+                            municion.destruir();
+                        }
         }
-
-        if(yamato != null){
-            for (Municion municion : municionesP38)
-                if(municion.getActualizar())
-                    if (municion.intersects(yamato)) {
-                        yamato.setVida(yamato.getVida() - municion.getPoder());
-                        municion.destruir();
-                    }
-        }
-
 
         for (GrupoAvionesRojos grupo : avionesrojos)
             for (AvionRojo avion : grupo.getAviones()) {
@@ -441,17 +412,9 @@ public abstract class Nivel {
         for(Municion municion: municionesP38)
             municion.draw(g);
 
-        if(ayako1 != null){
-            ayako1.draw(g);
-            for(ArmaAvionHostil arma : ayako1.getArmas()) {
-                arma.draw(g);
-            }
-        }
-
-        if(yamato != null){
-            yamato.draw(g);
-            for(ArmaBarco arma : yamato.getArmas()) {
-                arma.setImagen(Utilidades.getImagenBarco(2));
+        if(jefe != null){
+            jefe.draw(g);
+            for(ArmaJefe arma : jefe.getArmas()) {
                 arma.draw(g);
             }
         }
@@ -473,9 +436,9 @@ public abstract class Nivel {
     //Métodos necesarios para que el héroe pueda disparar
     public static P38 getHeroe(){return heroe;}
 
-    public boolean ayakoNull(){return ayako1!=null;}
+    public boolean jefeNull(){return jefe!=null;}
 
-    public int getVidaAyako(){return ayako1.getVida();}
+    public int getVidaJefe(){return jefe.getVida();}
 
     public ArrayList<Municion> getMunicionesP38(){return municionesP38;}
 
@@ -483,7 +446,4 @@ public abstract class Nivel {
         puntaje = aux;
     }
 
-    public boolean yamatoNull() {return yamato!=null;}
-
-    public int getVidaYamato() {return yamato.getVida();}
 }

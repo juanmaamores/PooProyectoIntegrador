@@ -28,11 +28,6 @@ public class ArmaBarco extends Arma{
 
     public int getVida(){return vida;}
 
-    public void moverse(int x, int y){
-        this.x = x;
-        this.y = y;
-    }
-
     @Override
     public void disparar(ArrayList<Municion> municiones, int x, int y) {
         int delta,velX,velY;

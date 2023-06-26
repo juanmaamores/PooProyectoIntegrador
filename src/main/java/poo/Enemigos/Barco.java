@@ -36,11 +36,11 @@ public class Barco extends Enemigo implements Movil{
         if(y >= 200)
             velocidadV = 1;
         armas.get(0).getDelayDisparo().update();
-        armas.get(0).moverse(x,y+10);
+        armas.get(0).setPosicion(x,y+10);
         armas.get(1).getDelayDisparo().update();
-        armas.get(1).moverse(x,y+40);
+        armas.get(1).setPosicion(x,y+40);
         armas.get(2).getDelayDisparo().update();
-        armas.get(2).moverse(x,y+70);
+        armas.get(2).setPosicion(x,y+70);
         x += velocidadH;
         y += velocidadV;
     }
