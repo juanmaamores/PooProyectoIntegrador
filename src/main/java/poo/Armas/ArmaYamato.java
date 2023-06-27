@@ -34,10 +34,10 @@ public class ArmaYamato extends ArmaJefe{
 
         delayDisparo.run(velocidadDisparo);
 
-        delta = (int)sqrt(pow(p38.getX()-x,2)+pow(p38.getY()-y,2))/7;
+        delta = (int)sqrt(pow(p38.getX()-x,2)+pow(p38.getY()-y,2))/10;
         velX = ((int)p38.getX()-x)/delta;
         velY = ((int)p38.getY()-y)/delta;
 
-        municiones.add(new Municion(x+(width-4)/2, y+(height-4)/2, velX,velY,poder, Utilidades.getImagenMunicion(0)));
+        municiones.add(new Municion(x, y, velX, velY,poder, Utilidades.getImagenMunicion(0)));
     }
 }

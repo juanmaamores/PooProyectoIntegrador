@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ArmaAvionHostil extends Arma{
 
     public ArmaAvionHostil(){
-        poder = 10;
+        poder = 5;
         velocidadDisparo = 2000;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);

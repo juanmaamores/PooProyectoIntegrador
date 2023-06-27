@@ -16,7 +16,7 @@ public class ArmaBarco extends Arma{
 
     public ArmaBarco(P38 p38){
         vida = 50;
-        poder = 25;
+        poder = 10;
         velocidadDisparo = 2000;
         this.p38 = p38;
         delayDisparo = new Cronometro();

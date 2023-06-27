@@ -10,7 +10,7 @@ public class Auto extends Arma{
 
     public Auto(){
         poder = 30;
-        velocidadDisparo = 500;
+        velocidadDisparo = 400;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);
     }

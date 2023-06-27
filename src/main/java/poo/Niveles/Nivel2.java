@@ -1,6 +1,8 @@
 package poo.Niveles;
 
 import poo.*;
+import poo.Ataque.Relampago;
+import poo.Ataque.Tsunami;
 import poo.Enemigos.*;
 import poo.Otros.Cronometro;
 import poo.Otros.Fondo;
@@ -14,6 +16,7 @@ public class Nivel2 extends Nivel{
     public Nivel2(){
         fondo = new Fondo(Utilidades.getImagenNivel(1));
         fondo.setPosicion(8,-(int)fondo.getHeight()+Juego1943.getAncho());
+        ataque = new Tsunami();
         heroe = new P38();
         heroe.setPosicion(Juego1943.getAncho()/2-50, Juego1943.getAlto()/2 + 100);
         avioneshostiles = new ArrayList<>();

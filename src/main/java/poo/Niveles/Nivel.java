@@ -1,6 +1,7 @@
 package poo.Niveles;
 
 import poo.Armas.*;
+import poo.Ataque.AtaqueEspecial;
 import poo.Bonus.AvionRefuerzo;
 import poo.Bonus.Bonus;
 import poo.Enemigos.*;
@@ -21,6 +22,7 @@ public abstract class Nivel {
     protected static P38 heroe;
     protected Cronometro tiempo;
     protected Jefe jefe;
+    protected AtaqueEspecial ataque;
     //protected Sound musicaNivel;
 
     /*public void playMusic(int i){
@@ -43,6 +45,7 @@ public abstract class Nivel {
         int alto = Juego1943.getAlto();
         tiempo.update();
         fondo.mover();
+
         heroe.moverse(ancho, alto);
         heroe.getArma().getDelayDisparo().update();
         heroe.getTiempoBonus().update();
@@ -155,17 +158,14 @@ public abstract class Nivel {
                 if(arma.getActualizar())
                     if(arma.getVida() <= 0)
                         arma.destruir();
-                       else
-                           arma.getDelayDisparo().update();
+                    else
+                        arma.getDelayDisparo().update();
             }
+
             if(jefe.getArmas().get(0).puedeDisparar()) { //todas las armas del ayako disparan al mismo tiempo
                 for (Arma arma : jefe.getArmas()) {
-                    arma.disparar(municionesHostiles, (int)(arma.getX() + arma.getWidth() / 2 - 4), (int) arma.getY());
-                    /*if(arma.equals(ayako1.getArmas().get(0))){
-                        arma.disparar(municionesHostiles, (int)(ayako1.getX() + ayako1.getWidth() / 2 - 50), (int) ayako1.getY());
-                    } else {
-                        arma.disparar(municionesHostiles, (int)(ayako1.getX() + ayako1.getWidth() / 2 - 4), (int) ayako1.getY());
-                    }*/
+                    if(arma.getActualizar())
+                        arma.disparar(municionesHostiles, (int)(arma.getX() + arma.getWidth() / 2 - 4), (int) arma.getY());
                 }
             }
 
@@ -184,13 +184,22 @@ public abstract class Nivel {
 
         //la colision se tiene que dar con las armas/motores y no con los jefes en si.
        if(jefe != null){
-            for (Municion municion : municionesP38)
-                if(municion.getActualizar())
-                    for(ArmaJefe arma : jefe.getArmas())
-                        if (municion.intersects(arma)) {
-                            arma.setVida(arma.getVida() - municion.getPoder());
-                            municion.destruir();
-                        }
+           for(ArmaJefe arma : jefe.getArmas())
+               if(arma.getActualizar()) {
+                   for (Municion municion : municionesP38)
+                       if (municion.getActualizar())
+                           if (municion.intersects(arma)) {
+                               arma.setVida(arma.getVida() - municion.getPoder());
+                               municion.destruir();
+                           }
+
+                   for (Municion municion : municionesAliadas)
+                       if (municion.getActualizar())
+                           if (municion.intersects(arma)) {
+                               arma.setVida(arma.getVida() - municion.getPoder());
+                               municion.destruir();
+                           }
+               }
         }
 
         for (GrupoAvionesRojos grupo : avionesrojos)
@@ -379,6 +388,8 @@ public abstract class Nivel {
             if(b.getActualizar())
                 if(b.intersects(heroe))
                     b.ejecutarAccion(heroe);
+
+        ataque.getDelay().update();
     }
 
     public void draw(Graphics2D g){
@@ -438,6 +449,10 @@ public abstract class Nivel {
     //Métodos necesarios para que el héroe pueda disparar
     public static P38 getHeroe(){return heroe;}
 
+    public ArrayList<GrupoAvionesHostiles> getAvioneshostiles(){return avioneshostiles;}
+
+    public ArrayList<Barco> getBarcos(){return barcos;}
+
     public boolean jefeNull(){return jefe!=null;}
 
     public int getVidaJefe(){return jefe.getVida();}
@@ -448,4 +463,5 @@ public abstract class Nivel {
         puntaje = aux;
     }
 
+    public AtaqueEspecial getAtaque() {return ataque;}
 }

@@ -44,4 +44,11 @@ public class Barco extends Enemigo implements Movil{
         x += velocidadH;
         y += velocidadV;
     }
+
+    @Override
+    public void destruir() {
+        super.destruir();
+        for(ArmaBarco arma : armas)
+            arma.destruir();
+    }
 }

@@ -1,6 +1,7 @@
 package poo.Niveles;
 
 import poo.*;
+import poo.Ataque.Relampago;
 import poo.Enemigos.*;
 import poo.Otros.Cronometro;
 import poo.Otros.Fondo;
@@ -14,6 +15,7 @@ public class Nivel1 extends Nivel{
     public Nivel1(){
         fondo = new Fondo(Utilidades.getImagenNivel(0));
         fondo.setPosicion(8,-(int)fondo.getHeight()+Juego1943.getAncho());
+        ataque = new Relampago();
         heroe = new P38();
         heroe.setPosicion(Juego1943.getAncho()/2-50, Juego1943.getAlto()/2 + 100);
         avioneshostiles = new ArrayList<>();
@@ -105,7 +107,7 @@ public class Nivel1 extends Nivel{
             contadorEnemigos++;
         }
 
-        if(tiempo.getDelta() >= 70000 && contadorEnemigos == 13){
+        if(tiempo.getDelta() >= 75000 && contadorEnemigos == 13){
             avionesrojos.add(new GrupoAvionesRojos());
             avioneshostiles.add(new GrupoAvionesHostilesFormacion3());
             contadorEnemigos++;

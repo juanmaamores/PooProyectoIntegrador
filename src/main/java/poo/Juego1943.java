@@ -269,13 +269,13 @@ public class Juego1943 extends JGame {
                 }
             }
             //Ataque especial
-            if(teclaAtqEsp.equals("B")){
-                if (keyboard.isKeyPressed(KeyEvent.VK_B)) {
-                    //lanza ataque especial
+            if(teclaAtqEsp.equals("Z")){
+                if (keyboard.isKeyPressed(KeyEvent.VK_Z)) {
+                    nivelActual.getAtaque().realizarAtaque(nivelActual);
                 }
             } else {
-                if (keyboard.isKeyPressed(KeyEvent.VK_Z)) {
-                    //lanza ataque especial
+                if (keyboard.isKeyPressed(KeyEvent.VK_B)) {
+                    nivelActual.getAtaque().realizarAtaque(nivelActual);
                 }
             }
         }

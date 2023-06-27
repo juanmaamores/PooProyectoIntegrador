@@ -1,14 +1,29 @@
 package poo.Ataque;
 
-import java.awt.image.BufferedImage;
+import poo.Enemigos.AvionHostil;
+import poo.Enemigos.GrupoAvionesHostiles;
+import poo.Niveles.Nivel;
+import poo.Otros.P38;
 
 public class Relampago extends AtaqueEspecial{
 
-    public Relampago() {
+    public Relampago(){super();}
 
-    }
+    public void realizarAtaque(Nivel nivel){
+        P38 heroe = Nivel.getHeroe();
 
-    public void realizarAtaque(){
+        if(delay.getDelta() >= 10000) {
 
+            if (heroe.getEnergia() >= 40) {
+                heroe.setEnergia(-20);
+
+                for (GrupoAvionesHostiles grupo : nivel.getAvioneshostiles())
+                    for (AvionHostil avion : grupo.getAviones())
+                        if (avion.getActualizar() && avion.getY() >= 0)
+                            avion.destruir();
+            }
+
+            delay.run(10000);
+        }
     }
 }

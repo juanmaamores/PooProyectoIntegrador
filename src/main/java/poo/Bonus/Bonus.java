@@ -14,21 +14,24 @@ public abstract class Bonus extends ObjetoGrafico implements Movil {
     public static Bonus crearBonus(int x, int y){
         Bonus nuevo;
         Random random = new Random();
-        int randomNumber = random.nextInt(8) + 1;
+        int randomNumber = random.nextInt(100) + 1;
 
-        //CAMBIAR, A FER NO LE GUSTA
-
-        nuevo = switch (randomNumber) {
-            case 1 -> new AmetralladoraBonus();
-            case 2 -> new AutoBonus();
-            case 3 -> new EscopetaBonus();
-            case 4 -> new EstrellaNinja();
-            case 5 -> new LaserBonus();
-            case 6 -> new POW();
-            case 7 -> new Refuerzos();
-            case 8 -> new SuperShell();
-            default -> null; // Usar un try catch para atrapar la excepcion.
-        };
+        if(randomNumber <= 15)
+            nuevo = new AmetralladoraBonus();
+        else if(randomNumber <= 35)
+            nuevo = new AutoBonus();
+        else if(randomNumber <= 40)
+            nuevo = new EscopetaBonus();
+        else if(randomNumber <= 54)
+            nuevo = new EstrellaNinja();
+        else if(randomNumber == 55)
+            nuevo = new LaserBonus();
+        else if(randomNumber <= 80)
+            nuevo = new POW();
+        else if(randomNumber <= 90)
+            nuevo = new Refuerzos();
+        else
+            nuevo = new SuperShell();
 
         nuevo.setX(x);
         nuevo.setY(y);
