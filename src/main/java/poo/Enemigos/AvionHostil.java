@@ -11,7 +11,7 @@ public class AvionHostil extends Enemigo implements Movil{
 
     public AvionHostil(){
         super();
-        vida = 100;
+        vida = 75;
         puntaje = 100;
         diovuelta = false;
         volviendo = false;

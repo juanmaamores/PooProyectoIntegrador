@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Auto extends Arma{
 
     public Auto(){
-        poder = 25;
+        poder = 30;
         velocidadDisparo = 500;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);

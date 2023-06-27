@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Ametralladora extends Arma{
     public Ametralladora(){
-        poder = 25;
+        poder = 30;
         velocidadDisparo = 400;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);

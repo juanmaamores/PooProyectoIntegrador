@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class ArmaAyako1 extends ArmaJefe{
     public ArmaAyako1(){
         vida = 200;
-        poder = 40;
+        poder = 25;
         velocidadDisparo = 1500;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);

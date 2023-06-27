@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Escopeta extends Arma{
     public Escopeta(){
-        poder = 30;
+        poder = 35;
         velocidadDisparo = 300;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);

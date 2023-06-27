@@ -163,7 +163,7 @@ public class Sistema extends Frame implements ActionListener, ItemListener {
 		pack();
 		setSize(750, 500);
 		setLocationRelativeTo(null); // Centrar la ventana
-		//setResizable(false); // Evitar que se pueda cambiar el tamaño
+		setResizable(true);
 		setVisible(true);
 	}
 
@@ -196,7 +196,7 @@ public class Sistema extends Frame implements ActionListener, ItemListener {
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource() == iniciarJuego) {
-			if(nombreJugador.getText().equals(" ")){
+			if(nombreJugador.getText().equals(" ") || nombreJugador.getText().equals("")){
 				nombreJugadorLabel2.setText("Por favor ingrese su nombre!");
 			} else if (juegoSeleccionado.equals("1943: Battle Of Midway")){
 				this.ejecutar();
@@ -210,7 +210,6 @@ public class Sistema extends Frame implements ActionListener, ItemListener {
 		}
 		if (e.getSource() == botonConfig) {
 			configuraciones.get(index).mostrar();
-			//log.setText("Configuraciones");
 		}
 		if (e.getSource() == botonRanking) {
 			try {

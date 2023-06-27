@@ -16,8 +16,8 @@ public class ArmaYamato extends ArmaJefe{
 
     public ArmaYamato(P38 p38){
         vida = 300;
-        poder = 40;
-        velocidadDisparo = 5000;
+        poder = 25;
+        velocidadDisparo = 4000;
         this.p38 = p38;
         delayDisparo = new Cronometro();
         delayDisparo.run(velocidadDisparo);

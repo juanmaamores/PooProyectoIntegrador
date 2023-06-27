@@ -8,11 +8,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Ranking extends Frame {
     private static final List rankingList = new List();
 
-    public Ranking(Frame v, String juegoSeleccionado) {
+    public Ranking(Frame v, String juegoSeleccionado) throws SQLException {
         setTitle("Ranking de " + juegoSeleccionado);
         setSize(600, 600);
         setLocationRelativeTo(v);
@@ -23,6 +25,14 @@ public class Ranking extends Frame {
             }
         });
         add(rankingList);
+
+        //crear la tabla si no fue creada anteriormente.
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:ranking.db");
+        Statement statement = connection.createStatement();
+        String createTableQuery = "CREATE TABLE IF NOT EXISTS jugadores (nombre TEXT, record INTEGER, fecha TEXT, juego TEXT)";
+        statement.executeUpdate(createTableQuery);
+        statement.close();
+        connection.close();
     }
 
     public static void actualizarRanking(String nombreJugador, int nuevoRecord, String juegoSeleccionado) throws SQLException {
@@ -30,17 +40,24 @@ public class Ranking extends Frame {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:ranking.db");
         Statement statement = connection.createStatement();
 
-        String selectQuery = "SELECT nombre, record FROM jugadores WHERE nombre = '" + nombreJugador + "'";
+        String createTableQuery = "CREATE TABLE IF NOT EXISTS jugadores (nombre TEXT, record INTEGER, fecha TEXT, juego TEXT)";
+        statement.executeUpdate(createTableQuery);
+
+        //Obtiene la fecha actual
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaActual = dateFormat.format(new Date());
+
+        String selectQuery = "SELECT nombre, record, fecha FROM jugadores WHERE nombre = '" + nombreJugador + "'";
         ResultSet resultSet = statement.executeQuery(selectQuery);
 
         if (resultSet.next()) {
             int recordExistente = resultSet.getInt("record");
             if (nuevoRecord > recordExistente) {
-                String updateQuery = "UPDATE jugadores SET record = " + nuevoRecord + " WHERE nombre = '" + nombreJugador + "' AND juego = '" + juegoSeleccionado + "'";
+                String updateQuery = "UPDATE jugadores SET record = " + nuevoRecord + ", fecha = '" + fechaActual + "' WHERE nombre = '" + nombreJugador + "' AND juego = '" + juegoSeleccionado + "'";
                 statement.executeUpdate(updateQuery);
             }
         } else {
-            String insertQuery = "INSERT INTO jugadores (nombre, record, juego) VALUES ('" + nombreJugador + "', " + nuevoRecord + ", '" + juegoSeleccionado + "')";
+            String insertQuery = "INSERT INTO jugadores (nombre, record, fecha, juego) VALUES ('" + nombreJugador + "', " + nuevoRecord + ", '" + fechaActual + "', '" + juegoSeleccionado + "')";
             statement.executeUpdate(insertQuery);
         }
 
@@ -54,7 +71,7 @@ public class Ranking extends Frame {
         Statement statement = connection.createStatement();
 
         // Obtener el ranking actualizado ordenado en forma descendente por "record"
-        String selectRankingQuery = "SELECT nombre, record FROM jugadores WHERE juego = '" + juegoSeleccionado + "' ORDER BY record DESC";
+        String selectRankingQuery = "SELECT nombre, record, fecha FROM jugadores WHERE juego = '" + juegoSeleccionado + "' ORDER BY record DESC";
         ResultSet resultSet = statement.executeQuery(selectRankingQuery);
 
         rankingList.removeAll(); // Limpiar la lista antes de actualizarla
@@ -62,14 +79,14 @@ public class Ranking extends Frame {
         while (resultSet.next()) {
             String nombre = resultSet.getString("nombre");
             int record = resultSet.getInt("record");
-            rankingList.add(nombre + ", " + record);
+            String fecha = resultSet.getString("fecha");
+            rankingList.add(nombre + ", " + record + ", " + fecha);
         }
 
         resultSet.close();
         statement.close();
         connection.close();
     }
-
 
     public static int obtenerRecordJugador(String juegoSeleccionado, String nombreJugador) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:sqlite:ranking.db");
@@ -89,7 +106,6 @@ public class Ranking extends Frame {
 
         return aux;
     }
-
 
     public void mostrar() {
         setVisible(true);
