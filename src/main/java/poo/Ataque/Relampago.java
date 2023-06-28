@@ -5,13 +5,13 @@ import poo.Enemigos.GrupoAvionesHostiles;
 import poo.Niveles.Nivel;
 import poo.Otros.P38;
 
+
 public class Relampago extends AtaqueEspecial{
 
     public Relampago(){super();}
 
     public void realizarAtaque(Nivel nivel){
         P38 heroe = Nivel.getHeroe();
-
         if(delay.getDelta() >= 10000) {
 
             if (heroe.getEnergia() >= 40) {

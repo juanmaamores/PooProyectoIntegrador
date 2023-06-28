@@ -12,6 +12,15 @@ public class Sound {
 
     public Sound(){
         soundURL[0] = getClass().getResource("/sounds/musicaNivel1.wav");
+        soundURL[1] = getClass().getResource("/sounds/disparo1.wav");
+        soundURL[2] = getClass().getResource("/sounds/col.wav");
+        soundURL[3] = getClass().getResource("/sounds/sea-battle.wav");
+        soundURL[4] = getClass().getResource("/sounds/muerte.wav");
+        soundURL[5] = getClass().getResource("/sounds/bonus.wav");
+        soundURL[6] = getClass().getResource("/sounds/tsunami.wav");
+        soundURL[7] = getClass().getResource("/sounds/relampago.wav");
+        soundURL[8] = getClass().getResource("/sounds/colHeroe.wav");
+
     }
 
     public void setFile(int i){
