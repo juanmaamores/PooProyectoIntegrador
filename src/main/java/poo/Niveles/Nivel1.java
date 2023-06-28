@@ -28,8 +28,9 @@ public class Nivel1 extends Nivel{
         tiempo = new Cronometro();
         tiempo.run(180000);
         contadorEnemigos = 0;
-        //musicaNivel = new Sound();
-        //playMusic(0);
+        musicaNivel = new Sound();
+        feSound = new Sound();
+        playMusic(0);
     }
 
     @Override

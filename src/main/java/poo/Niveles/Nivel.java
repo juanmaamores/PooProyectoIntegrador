@@ -23,22 +23,22 @@ public abstract class Nivel {
     protected Cronometro tiempo;
     protected Jefe jefe;
     protected AtaqueEspecial ataque;
-    //protected Sound musicaNivel;
+    protected Sound musicaNivel, feSound;
 
-    /*public void playMusic(int i){
+    public void playMusic(int i){
         musicaNivel.setFile(i);
         musicaNivel.play();
         musicaNivel.loop();
     }
 
-    public void stopMusic(int i){
+    public void stopMusic(){
         musicaNivel.stop();
     }
 
     public void playSEffects(int i){
-        musicaNivel.setFile(i);
-        musicaNivel.play();
-    }*/
+        feSound.setFile(i);
+        feSound.play();
+    }
 
     public void actualizarObjetos(){
         int ancho = Juego1943.getAncho();
@@ -52,7 +52,7 @@ public abstract class Nivel {
         heroe.chequearBonus();
         //chequear que el jugador no haya muerto
         if(heroe.getEnergia() <= 0){
-            //stopMusic(0);
+            stopMusic();
             setGameOver();
             heroe.destruir();
         }
@@ -99,6 +99,7 @@ public abstract class Nivel {
                             avion.getArma().disparar(municionesHostiles, (int)(avion.getX()+avion.getWidth()/2-4), (int)avion.getY());
                         if(avion.getVida() <= 0) {
                             avion.destruir();
+                            playSEffects(4);
                             puntaje += avion.getPuntaje();
                         }
                     }
@@ -120,6 +121,7 @@ public abstract class Nivel {
                             grupo.setUltimoDestruidoX(avion.getX());
                             grupo.setUltimoDestruidoY(avion.getY());
                             avion.destruir();
+                            playSEffects(4);
                             puntaje += avion.getPuntaje();
                         }
                     }
@@ -156,8 +158,10 @@ public abstract class Nivel {
 
             for (ArmaJefe arma : jefe.getArmas()) {
                 if(arma.getActualizar())
-                    if(arma.getVida() <= 0)
+                    if(arma.getVida() <= 0) {
                         arma.destruir();
+                        playSEffects(4);
+                    }
                     else
                         arma.getDelayDisparo().update();
             }
@@ -171,6 +175,7 @@ public abstract class Nivel {
 
             if (jefe.todasArmasDestruidas()) {
                 jefe.destruir();
+                stopMusic();
                 puntaje += jefe.getPuntaje();
                 if(jefe instanceof Yamato)
                     Juego1943.setGameOver();
@@ -191,6 +196,7 @@ public abstract class Nivel {
                            if (municion.intersects(arma)) {
                                arma.setVida(arma.getVida() - municion.getPoder());
                                municion.destruir();
+                               playSEffects(2);
                            }
 
                    for (Municion municion : municionesAliadas)
@@ -198,6 +204,7 @@ public abstract class Nivel {
                            if (municion.intersects(arma)) {
                                arma.setVida(arma.getVida() - municion.getPoder());
                                municion.destruir();
+                               playSEffects(2);
                            }
                }
         }
@@ -214,6 +221,7 @@ public abstract class Nivel {
                         if(municion.getActualizar())
                             if (municion.intersects(avion)) {
                                 avion.setVida(avion.getVida() - municion.getPoder());
+                                playSEffects(2);
                                 municion.destruir();
                             }
 
@@ -252,6 +260,7 @@ public abstract class Nivel {
                         if(municion.getActualizar())
                             if (municion.intersects(avion)) {
                                 municion.destruir();
+                                playSEffects(2);
                                 avion.setVida(avion.getVida() - municion.getPoder());
                             }
 
@@ -291,6 +300,7 @@ public abstract class Nivel {
                         if (municion.getActualizar())
                             if (municion.intersects(arma)) {
                                 municion.destruir();
+                                playSEffects(2);
                                 arma.setVida(arma.getVida() - municion.getPoder());
                             }
 
@@ -324,6 +334,7 @@ public abstract class Nivel {
                 if (municion.intersects(heroe)) {
                     heroe.setEnergia(-municion.getPoder());
                     municion.destruir();
+                    playSEffects(8);
                 }
 
                 AvionRefuerzo ref1 = heroe.getRefuerzo1(), ref2 = heroe.getRefuerzo2();
@@ -386,8 +397,10 @@ public abstract class Nivel {
 
         for(Bonus b : bonus)
             if(b.getActualizar())
-                if(b.intersects(heroe))
+                if(b.intersects(heroe)) {
                     b.ejecutarAccion(heroe);
+                    playSEffects(5);
+                }
 
         ataque.getDelay().update();
     }
@@ -464,4 +477,8 @@ public abstract class Nivel {
     }
 
     public AtaqueEspecial getAtaque() {return ataque;}
+
+    public Sound getFeSound() {
+        return feSound;
+    }
 }
